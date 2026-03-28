@@ -1,0 +1,35 @@
+/* CSS styling common across the site */
+
+@font-face {
+  font-family: 'm6x11medium';
+  src        : url('../fonts/m6x11-webfont.woff2') format('woff2'), url('../fonts/m6x11-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style : normal;
+}
+
+:root {
+  background-color: black;
+  color           : white;
+  font-family     : "m6x11medium", "Courier New", monospace;
+  font-size       : 32px;
+}
+
+h1 {
+  font-size  : 96px;
+  font-weight: normal;
+}
+
+h2 {
+  font-size  : 80px;
+  font-weight: normal;
+}
+
+h3 {
+  font-size  : 64px;
+  font-weight: normal;
+}
+
+h4 {
+  font-size  : 48px;
+  font-weight: normal;
+}
