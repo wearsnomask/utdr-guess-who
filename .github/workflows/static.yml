@@ -28,10 +28,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Build
-        run: ./scripts/make-meta.sh
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Build
+        run: ./scripts/make-meta.sh
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
