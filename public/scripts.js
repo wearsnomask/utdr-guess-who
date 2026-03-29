@@ -43,6 +43,7 @@ function switchScene(newScene = MENU_SCENE) {
     MENU_START_LINK.focus();
   } else if (newScene === INSTRUCTIONS_SCENE) {
     INSTRUCTIONS_BACK_BUTTON.focus();
+    INSTRUCTIONS_SCENE_HEADER.scrollIntoView();
   }
 }
 
@@ -164,6 +165,7 @@ MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_
 // ---------------------
 
 // Constant DOM references
+const INSTRUCTIONS_SCENE_HEADER = document.querySelector("#instructions-scene");
 const INSTRUCTIONS_BACK_BUTTON = document.querySelector("#instructions-back");
 
 // Functions
