@@ -22,6 +22,11 @@ let lastScene;
  * @param {Element} newScene 
  */
 function switchScene(newScene = MENU_SCENE) {
+  // Custom tasks to run on each scene being switched from
+  if (lastScene === NAME_SCENE) {
+    NAME_INPUT.setAttribute("disabled", "disabled");
+  }
+
   L_SCENES.forEach((el) => {
     // Mark the current scene as the last scene
     if (!el.classList.contains("hidden"))
@@ -32,9 +37,12 @@ function switchScene(newScene = MENU_SCENE) {
 
   // Custom tasks to run on each scene being switched to
   if (newScene === NAME_SCENE) {
-    NAME_INPUT.focus();
+    NAME_INPUT.removeAttribute("disabled");
+    setTimeout(() => NAME_INPUT.focus(), 100);
   } else if (newScene === MENU_SCENE) {
     MENU_START_LINK.focus();
+  } else if (newScene === INSTRUCTIONS_SCENE) {
+    INSTRUCTIONS_BACK_BUTTON.focus();
   }
 }
 
@@ -66,7 +74,7 @@ function getName() {
  */
 function submitName(e) {
   // If this is a keyup event, check if the key is Enter or Return before triggering
-  if (e.type === "keyup" && !(e.key === "Enter" || e.key === "Return"))
+  if (e.type === "keydown" && !(e.key === "Enter" || e.key === "Return"))
     return;
   setName(NAME_INPUT.value);
   switchScene(lastScene);
@@ -76,7 +84,7 @@ function submitName(e) {
 // Setup
 // -----
 
-NAME_INPUT.addEventListener("keyup", submitName);
+NAME_INPUT.addEventListener("keydown", submitName);
 NAME_SUBMIT.addEventListener("click", submitName);
 if (sessionStorage.getItem("name"))
   NAME_INPUT.value = getName();
@@ -108,17 +116,21 @@ function navigateMenu(e) {
   if (MENU_SCENE.classList.contains("hidden"))
     return;
 
+  let currentIndex = Array.from(L_MENU_OPTIONS).findIndex((el) => document.activeElement === el);
+
   // Check if we're navigating forwards or backwards
   let dir;
   if (e.key === "ArrowRight" || e.key === "ArrowDown") {
     dir = 1;
   } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
     dir = -1;
+  } else if (e.key === " " || e.key === "z" && currentIndex !== -1) {
+    e.stopPropagation();
+    document.activeElement.click();
+    return;
   } else {
     return;
   }
-
-  let currentIndex = Array.from(L_MENU_OPTIONS).findIndex((el) => document.activeElement === el);
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first
@@ -152,7 +164,7 @@ MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_
 // ---------------------
 
 // Constant DOM references
-const INSTRUCTIONS_BACK_LINK = document.querySelector("#instructions-back");
+const INSTRUCTIONS_BACK_BUTTON = document.querySelector("#instructions-back");
 
 // Functions
 // ---------
@@ -160,7 +172,7 @@ const INSTRUCTIONS_BACK_LINK = document.querySelector("#instructions-back");
 // Setup
 // -----
 
-INSTRUCTIONS_BACK_LINK.addEventListener("click", () => switchScene(lastScene));
+INSTRUCTIONS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
 
 
 // Final setup

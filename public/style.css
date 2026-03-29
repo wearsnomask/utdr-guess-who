@@ -109,9 +109,15 @@ button {
 }
 
 button:hover {
-  cursor      : url('img/sCursorHand.png'), auto;
+  cursor         : url('img/sCursorHand.png'), auto;
+  text-decoration: underline;
+}
+
+button:focus,
+button:focus-visible {
   border-color: yellow;
-  color       : yellow
+  color       : yellow;
+  outline     : none;
 }
 
 button:active {
