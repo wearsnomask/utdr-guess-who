@@ -132,7 +132,7 @@ body {
   width: 100%;
 }
 
-#name-input-content {
+#name-scene {
   display        : flex;
   flex-direction : column;
   justify-content: space-between;
