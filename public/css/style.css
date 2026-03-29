@@ -1,0 +1,152 @@
+/* CSS styling common across the site */
+
+@font-face {
+  font-family: 'm6x11medium';
+  src        : url('../fonts/m6x11-webfont.woff2') format('woff2'), url('../fonts/m6x11-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style : normal;
+}
+
+/* Global styling */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color      : white;
+  font-family: "m6x11medium", "Courier New", monospace;
+  font-size  : 32px;
+}
+
+/* Styling for common elements */
+
+p {
+  padding: 0;
+  margin : 0 0 0.5rem 0;
+}
+
+h1 {
+  font-size  : 3rem;
+  font-weight: normal;
+  margin     : 0 0 1.5rem 0;
+}
+
+h2 {
+  font-size  : 2.5rem;
+  font-weight: normal;
+  margin     : 0 0 1.25rem 0;
+}
+
+h3 {
+  font-size  : 2rem;
+  font-weight: normal;
+  margin     : 0 0 1rem 0;
+}
+
+h4 {
+  font-size  : 1.5rem;
+  font-weight: normal;
+  margin     : 0 0 0.75rem 0;
+}
+
+input,
+button {
+  border        : 0.25rem solid grey;
+  padding       : 0.5rem;
+  padding-bottom: 0.25rem;
+
+  font-family: "m6x11medium", "Courier New", monospace;
+  text-align : center;
+}
+
+input {
+  width: min(20rem, 95%);
+
+  background-color: #FFFFFF00 !important;
+  color           : white;
+  font-size       : 2rem;
+}
+
+button {
+  margin       : 1rem;
+  padding-left : 1.5rem;
+  padding-right: 1.5rem;
+
+  background-color: black;
+  color           : grey;
+  font-size       : 1.5rem;
+}
+
+button:hover {
+  cursor      : pointer;
+  border-color: yellow;
+  color       : yellow
+}
+
+button:active {
+  cursor      : pointer;
+  border-color: white;
+  color       : white
+}
+
+input:focus-visible {
+  outline: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Styling for specific items */
+
+body {
+  margin : 0;
+  padding: 0;
+  height : 100vh;
+  width  : 100vw;
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: stretch;
+  align-items    : center;
+
+  background-color: black;
+}
+
+.max-width-box {
+  padding: 0;
+  margin : 0;
+  flex   : auto;
+  height : 100%;
+  width  : min(1320px, 95vw);
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: stretch;
+}
+
+.max-width-box>* {
+  flex : auto;
+  width: 100%;
+}
+
+#name-input-content {
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  align-items    : center;
+}
+
+#name-input-label {
+  display       : flex;
+  flex-direction: column;
+}
+
+#name-input-label>* {
+  text-align: center;
+}
+
+#name-confirm {
+  align-self: flex-end;
+}

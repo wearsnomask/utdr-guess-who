@@ -6,17 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UTDR Guess Who</title>
 
-  <link rel="stylesheet" href="./css/common.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
   <div class="max-width-box">
-    <div id="title-panel">
-      <h1>UTDR Guess Who</h1>
-    </div>
-    <div id="front-page-content" class="content-panel">
+
+    <form id="name-input-content" class="content-panel" autocomplete="off">
+      <div class="empty-item"></div>
+      <label for="name-input" id="name-input-label">
+        <h2>Please enter your name!</h2>
+        <p>It will be displayed in-game</p>
+      </label>
+      <input type="text" id="name-input">
+      <button type="button" id="name-confirm">Continue</button>
+    </form>
+
+    <div id="menu-content" class="content-panel hidden">
+      <div id="title-panel">
+        <h1>UTDR Guess Who</h1>
+      </div>
       <p>Under construction!</p>
     </div>
+
     <div id="game-content" class="content-panel hidden">
 
     </div>
@@ -56,9 +68,6 @@
         ask subjective questions, without the "yes" or "no" limit. (Example: "What's your character's favorite
         Pokémon?")
       </p>
-    </div>
-    <div id="footer-panel">
-
     </div>
   </div>
 </body>
