@@ -15,6 +15,7 @@
 
 :root {
   color      : white;
+  cursor     : url('../img/sCursor.png'), auto;
   font-family: "m6x11medium", "Courier New", monospace;
   font-size  : 32px;
 }
@@ -68,6 +69,10 @@ input {
   font-size       : 2rem;
 }
 
+input:hover {
+  cursor: url('../img/sCursor.png'), auto;
+}
+
 button {
   margin       : 1rem;
   padding-left : 1.5rem;
@@ -79,13 +84,13 @@ button {
 }
 
 button:hover {
-  cursor      : pointer;
+  cursor      : url('../img/sCursorHand.png'), auto;
   border-color: yellow;
   color       : yellow
 }
 
 button:active {
-  cursor      : pointer;
+  cursor      : url('../img/sCursorHand.png'), auto;
   border-color: white;
   color       : white
 }
