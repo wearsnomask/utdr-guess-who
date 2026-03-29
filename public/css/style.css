@@ -11,11 +11,11 @@
 
 * {
   box-sizing: border-box;
+  cursor    : url('../img/sCursor.png'), auto;
 }
 
 :root {
   color      : white;
-  cursor     : url('../img/sCursor.png'), auto;
   font-family: "m6x11medium", "Courier New", monospace;
   font-size  : 32px;
 }
@@ -67,10 +67,6 @@ input {
   background-color: #FFFFFF00 !important;
   color           : white;
   font-size       : 2rem;
-}
-
-input:hover {
-  cursor: url('../img/sCursor.png'), auto;
 }
 
 button {
