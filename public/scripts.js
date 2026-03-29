@@ -31,8 +31,8 @@ function switchScene(newScene = MENU_SCENE) {
   newScene.classList.remove("hidden");
 }
 
-// Name input scene
-// ================
+// Name scene
+// ==========
 
 // Constants and globals
 // ---------------------
@@ -46,6 +46,7 @@ const NAME_SUBMIT = document.querySelector("#name-submit");
 
 function setName(name) {
   sessionStorage["name"] = name;
+  MENU_NAME.textContent = name;
 }
 
 function getName() {
@@ -71,6 +72,33 @@ NAME_INPUT.addEventListener("keydown", submitName);
 NAME_SUBMIT.addEventListener("click", submitName);
 if (sessionStorage.getItem("name"))
   NAME_INPUT.value = getName();
+
+// Menu scene
+// ==========
+
+// Constants and globals
+// ---------------------
+
+// Constant DOM references
+const MENU_NAME = document.querySelector("#menu-name");
+const MENU_START_LINK = document.querySelector("#menu-start");
+const MENU_NAME_LINK = document.querySelector("#menu-edit-name");
+const MENU_INSTRUCTIONS_LINK = document.querySelector("#menu-instructions");
+
+// Functions
+// ---------
+
+function startGame() {
+  switchScene(GAME_SCENE);
+}
+
+// Setup
+// -----
+
+MENU_START_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
+MENU_NAME_LINK.addEventListener("click", startGame);
+MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
+
 
 // Final setup
 // ===========

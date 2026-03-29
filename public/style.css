@@ -51,6 +51,16 @@ h4 {
   margin     : 0 0 0.75rem 0;
 }
 
+a {
+  text-decoration: none;
+  color          : inherit;
+}
+
+a:hover {
+  cursor: url('img/sCursorHand.png'), auto;
+  color : yellow
+}
+
 input,
 button {
   border        : 0.25rem solid grey;
@@ -95,11 +105,36 @@ input:focus-visible {
   outline: none;
 }
 
+ul {
+  list-style-type: none;
+}
+
+ul>li,
+ol>li {
+  margin-bottom: 0.5rem;
+}
+
+ul>li a:hover::before {
+  content     : url("img/sHeart_0.png");
+  margin-left : -0.75rem;
+  margin-right: 0.125rem;
+}
+
+/* Styling modifiers */
+
 .hidden {
   display: none !important;
 }
 
-/* Styling for specific items */
+.small-text {
+  font-size: 0.5rem;
+}
+
+.grey-text {
+  color: grey;
+}
+
+/* Styling for general items */
 
 body {
   margin : 0;
@@ -132,6 +167,8 @@ body {
   width: 100%;
 }
 
+/* Name scene */
+
 #name-scene {
   display        : flex;
   flex-direction : column;
@@ -150,4 +187,27 @@ body {
 
 #name-confirm {
   align-self: flex-end;
+}
+
+/* Menu scene */
+
+#menu-scene {
+  padding        : 1rem 0;
+  align-self     : flex-start;
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  align-items    : flex-start;
+}
+
+#menu-title-and-name {
+  display        : flex;
+  flex-direction : column;
+  justify-content: flex-start;
+  align-items    : center;
+}
+
+#menu-logo {
+  width        : 292px;
+  margin-bottom: 0.5rem;
 }

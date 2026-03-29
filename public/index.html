@@ -25,15 +25,24 @@
     </form>
 
     <div id="menu-scene" class="scene hidden">
-      <div class="title">
-        <h1>UTDR Guess Who</h1>
+      <div id="menu-title-and-name">
+        <img src="img/sNewLogo.png" alt="UTDR Logo" id="menu-logo">
+        <p id="menu-name-display" class="small-text">
+          <span class="grey-text">Chosen name: </span>
+          <span id="menu-name"></span>
+        </p>
       </div>
-      <p>Under construction!</p>
+      <ul id="menu-options">
+        <li><a href="javascript:void(0)" id="menu-start">START GAME</a></li>
+        <li><a href="javascript:void(0)" id="menu-edit-name">EDIT NAME</a></li>
+        <li><a href="javascript:void(0)" id="menu-instructions">INSTRUCTIONS</a></li>
+      </ul>
     </div>
 
     <div id="game-scene" class="scene hidden">
 
     </div>
+
     <div id="instructions-scene" class="scene hidden">
       <h2>Instructions:</h2>
       <p>
