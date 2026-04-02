@@ -12,11 +12,20 @@ const GAME_SCENE = document.getElementById("game-scene");
 const INSTRUCTIONS_SCENE = document.getElementById("instructions-scene");
 
 // Globals
-let lastScene;
+
+// The previously loaded scene, as a target for any Back buttons
+let lastScene = null;
+
+// State locks
+let gameLoading = false;
+
+// Loaded info about all available character sets
 let lCharsets = null;
+
+// Info about and in the currently-loaded character set
 let loadedCharset = null;
 let lCharImageNames = null;
-let lCharImages = null;
+let lCharInfo = null;
 
 
 // Functions
@@ -162,8 +171,25 @@ const CHARSET_OPTION_TEMPLATE = document.getElementById("charset-option-template
 // Functions
 // ---------
 
-function startGame() {
+async function startGame() {
+  // If the game is already loading, exit to avoid doubling up
+  if (gameLoading)
+    return;
+  gameLoading = true;
+
+  // Load the selected character set
+  const setName = CHARSET_SELECT.value;
+  if (!setName) {
+    alert("ERROR: No character set selected. Try reloading the page to see if the sets load properly.");
+    gameLoading = false;
+    return;
+  }
+  await loadCharacterSet(setName);
+
+  // TODO: Reset the game board
+
   switchScene(GAME_SCENE);
+  gameLoading = false;
 }
 
 function navigateMenu(e) {
@@ -297,12 +323,25 @@ async function loadCharacterSet(setName) {
   // TODO: Clear the game scene
 
   // Get the info for each character
+  let maxCharIndex = -1;
   lCharImageNames.forEach((charImageName) => {
     let charIndex = +(charImageName.split("-")[0]);
+    if (charIndex > maxCharIndex)
+      maxCharIndex = charIndex
+
     let charName = charImageName.replace(charIndex + "-", "").replace(".png", "");
     dCharInfo[charIndex] = { name: charName, imageName: charImageName };
-    // TODO: Add cards to the game scene
   });
+
+  // Sort into a list, in case there are gaps in indices for any reason
+  lCharInfo = [];
+  for (let i = 0; i <= maxCharIndex; ++i) {
+    if (!dCharInfo[i])
+      continue;
+    lCharInfo.push(dCharInfo[i]);
+  }
+
+  // TODO: Add cards to the game scene
 
   // Mark this set as loaded
   loadedCharset = setName;
