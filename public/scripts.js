@@ -13,7 +13,10 @@ const INSTRUCTIONS_SCENE = document.getElementById("instructions-scene");
 
 // Globals
 let lastScene;
-let lCharacterSets = null;
+let lCharsets = null;
+let loadedCharset = null;
+let lCharImageNames = null;
+let lCharImages = null;
 
 
 // Functions
@@ -224,16 +227,16 @@ function navigateMenu(e) {
   L_MENU_OPTIONS[currentIndex].focus();
 }
 
-async function loadCharacterSets() {
+async function loadCharacterSetList() {
   // Fetch the sets from the meta file
-  const charsetUrl = "character-sets/charset-meta.json";
-  const charsetMeta = await loadJSON(charsetUrl)
-    .catch((err) => alert("ERROR: Could not load character set information from " + charsetUrl + ".\n" +
+  const charsetMetaUrl = "character-sets/charset-meta.json";
+  const charsetMeta = await loadJSON(charsetMetaUrl)
+    .catch((err) => alert("ERROR: Could not load character set information from " + charsetMetaUrl + ".\n" +
       "Try refreshing the page in case this is a temporary issue. The error message received was: \n" + err));
-  lCharacterSets = charsetMeta.sets;
+  lCharsets = charsetMeta.sets;
 
   // Fill the options for the character set select box
-  lCharacterSets.forEach((setName) => {
+  lCharsets.forEach((setName) => {
     const newCharsetOption = document.importNode(CHARSET_OPTION_TEMPLATE.content, true).querySelector(".charset-option");
     newCharsetOption.value = newCharsetOption.textContent = setName;
     CHARSET_SELECT.appendChild(newCharsetOption);
@@ -262,6 +265,53 @@ MENU_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
 
 
+// Game scene
+// ==========
+
+// Constants and globals
+// ---------------------
+
+// Functions
+// ---------
+
+/**
+ * 
+ * @param {String} setName 
+ */
+async function loadCharacterSet(setName) {
+
+  // If this set is already loaded, do nothing
+  if (setName === loadedCharset)
+    return;
+
+  const charsetPath = "character-sets/" + setName.replaceAll(" ", "%20");
+
+  // Fetch the characters in the set from the meta file
+  const charMetaUrl = charsetPath + "/char-meta.json";
+  const charsetMeta = await loadJSON(charMetaUrl)
+    .catch((err) => alert("ERROR: Could not load character information from " + charMetaUrl + ".\n" +
+      "Try refreshing the page in case this is a temporary issue. The error message received was: \n" + err));
+  lCharImageNames = charsetMeta.chars;
+  const dCharInfo = {};
+
+  // TODO: Clear the game scene
+
+  // Get the info for each character
+  lCharImageNames.forEach((charImageName) => {
+    let charIndex = +(charImageName.split("-")[0]);
+    let charName = charImageName.replace(charIndex + "-", "").replace(".png", "");
+    dCharInfo[charIndex] = { name: charName, imageName: charImageName };
+    // TODO: Add cards to the game scene
+  });
+
+  // Mark this set as loaded
+  loadedCharset = setName;
+}
+
+// Setup
+// -----
+
+
 // Instructions scene
 // ==================
 
@@ -288,5 +338,5 @@ window.onload = function () {
   NAME_INPUT.focus();
 
   fixMenuTabIndex();
-  loadCharacterSets();
+  loadCharacterSetList();
 }
