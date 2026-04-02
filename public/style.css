@@ -133,6 +133,16 @@ input:focus-visible {
   outline: none;
 }
 
+ul>li label:has(+select:focus) {
+  color: yellow;
+}
+
+select:focus,
+select:focus-visible {
+  border-color: yellow;
+  outline     : none;
+}
+
 ul {
   list-style-type: none;
 }
@@ -142,7 +152,8 @@ ol>li {
   margin-bottom: 0.5rem;
 }
 
-ul>li a:focus::before {
+ul>li a:is(:focus, :focus-visible)::before,
+ul>li label:has(+select:is(:focus, :focus-visible))::before {
   content     : url("img/sHeart_0.png");
   margin-left : -0.75rem;
   margin-right: 0.125rem;
