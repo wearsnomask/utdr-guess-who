@@ -13,6 +13,7 @@ const INSTRUCTIONS_SCENE = document.querySelector("#instructions-scene");
 
 // Globals
 let lastScene;
+let lCharacterSets = null;
 
 // Functions
 // ---------
@@ -45,6 +46,15 @@ function switchScene(newScene = MENU_SCENE) {
     INSTRUCTIONS_BACK_BUTTON.focus();
     INSTRUCTIONS_SCENE_HEADER.scrollIntoView();
   }
+}
+
+/**
+ * Load a JSON file from its url as an object
+ * @param {String} url 
+ * @returns {Promise<Object>}
+ */
+async function loadJSON(url) {
+  return fetch(url).then(blob => blob.json());
 }
 
 // Name scene
@@ -148,6 +158,14 @@ function navigateMenu(e) {
   L_MENU_OPTIONS[newIndex].focus();
 }
 
+async function loadCharacterSets() {
+  const charsetUrl = "character-sets/charset-meta.json";
+  const charsetMeta = await loadJSON(charsetUrl)
+    .catch((err) => alert("ERROR: Could not load character set information from " + charsetUrl + ".\n" +
+      "Try refreshing the page in case this is a temporary issue. The error message received was: \n" + err));
+  lCharacterSets = charsetMeta.sets;
+}
+
 // Setup
 // -----
 
@@ -182,4 +200,6 @@ INSTRUCTIONS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene))
 window.onload = function () {
   lastScene = MENU_SCENE;
   NAME_INPUT.focus();
+
+  loadCharacterSets();
 }
