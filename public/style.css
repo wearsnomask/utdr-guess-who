@@ -138,9 +138,8 @@ ul>li label:is(:focus, :focus-visible) {
   color  : yellow;
 }
 
-select:is(:focus, :focus-visible) {
+ul>li label:is(:focus, :focus-visible)+select {
   border-color: yellow;
-  outline     : none;
 }
 
 ul {
@@ -157,6 +156,11 @@ ul>li label:is(:focus, :focus-visible)::before {
   content     : url("img/sHeart_0.png");
   margin-left : -0.75rem;
   margin-right: 0.125rem;
+}
+
+select {
+  padding   : 2px;
+  margin-top: -2px;
 }
 
 /* Styling modifiers */

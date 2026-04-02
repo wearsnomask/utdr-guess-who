@@ -213,7 +213,6 @@ function navigateMenu(e) {
         currentIndex = L_MENU_MAIN_OPTIONS.length - 1;
     }
   } else {
-
     // dir is -1 or 1, so we're moving up or down
     currentIndex += dir;
     if (currentIndex < 0)
@@ -241,10 +240,23 @@ async function loadCharacterSets() {
   });
 }
 
+function fixMenuTabIndex() {
+  // Check if we're above or below the breakpoint, and set the tabindex appropriately so tabbing will behave as
+  // expected
+  if (window.innerWidth <= 800) {
+    L_MENU_MAIN_OPTIONS.forEach((e) => e.setAttribute("tabindex", "2"));
+    L_MENU_CONFIG_OPTIONS.forEach((e) => e.setAttribute("tabindex", "1"));
+  } else {
+    L_MENU_MAIN_OPTIONS.forEach((e) => e.setAttribute("tabindex", "1"));
+    L_MENU_CONFIG_OPTIONS.forEach((e) => e.setAttribute("tabindex", "2"));
+  }
+}
+
 // Setup
 // -----
 
 window.addEventListener("keydown", navigateMenu);
+window.addEventListener("resize", fixMenuTabIndex);
 MENU_START_LINK.addEventListener("click", startGame);
 MENU_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
@@ -275,5 +287,6 @@ window.onload = function () {
   lastScene = MENU_SCENE;
   NAME_INPUT.focus();
 
+  fixMenuTabIndex();
   loadCharacterSets();
 }
