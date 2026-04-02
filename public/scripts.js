@@ -172,10 +172,12 @@ function navigateMenu(e) {
 
   // Check if we're navigating forwards or backwards
   let dir;
-  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+  if (e.key === "ArrowDown") {
     dir = 1;
-  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+  } else if (e.key === "ArrowUp") {
     dir = -1;
+  } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    dir = 0;
   } else if (e.key === " " || e.key === "z" && currentIndex !== -1) {
     const el = document.activeElement;
     e.stopPropagation();
@@ -195,13 +197,32 @@ function navigateMenu(e) {
     return;
   }
 
-  let newIndex = currentIndex + dir;
-  if (newIndex < 0)
-    newIndex = L_MENU_OPTIONS.length - 1;
-  else if (newIndex >= L_MENU_OPTIONS.length)
-    newIndex = 0;
+  // If dir==0, we're moving right or left between the subsections of the menu
+  if (dir === 0) {
+    if (currentIndex < L_MENU_MAIN_OPTIONS.length) {
+      // We're in the main menu options, so jump to the config options
+      currentIndex += L_MENU_MAIN_OPTIONS.length;
+      // If we're gone past the end of the config options, go to the last one
+      if (currentIndex >= L_MENU_OPTIONS.length)
+        currentIndex = L_MENU_OPTIONS.length - 1;
+    } else {
+      // We're in the main menu options, so jump to the main menu options
+      currentIndex -= L_MENU_MAIN_OPTIONS.length;
+      // If we're still in the config options, go to the last main menu option
+      if (currentIndex >= L_MENU_MAIN_OPTIONS.length)
+        currentIndex = L_MENU_MAIN_OPTIONS.length - 1;
+    }
+  } else {
 
-  L_MENU_OPTIONS[newIndex].focus();
+    // dir is -1 or 1, so we're moving up or down
+    currentIndex += dir;
+    if (currentIndex < 0)
+      currentIndex = L_MENU_OPTIONS.length - 1;
+    else if (currentIndex >= L_MENU_OPTIONS.length)
+      currentIndex = 0;
+  }
+
+  L_MENU_OPTIONS[currentIndex].focus();
 }
 
 async function loadCharacterSets() {
