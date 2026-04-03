@@ -37,6 +37,11 @@ body {
 
 /* Styling for common elements */
 
+div {
+  margin : 0;
+  padding: 0;
+}
+
 p {
   padding    : 0;
   margin     : 0 0 0.5rem 0;
@@ -298,6 +303,17 @@ select {
 
 /* Game scene */
 
+:root {
+  --card-img-width   : 40px;
+  --card-border-width: 2px;
+  --card-column-gap  : 8px;
+  --card-column-width: calc(var(--card-img-width) + 2 * var(--card-border-width) + var(--card-column-gap));
+
+  --card-img-height: 64px;
+  --card-row-gap   : 4px;
+  --card-row-height: calc(var(--card-img-height) + 2 * var(--card-border-width) + var(--card-row-gap));
+}
+
 #game-scene {
   display        : flex;
   justify-content: space-between;
@@ -319,6 +335,17 @@ select {
   align-items    : center;
 }
 
+.your-char-img-frame {
+  border: calc(2 * var(--card-border-width)) solid white;
+  width : calc(2 * var(--card-img-width) + 4 * var(--card-border-width));
+  height: calc(2 * var(--card-img-height) + 4 * var(--card-border-width));
+}
+
+.your-char-img {
+  width : calc(2 * var(--card-img-width));
+  height: calc(2 * var(--card-img-height));
+}
+
 #guesses-line {
   display        : flex;
   justify-content: center;
@@ -337,17 +364,6 @@ select {
   display        : flex;
   justify-content: space-between;
   align-items    : center;
-}
-
-:root {
-  --card-img-width   : 40px;
-  --card-border-width: 2px;
-  --card-column-gap  : 8px;
-  --card-column-width: calc(var(--card-img-width) + 2 * var(--card-border-width) + var(--card-column-gap));
-
-  --card-img-height: 64px;
-  --card-row-gap   : 4px;
-  --card-row-height: calc(var(--card-img-height) + 2 * var(--card-border-width) + var(--card-row-gap));
 }
 
 #card-grid {

@@ -24,8 +24,12 @@ let lCharsets = null;
 
 // Info about and in the currently-loaded character set
 let loadedCharset = null;
+let charsetPath = null;
 let lCharImageNames = null;
 let lCharInfo = null;
+
+// The player's character for this game
+let yourCharIndex = null;
 
 
 // Functions
@@ -117,6 +121,7 @@ const NAME_SUBMIT = document.getElementById("name-submit");
 function setName(name) {
   sessionStorage["name"] = name;
   MENU_NAME.textContent = name;
+  querySelectorAll(".player-name").forEach((el) => el.textContent = name);
 }
 
 function getName() {
@@ -186,8 +191,23 @@ async function startGame() {
   }
   await loadCharacterSet(setName);
 
-  // TODO: Reset the game board
+  // Set all characters to active
+  querySelectorAll(".character-card").forEach((el) => {
+    el.classList.remove("inactive");
+    el.classList.add("active");
+  });
 
+  // Update the display of the number of active characters
+  updateNumChars();
+
+  // Randomly determine the player's character and set it up
+  yourCharIndex = Math.floor(Math.random() * getNumChars());
+  const yourCharInfo = lCharInfo[yourCharIndex];
+  YOUR_CHAR_NAME.textContent = yourCharInfo.name;
+  YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imageName);
+  YOUR_CHAR_IMG.setAttribute("alt", yourCharInfo.name);
+
+  // And finally switch to the game scene and mark loading as complete
   switchScene(GAME_SCENE);
   gameLoading = false;
 }
@@ -297,11 +317,40 @@ MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_
 // Constants and globals
 // ---------------------
 
+// Constant DOM references
+YOUR_CHAR_NAME = getElementById("your-char-name");
+YOUR_CHAR_IMG = getElementById("your-char-img");
+
 // Functions
 // ---------
 
 /**
- * 
+ * Get the total number of possible characters
+ * @returns {Number}
+ */
+function getNumChars() {
+  return querySelectorAll(".character-card").length;
+}
+
+/**
+ * Get the number of characters whose cards are still active
+ * @returns {Number}
+ */
+function getNumActiveChars() {
+  return querySelectorAll(".character-card.active").length;
+}
+
+/**
+ * Updates the displayed number of active and total characters
+ */
+function updateNumChars() {
+  querySelectorAll(".cards-left-count").forEach((el) => {
+    el.textContent = getNumActiveChars() + "/" + getNumChars();
+  });
+}
+
+/**
+ * Loads all characters in a character set
  * @param {String} setName 
  */
 async function loadCharacterSet(setName) {
@@ -310,7 +359,7 @@ async function loadCharacterSet(setName) {
   if (setName === loadedCharset)
     return;
 
-  const charsetPath = "character-sets/" + setName.replaceAll(" ", "%20");
+  charsetPath = "character-sets/" + setName.replaceAll(" ", "%20");
 
   // Fetch the characters in the set from the meta file
   const charMetaUrl = charsetPath + "/char-meta.json";
