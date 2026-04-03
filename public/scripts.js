@@ -121,7 +121,7 @@ const NAME_SUBMIT = document.getElementById("name-submit");
 function setName(name) {
   sessionStorage["name"] = name;
   MENU_NAME.textContent = name;
-  querySelectorAll(".player-name").forEach((el) => el.textContent = name);
+  document.querySelectorAll(".player-name").forEach((el) => el.textContent = name);
 }
 
 function getName() {
@@ -192,7 +192,7 @@ async function startGame() {
   await loadCharacterSet(setName);
 
   // Set all characters to active
-  querySelectorAll(".character-card").forEach((el) => {
+  document.querySelectorAll(".character-card").forEach((el) => {
     el.classList.remove("inactive");
     el.classList.add("active");
   });
@@ -206,6 +206,10 @@ async function startGame() {
   YOUR_CHAR_NAME.textContent = yourCharInfo.name;
   YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imageName);
   YOUR_CHAR_IMG.setAttribute("alt", yourCharInfo.name);
+
+  // Reset available guesses
+  document.querySelectorAll(".guess-icon.active-icon").forEach((el) => el.classList.remove("hidden"));
+  document.querySelectorAll(".guess-icon.inactive-icon").forEach((el) => el.classList.add("hidden"));
 
   // And finally switch to the game scene and mark loading as complete
   switchScene(GAME_SCENE);
@@ -318,8 +322,12 @@ MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_
 // ---------------------
 
 // Constant DOM references
-YOUR_CHAR_NAME = getElementById("your-char-name");
-YOUR_CHAR_IMG = getElementById("your-char-img");
+CHARACTER_CARD_TEMPLATE = document.getElementById("character-card-template");
+
+YOUR_CHAR_NAME = document.getElementById("your-char-name");
+YOUR_CHAR_IMG = document.getElementById("your-char-img");
+
+CARD_GRID = document.getElementById("card-grid");
 
 // Functions
 // ---------
@@ -329,7 +337,7 @@ YOUR_CHAR_IMG = getElementById("your-char-img");
  * @returns {Number}
  */
 function getNumChars() {
-  return querySelectorAll(".character-card").length;
+  return document.querySelectorAll(".character-card").length;
 }
 
 /**
@@ -337,14 +345,14 @@ function getNumChars() {
  * @returns {Number}
  */
 function getNumActiveChars() {
-  return querySelectorAll(".character-card.active").length;
+  return document.querySelectorAll(".character-card.active").length;
 }
 
 /**
  * Updates the displayed number of active and total characters
  */
 function updateNumChars() {
-  querySelectorAll(".cards-left-count").forEach((el) => {
+  document.querySelectorAll(".cards-left-count").forEach((el) => {
     el.textContent = getNumActiveChars() + "/" + getNumChars();
   });
 }
@@ -369,7 +377,8 @@ async function loadCharacterSet(setName) {
   lCharImageNames = charsetMeta.chars;
   const dCharInfo = {};
 
-  // TODO: Clear the game scene
+  // Clear any present character cards
+  document.querySelectorAll(".character-card").forEach((el) => el.remove());
 
   // Get the info for each character
   let maxCharIndex = -1;
@@ -390,7 +399,14 @@ async function loadCharacterSet(setName) {
     lCharInfo.push(dCharInfo[i]);
   }
 
-  // TODO: Add cards to the game scene
+  // Add cards to the game scene
+  lCharInfo.forEach((charInfo) => {
+    const newCard = document.importNode(CHARACTER_CARD_TEMPLATE.content, true).querySelector(".character-card");
+    const imgEl = newCard.querySelector(".character-img");
+    imgEl.setAttribute("src", charsetPath + "/" + charInfo.imageName);
+    imgEl.setAttribute("alt", charInfo.name);
+    CARD_GRID.appendChild(imgEl);
+  });
 
   // Mark this set as loaded
   loadedCharset = setName;
