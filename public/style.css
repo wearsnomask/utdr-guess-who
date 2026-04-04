@@ -396,6 +396,14 @@ select {
   width: var(--heart-width);
 }
 
+.guess-icon.active .inactive-icon {
+  display: none;
+}
+
+.guess-icon.inactive .active-icon {
+  display: none;
+}
+
 #game-cards-panel {
   max-width      : 1040px;
   flex           : 1 0 auto;
@@ -445,12 +453,12 @@ select {
   cursor: url('img/sCursorHand.png'), pointer;
 }
 
-.character-img-frame.active {
+.active .character-img-frame {
   border-color: white;
 }
 
-.character-img-frame.inactive {
-  border-color: #404040;
+.inactive .character-img-frame {
+  filter: brightness(0.1) saturate(0);
 }
 
 .character-img {

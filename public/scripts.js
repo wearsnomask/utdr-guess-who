@@ -331,6 +331,7 @@ const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
 
 const YOUR_CHAR_NAME = document.getElementById("your-char-name");
 const YOUR_CHAR_IMG = document.getElementById("your-char-img");
+const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
@@ -407,9 +408,14 @@ async function loadCharacterSet(setName) {
   // Add cards to the game scene
   lCharInfo.forEach((charInfo) => {
     const newCard = document.importNode(CHARACTER_CARD_TEMPLATE.content, true).querySelector(".character-card");
+
     const imgEl = newCard.querySelector(".character-img");
     imgEl.setAttribute("src", charsetPath + "/" + charInfo.imageName);
     imgEl.setAttribute("alt", charInfo.name);
+
+    const frameEl = newCard.querySelector(".character-img-frame");
+    frameEl.addEventListener("click", flipCard);
+
     CARD_GRID.appendChild(newCard);
   });
 
@@ -417,8 +423,40 @@ async function loadCharacterSet(setName) {
   loadedCharset = setName;
 }
 
-function flipCard(e) {
+/**
+ * Flips a guess between available and unavailable states
+ * @param {Event} e 
+ */
+function flipGuess(e) {
+  const guessClassList = e.currentTarget.closest(".guess-icon").classList;
 
+  if (guessClassList.contains("active")) {
+    guessClassList.remove("active");
+    guessClassList.add("inactive");
+  } else {
+    guessClassList.add("active");
+    guessClassList.remove("inactive");
+  }
+
+  updateNumChars();
+}
+
+/**
+ * Flips a card between active and inactive states
+ * @param {Event} e 
+ */
+function flipCard(e) {
+  const cardClassList = e.currentTarget.closest(".character-card").classList;
+
+  if (cardClassList.contains("active")) {
+    cardClassList.remove("active");
+    cardClassList.add("inactive");
+  } else {
+    cardClassList.add("active");
+    cardClassList.remove("inactive");
+  }
+
+  updateNumChars();
 }
 
 // Setup
@@ -428,6 +466,9 @@ QUIT_GAME_BUTTON.addEventListener("click", () => switchScene(MENU_SCENE));
 RESTART_GAME_BUTTON.addEventListener("click", startGame);
 L_NOTES_BUTTONS.forEach((el) => el.addEventListener("click", () => { return; }))
 L_INSTRUCTIONS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE)))
+
+L_GUESS_ICONS.forEach((el) => el.addEventListener("click", flipGuess));
+// Character cards are added dynamically, so the click event to flip them has to be added when they're added
 
 
 // Instructions scene
