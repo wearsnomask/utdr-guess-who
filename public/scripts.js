@@ -182,6 +182,7 @@ async function startGame() {
   if (gameLoading)
     return;
   gameLoading = true;
+  document.querySelectorAll(".game-loading-message").forEach(el => el.classList.remove("hidden"));
 
   // Load the selected character set
   const setName = CHARSET_SELECT.value;
@@ -233,6 +234,7 @@ async function startGame() {
 
     // And finally switch to the game scene and mark loading as complete
     switchScene(GAME_SCENE);
+    document.querySelectorAll(".game-loading-message").forEach(el => el.classList.add("hidden"));
     gameLoading = false;
 
   }, 50);
