@@ -11,7 +11,10 @@
 
 * {
   box-sizing: border-box;
-  cursor    : url('img/sCursor.png'), auto;
+}
+
+:root {
+  cursor: url('img/sCursor.png'), auto;
 }
 
 :root,
@@ -84,7 +87,7 @@ a:focus-visible {
 }
 
 a:hover {
-  cursor         : url('img/sCursorHand.png'), auto;
+  cursor         : url('img/sCursorHand.png'), pointer;
   text-decoration: underline;
 }
 
@@ -124,7 +127,7 @@ button.small {
 }
 
 button:hover {
-  cursor         : url('img/sCursorHand.png'), auto;
+  cursor         : url('img/sCursorHand.png'), pointer;
   text-decoration: underline;
 }
 
@@ -136,7 +139,6 @@ button:focus-visible {
 }
 
 button:active {
-  cursor      : url('img/sCursorHand.png'), auto;
   border-color: white;
   color       : white
 }
@@ -386,6 +388,10 @@ select {
   display: inline-block;
 }
 
+.guess-icon:hover {
+  cursor: url('img/sCursorHand.png'), pointer;
+}
+
 .guess-icon img {
   width: var(--heart-width);
 }
@@ -419,8 +425,11 @@ select {
 }
 
 .character-card {
-  width : var(--card-column-width);
-  height: var(--card-row-height);
+  width          : var(--card-column-width);
+  height         : var(--card-row-height);
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
 }
 
 .character-img-frame {
@@ -428,6 +437,12 @@ select {
   height      : var(--card-frame-height);
   border-width: var(--card-border-width);
   border-style: solid;
+
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+
+  cursor: url('img/sCursorHand.png'), pointer;
 }
 
 .character-img-frame.active {
@@ -439,8 +454,7 @@ select {
 }
 
 .character-img {
-  width : var(--card-img-width);
-  height: var(--card-img-height);
+  width: calc(var(--card-scale) * 100%);
 }
 
 #card-panel-buttons {

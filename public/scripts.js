@@ -417,6 +417,10 @@ async function loadCharacterSet(setName) {
   loadedCharset = setName;
 }
 
+function flipCard(e) {
+
+}
+
 // Setup
 // -----
 
