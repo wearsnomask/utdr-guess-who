@@ -366,11 +366,10 @@ select {
   border: calc(2 * var(--card-border-width)) solid white;
   width : calc(2 * var(--card-img-width) + 4 * var(--card-border-width));
   height: calc(2 * var(--card-img-height) + 4 * var(--card-border-width));
-}
 
-#your-char-img {
-  width : calc(2 * var(--card-img-width));
-  height: calc(2 * var(--card-img-height));
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
 }
 
 #guesses-display {
@@ -459,10 +458,6 @@ select {
 
 .inactive .character-img-frame {
   filter: brightness(0.1) saturate(0);
-}
-
-.character-img {
-  width: calc(var(--card-scale) * 100%);
 }
 
 #card-panel-buttons {
