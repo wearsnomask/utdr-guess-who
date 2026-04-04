@@ -213,8 +213,10 @@ async function startGame() {
   YOUR_CHAR_IMG.setAttribute("style", `width: ${yourCharImgWidth}px;`);
 
   // Reset available guesses
-  document.querySelectorAll(".guess-icon.active-icon").forEach((el) => el.classList.remove("hidden"));
-  document.querySelectorAll(".guess-icon.inactive-icon").forEach((el) => el.classList.add("hidden"));
+  document.querySelectorAll(".guess-icon").forEach((el) => {
+    el.classList.add("active");
+    el.classList.remove("inactive");
+  });
 
   // And finally switch to the game scene and mark loading as complete
   switchScene(GAME_SCENE);
