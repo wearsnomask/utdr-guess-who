@@ -27,6 +27,7 @@ let loadedCharset = null;
 let charsetPath = null;
 let lCharImageNames = null;
 let lCharInfo = null;
+let numImagesLoading = 0;
 
 // The player's character for this game
 let yourCharIndex = null;
@@ -209,7 +210,9 @@ async function startGame() {
 
   // Set the image to be scaled based on its natural size
   const cardScale = window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--card-scale');
+  ++numImagesLoading;
   YOUR_CHAR_IMG.onload = () => {
+    --numImagesLoading;
     // Set the image to be scaled based on its natural size
     const yourCharImgWidth = 2 * YOUR_CHAR_IMG.naturalWidth * cardScale;
     YOUR_CHAR_IMG.setAttribute("style", `width: ${yourCharImgWidth}px;`);
@@ -221,9 +224,18 @@ async function startGame() {
     el.classList.remove("inactive");
   });
 
-  // And finally switch to the game scene and mark loading as complete
-  switchScene(GAME_SCENE);
-  gameLoading = false;
+  // Wait until all images are loaded before we switch to the game scene
+  const interval = setInterval(() => {
+    if (numImagesLoading > 0)
+      return;
+
+    clearInterval(interval);
+
+    // And finally switch to the game scene and mark loading as complete
+    switchScene(GAME_SCENE);
+    gameLoading = false;
+
+  }, 50);
 }
 
 function navigateMenu(e) {
@@ -427,7 +439,9 @@ async function loadCharacterSet(setName) {
 
     const cardScale = window.getComputedStyle(CARD_GRID).getPropertyValue('--card-scale');
 
+    ++numImagesLoading;
     imgEl.onload = () => {
+      --numImagesLoading;
       // Set the image to be scaled based on its natural size
       const imgWidth = imgEl.naturalWidth * cardScale;
       imgEl.setAttribute("style", `width: ${imgWidth}px;`);
