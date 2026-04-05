@@ -193,6 +193,10 @@ async function startGame() {
   }
   await loadCharacterSet(setName);
 
+  // Store a list of all focusable character card frames
+  lCharacterCardFrames = document.querySelectorAll(".character-card .character-img-frame");
+  lGameFocusableItems = [...L_GUESS_ICONS, ...lCharacterCardFrames];
+
   // Set all characters to active
   document.querySelectorAll(".character-card").forEach((el) => {
     el.classList.remove("inactive");
@@ -245,7 +249,7 @@ function navigateMenu(e) {
 
   let currentIndex = L_MENU_OPTIONS.findIndex((el) => document.activeElement === el);
 
-  // Check if we're navigating forwards or backwards
+  // Check the direction of navigation
   let dir;
   if (e.key === "ArrowDown") {
     dir = 1;
@@ -359,6 +363,8 @@ const CARD_GRID = document.getElementById("card-grid");
 
 // Globals
 let cardScaleInfo = null;
+let lCharacterCardFrames = null;
+let lGameFocusableItems = null;
 
 // Functions
 // ---------
@@ -536,9 +542,76 @@ function flipCard(e) {
   updateNumChars();
 }
 
+function navigateGame(e) {
+  // Only execute if the game scene is active
+  if (GAME_SCENE.classList.contains("hidden"))
+    return;
+
+  // Get current position
+  let currentIndex = lGameFocusableItems.findIndex((el) => document.activeElement === el);
+
+  // Check the direction of navigation
+  let dir;
+  if (e.key === "ArrowDown") {
+    dir = 2;
+  } else if (e.key === "ArrowUp") {
+    dir = -2;
+  } else if (e.key === "ArrowRight") {
+    dir = 1;
+  } else if (e.key === "ArrowLeft") {
+    dir = -1;
+  } else if (e.key === " " || e.key === "z" || e.key === "Enter" || e.key === "Return" && currentIndex != -1) {
+    e.stopPropagation();
+    e.preventDefault();
+    document.activeElement.click();
+    return;
+  } else {
+    return;
+  }
+
+  if (currentIndex == -1) {
+    // Not in the options currently, so go to the first character card
+    lCharacterCardFrames[0].focus({ focusVisible: true });
+  }
+
+  if (Math.abs(dir) > 1) {
+    // If dir is 2 or -2, we're moving down or up respectively
+    if (currentIndex < L_GUESS_ICONS.length) {
+      // We're currently on a guess icon, so go to either the beginning or end of the character cards
+      if (dir > 0) {
+        currentIndex = L_GUESS_ICONS.length;
+      } else {
+        currentIndex = lGameFocusableItems.length - 1;
+      }
+    } else {
+      // Count how many columns there currently are in the grid
+      const numCols = window.getComputedStyle(CARD_GRID).getPropertyValue("grid-template-columns").split(" ").length;
+
+      // Check if we're moving back from the first row or forward from the last row, in which case go to the guess icons
+      if ((currentIndex < L_GUESS_ICONS.length + numCols && dir < 0) ||
+        (currentIndex >= lGameFocusableItems.length - numCols && dir > 0)) {
+        currentIndex = 0;
+      } else {
+        currentIndex += Math.sign(dir) * numCols;
+      }
+    }
+  } else {
+    // dir is -1 or 1, so we're moving right or left
+    currentIndex += dir;
+    if (currentIndex < 0)
+      currentIndex = lGameFocusableItems.length - 1;
+    else if (currentIndex >= lGameFocusableItems.length)
+      currentIndex = 0;
+  }
+
+  lGameFocusableItems[currentIndex].focus({ focusVisible: true });
+
+}
+
 // Setup
 // -----
 
+window.addEventListener("keydown", navigateGame);
 QUIT_GAME_BUTTON.addEventListener("click", () => switchScene(MENU_SCENE));
 RESTART_GAME_BUTTON.addEventListener("click", startGame);
 L_NOTES_BUTTONS.forEach((el) => el.addEventListener("click", () => { return; }))
