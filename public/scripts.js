@@ -57,11 +57,11 @@ function switchScene(newScene = MENU_SCENE) {
   // Custom tasks to run on each scene being switched to
   if (newScene === NAME_SCENE) {
     NAME_INPUT.removeAttribute("disabled");
-    setTimeout(() => NAME_INPUT.focus(), 100);
+    setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
   } else if (newScene === MENU_SCENE) {
-    MENU_START_LINK.focus();
+    MENU_START_LINK.focus({ focusVisible: true });
   } else if (newScene === INSTRUCTIONS_SCENE) {
-    INSTRUCTIONS_BACK_BUTTON.focus();
+    INSTRUCTIONS_BACK_BUTTON.focus({ focusVisible: true });
     INSTRUCTIONS_SCENE_HEADER.scrollIntoView();
   }
 }
@@ -268,7 +268,7 @@ function navigateMenu(e) {
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first
-    L_MENU_OPTIONS[0].focus();
+    L_MENU_OPTIONS[0].focus({ focusVisible: true });
     return;
   }
 
@@ -296,7 +296,7 @@ function navigateMenu(e) {
       currentIndex = 0;
   }
 
-  L_MENU_OPTIONS[currentIndex].focus();
+  L_MENU_OPTIONS[currentIndex].focus({ focusVisible: true });
 }
 
 async function loadCharacterSetList() {
@@ -570,7 +570,7 @@ INSTRUCTIONS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene))
 // ===========
 window.onload = function () {
   lastScene = MENU_SCENE;
-  NAME_INPUT.focus();
+  NAME_INPUT.focus({ focusVisible: true });
 
   fixMenuTabIndex();
   loadCharacterSetList();

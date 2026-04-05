@@ -81,7 +81,6 @@ a {
   color          : inherit;
 }
 
-a:focus,
 a:focus-visible {
   color  : yellow;
   outline: none;
@@ -132,7 +131,6 @@ button:hover {
   text-decoration: underline;
 }
 
-button:focus,
 button:focus-visible {
   border-color: yellow;
   color       : yellow;
@@ -144,16 +142,16 @@ button:active {
   color       : white
 }
 
-input:is(:focus, :focus-visible) {
+input:is(:focus-visible) {
   outline: none;
 }
 
-ul>li label:is(:focus, :focus-visible) {
+ul>li label:is(:focus-visible) {
   outline: none;
   color  : yellow;
 }
 
-ul>li label:is(:focus, :focus-visible)+select {
+ul>li label:is(:focus-visible)+select {
   border-color: yellow;
 }
 
@@ -166,8 +164,8 @@ ol>li {
   margin-bottom: 0.5rem;
 }
 
-ul>li a:is(:focus, :focus-visible)::before,
-ul>li label:is(:focus, :focus-visible)::before {
+ul>li a:is(:focus-visible)::before,
+ul>li label:is(:focus-visible)::before {
   content     : url("img/sHeart_0.png");
   margin-left : -0.75rem;
   margin-right: 0.125rem;
@@ -404,11 +402,10 @@ select {
   display: inline-block;
 }
 
-.guess-icon:not(:focus, :focus-visible) {
+.guess-icon:not(:focus-visible) {
   padding: 2px;
 }
 
-.guess-icon:focus,
 .guess-icon:focus-visible {
   outline: none;
   border : 2px solid yellow;
@@ -495,8 +492,7 @@ select {
   }
 }
 
-.character-name-popup:not(:has(+.character-img-frame:hover,
-    +.character-img-frame:focus, +.character-img-frame:focus-visible)) {
+.character-name-popup:not(:has(+.character-img-frame:hover, +.character-img-frame:focus-visible)) {
   display: none;
 }
 
@@ -518,7 +514,6 @@ select {
   border-color: white;
 }
 
-.character-img-frame:focus,
 .character-img-frame:focus-visible {
   border-color: yellow;
   outline     : none;
@@ -529,7 +524,6 @@ select {
 }
 
 .inactive .character-img-frame:hover,
-.inactive .character-img-frame:focus,
 .inactive .character-img-frame:focus-visible {
   filter: brightness(0.3);
 }
