@@ -259,8 +259,10 @@ function navigateMenu(e) {
     dir = 1;
   } else if (e.key === "ArrowUp") {
     dir = -1;
-  } else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-    dir = 0;
+  } else if (e.key === "ArrowLeft") {
+    dir = -2;
+  } else if (e.key === "ArrowRight") {
+    dir = 2;
   } else if (e.key === " " || e.key === "z" && currentIndex !== -1) {
     const el = document.activeElement;
     e.stopPropagation();
@@ -280,21 +282,17 @@ function navigateMenu(e) {
     return;
   }
 
-  // If dir==0, we're moving right or left between the subsections of the menu
-  if (dir === 0) {
-    if (currentIndex < L_MENU_MAIN_OPTIONS.length) {
-      // We're in the main menu options, so jump to the config options
-      currentIndex += L_MENU_MAIN_OPTIONS.length;
-      // If we're gone past the end of the config options, go to the last one
-      if (currentIndex >= L_MENU_OPTIONS.length)
-        currentIndex = L_MENU_OPTIONS.length - 1;
-    } else {
-      // We're in the main menu options, so jump to the main menu options
-      currentIndex -= L_MENU_MAIN_OPTIONS.length;
-      // If we're still in the config options, go to the last main menu option
-      if (currentIndex >= L_MENU_MAIN_OPTIONS.length)
-        currentIndex = L_MENU_MAIN_OPTIONS.length - 1;
-    }
+  // If dir is 2 or -2, we're moving right or left between the subsections of the menu
+  if (dir == 2 && currentIndex < L_MENU_MAIN_OPTIONS.length) {
+    currentIndex += L_MENU_MAIN_OPTIONS.length;
+    // If we're gone past the end of the config options, go to the last one
+    if (currentIndex >= L_MENU_OPTIONS.length)
+      currentIndex = L_MENU_OPTIONS.length - 1;
+  } else if (dir == -2 && currentIndex >= L_MENU_MAIN_OPTIONS.length) {
+    currentIndex -= L_MENU_MAIN_OPTIONS.length;
+    // If we're still in the config options, go to the last main menu option
+    if (currentIndex >= L_MENU_MAIN_OPTIONS.length)
+      currentIndex = L_MENU_MAIN_OPTIONS.length - 1;
   } else {
     // dir is -1 or 1, so we're moving up or down
     currentIndex += dir;
