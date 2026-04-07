@@ -98,14 +98,12 @@
         <div id="game-top-buttons">
           <button tabindex="1" id="game-quit" class="small no-margin">Quit to menu</button>
           <button tabindex="1" id="game-restart" class="small no-margin">Restart</button>
+          <button tabindex="1" class="game-notes small-screen-only small no-margin">Notes</button>
+          <button tabindex="1" class="game-controls small-screen-only small no-margin">Controls</button>
+          <button tabindex="1" class="game-instructions small-screen-only small no-margin">Instructions</button>
         </div>
 
         <p id="small-screen-name-display" class="small-screen-only"><span class="player-name"></span>'s POV</p>
-
-        <div id="small-screen-buttons" class="small-screen-only">
-          <button tabindex="1" class="game-notes small no-margin">Notes</button>
-          <button tabindex="1" class="game-instructions small no-margin">Instructions</button>
-        </div>
 
         <div id="your-char-display" class="center-container">
 
@@ -151,6 +149,7 @@
         <div id="card-grid"></div>
 
         <div id="card-panel-buttons" class="big-screen-only">
+          <button tabindex="3" class="game-controls small no-margin">Controls</button>
           <button tabindex="3" class="game-instructions small no-margin">Instructions</button>
         </div>
 
@@ -194,7 +193,17 @@
         ask subjective questions, without the "yes" or "no" limit. (Example: "What's your character's favorite
         Pokemon?")
       </p>
-      <button id="instructions-back" class="no-bottom-margin">Back</button>
+      <button id="instructions-back" class="scene-back no-bottom-margin">Back</button>
+    </div>
+
+
+    <!-- Controls scene -->
+    <div id="controls-scene" class="scene hidden">
+      <div class="center-container">
+        <h3>CONTROLS</h3>
+      </div>
+
+      <button id="controls-back" class="scene-back no-bottom-margin">Back</button>
     </div>
   </div>
 </body>

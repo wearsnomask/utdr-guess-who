@@ -402,6 +402,14 @@ textarea {
   align-items    : center;
 }
 
+#game-top-buttons {
+  display        : flex;
+  flex-direction : row;
+  justify-content: center;
+  flex-wrap      : wrap;
+  gap            : 0.25rem;
+}
+
 #small-screen-name-display {
   padding-top: 1rem;
 }
@@ -605,5 +613,11 @@ textarea {
 /* Instructions scene */
 
 #instructions-scene {
+  padding: 1rem 0;
+}
+
+/* Controls scene */
+
+#controls-scene {
   padding: 1rem 0;
 }

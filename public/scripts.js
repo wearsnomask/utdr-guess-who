@@ -56,14 +56,28 @@ function switchScene(newScene = MENU_SCENE) {
   newScene.classList.remove("hidden");
 
   // Custom tasks to run on each scene being switched to
-  if (newScene === NAME_SCENE) {
-    NAME_INPUT.removeAttribute("disabled");
-    setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
-  } else if (newScene === MENU_SCENE) {
-    MENU_START_LINK.focus({ focusVisible: true });
-  } else if (newScene === INSTRUCTIONS_SCENE) {
-    INSTRUCTIONS_BACK_BUTTON.focus({ focusVisible: true });
-    INSTRUCTIONS_SCENE_HEADER.scrollIntoView();
+  switch (newScene) {
+    case NAME_SCENE:
+      NAME_INPUT.removeAttribute("disabled");
+      setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
+      break;
+
+    case MENU_SCENE:
+      MENU_START_LINK.focus({ focusVisible: true });
+      break;
+
+    case INSTRUCTIONS_SCENE:
+      INSTRUCTIONS_BACK_BUTTON.focus({ focusVisible: true });
+      INSTRUCTIONS_SCENE_HEADER.scrollIntoView();
+      break;
+
+    case CONTROLS_SCENE:
+      CONTROLS_BACK_BUTTON.focus({ focusVisible: true });
+      CONTROLS_SCENE_HEADER.scrollIntoView();
+      break;
+
+    default:
+      break;
   }
 }
 
@@ -379,6 +393,7 @@ const GAME_NOTES_CLOSE = document.getElementById("game-notes-close");
 const QUIT_GAME_BUTTON = document.getElementById("game-quit");
 const RESTART_GAME_BUTTON = document.getElementById("game-restart");
 const L_NOTES_BUTTONS = document.querySelectorAll(".game-notes");
+const L_CONTROLS_BUTTONS = document.querySelectorAll(".game-controls");
 const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
 
 const YOUR_CHAR_NAME = document.getElementById("your-char-name");
@@ -617,11 +632,12 @@ function markCard(e) {
  */
 function arrangeGameFocusableItems() {
   if (window.innerWidth <= 800) {
-    lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_NOTES_BUTTONS[0], L_INSTRUCTIONS_BUTTONS[0]];
+    lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON,
+      L_NOTES_BUTTONS[0], L_CONTROLS_BUTTONS[0], L_INSTRUCTIONS_BUTTONS[0]];
     lGameButtonsAfterPlayArea = [];
   } else {
     lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_NOTES_BUTTONS[1]];
-    lGameButtonsAfterPlayArea = [L_INSTRUCTIONS_BUTTONS[1]];
+    lGameButtonsAfterPlayArea = [L_CONTROLS_BUTTONS[1], L_INSTRUCTIONS_BUTTONS[1]];
   }
   lGameFocusableItems = [...lGameButtonsBeforePlayArea, ...L_GUESS_ICONS, ...lCharacterCardFrames,
   ...lGameButtonsAfterPlayArea];
@@ -751,11 +767,11 @@ function navigateGame(e) {
   } else {
     // dir is -1 or 1, so we're moving right or left
     currentIndex += dir;
-    if (currentIndex < 0)
-      currentIndex = 0;
-    else if (currentIndex >= numFocusable)
-      currentIndex = numFocusable - 1;
   }
+  if (currentIndex < 0)
+    currentIndex = 0;
+  else if (currentIndex >= numFocusable)
+    currentIndex = numFocusable - 1;
 
   lGameFocusableItems[currentIndex].focus({ focusVisible: true });
 
@@ -765,14 +781,16 @@ function navigateGame(e) {
 // -----
 
 window.addEventListener("keydown", navigateGame);
+window.addEventListener("resize", arrangeGameFocusableItems);
 
 QUIT_GAME_BUTTON.addEventListener("click", () => switchScene(MENU_SCENE));
 RESTART_GAME_BUTTON.addEventListener("click", startGame);
 
-L_NOTES_BUTTONS.forEach((el) => el.addEventListener("click", openNotes))
+L_NOTES_BUTTONS.forEach((el) => el.addEventListener("click", openNotes));
 GAME_NOTES_CLOSE.addEventListener("click", closeNotes);
 
-L_INSTRUCTIONS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE)))
+L_CONTROLS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(CONTROLS_SCENE)));
+L_INSTRUCTIONS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE)));
 
 L_GUESS_ICONS.forEach((el) => el.addEventListener("click", flipGuess));
 // Character cards are added dynamically, so the click event to flip them has to be added when they're added
