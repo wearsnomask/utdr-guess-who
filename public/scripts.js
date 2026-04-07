@@ -10,6 +10,7 @@ const NAME_SCENE = document.getElementById("name-scene");
 const MENU_SCENE = document.getElementById("menu-scene");
 const GAME_SCENE = document.getElementById("game-scene");
 const INSTRUCTIONS_SCENE = document.getElementById("instructions-scene");
+const CONTROLS_SCENE = document.getElementById("controls-scene");
 
 // Globals
 
@@ -255,25 +256,44 @@ function navigateMenu(e) {
 
   // Check the direction of navigation
   let dir;
-  if (e.key === "ArrowDown") {
-    dir = 1;
-  } else if (e.key === "ArrowUp") {
-    dir = -1;
-  } else if (e.key === "ArrowLeft") {
-    dir = -2;
-  } else if (e.key === "ArrowRight") {
-    dir = 2;
-  } else if (e.key === " " || e.key === "z" && currentIndex !== -1) {
-    const el = document.activeElement;
-    e.stopPropagation();
-    if (el === MENU_CHARSET_LABEL) {
-      cycleSelect(MENU_CHARSET_SELECT);
-    } else {
-      el.click();
-    }
-    return;
-  } else {
-    return;
+
+  switch (e.key) {
+    case "ArrowDown":
+    case "s":
+      dir = 1;
+      break;
+
+    case "ArrowUp":
+    case "w":
+      dir = -1;
+      break;
+
+    case "ArrowLeft":
+    case "a":
+      dir = -2;
+      break;
+
+    case "ArrowRight":
+    case "d":
+      dir = 2;
+      break;
+
+    case " ":
+    case "z":
+    case "Enter":
+    case "Return":
+      if (currentIndex === -1)
+        return;
+      const el = document.activeElement;
+      if (el === MENU_CHARSET_LABEL) {
+        cycleSelect(MENU_CHARSET_SELECT);
+      } else {
+        el.click();
+      }
+      return;
+
+    default:
+      return;
   }
 
   if (currentIndex == -1) {
@@ -628,18 +648,22 @@ function navigateGame(e) {
   let dir;
   switch (e.key) {
     case "ArrowDown":
+    case "s":
       dir = 2;
       break;
 
     case "ArrowUp":
+    case "w":
       dir = -2;
       break;
 
     case "ArrowRight":
+    case "d":
       dir = 1;
       break;
 
     case "ArrowLeft":
+    case "a":
       dir = -1;
       break;
 
@@ -770,6 +794,25 @@ const INSTRUCTIONS_BACK_BUTTON = document.getElementById("instructions-back");
 // -----
 
 INSTRUCTIONS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+
+
+// Controls scene
+// ==================
+
+// Constants and globals
+// ---------------------
+
+// Constant DOM references
+const CONTROLS_SCENE_HEADER = document.getElementById("controls-scene");
+const CONTROLS_BACK_BUTTON = document.getElementById("controls-back");
+
+// Functions
+// ---------
+
+// Setup
+// -----
+
+CONTROLS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
 
 
 // Final setup
