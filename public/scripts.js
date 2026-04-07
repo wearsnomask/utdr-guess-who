@@ -82,6 +82,26 @@ function switchScene(newScene = MENU_SCENE) {
 }
 
 /**
+ * Keyboard navigation for scenes with only text in them
+ * @param {KeyboardEvent} e
+ */
+function navigateTextScenes(e) {
+  // Only execute in appropriate scenes
+  if (INSTRUCTIONS_SCENE.classList.contains("hidden") && CONTROLS_SCENE.classList.contains("hidden") &&
+    NAME_SCENE.classList.contains("hidden"))
+    return;
+
+  switch (e.key) {
+    case "Escape":
+      switchScene(lastScene);
+      return;
+
+    default:
+      return;
+  }
+}
+
+/**
  * Load a JSON file from its url as an object
  * @param {String} url 
  * @returns {Promise<Object>}
@@ -119,6 +139,11 @@ function cycleSelect(selectEl) {
   lOptions[iSelected].setAttribute("selected", "selected");
 
 }
+
+// Setup
+// -----
+
+window.addEventListener("keydown", navigateTextScenes);
 
 
 // Name scene
@@ -404,7 +429,7 @@ const CARD_GRID = document.getElementById("card-grid");
 
 // Globals
 let cardScaleInfo = null;
-let lCharacterCardFrames = null;
+let lCharacterCardFrames = [];
 let lGameButtonsBeforePlayArea = null;
 let lGameButtonsAfterPlayArea = null;
 let lGameFocusableItems = null;
@@ -711,6 +736,14 @@ function navigateGame(e) {
       lCharacterCardFrames.forEach((el) => flipCard(el));
       return;
 
+    case "Escape":
+      if (GAME_NOTES_DIALOG.hasAttribute("open"))
+        return;
+      e.stopPropagation();
+      e.preventDefault();
+      openNotes();
+      return;
+
     default:
       return;
   }
@@ -815,7 +848,7 @@ INSTRUCTIONS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene))
 
 
 // Controls scene
-// ==================
+// ==============
 
 // Constants and globals
 // ---------------------
