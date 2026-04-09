@@ -79,6 +79,7 @@ const CONTROLS_SCENE = document.getElementById("controls-scene");
 let lastScene = null;
 
 // State locks
+let sceneSwitching = false;
 let gameLoading = false;
 
 // Loaded info about all available character sets
@@ -104,17 +105,29 @@ let yourCharIndex = null;
  */
 function switchScene(newScene = MENU_SCENE) {
 
+  // Check for scene switch lock so we don't overlap scene switches
+  if (sceneSwitching)
+    return;
+  sceneSwitching = true;
+
   // Find the current scene, deactivate it, and mark it as the last scene
   for (let el of L_SCENES) {
     if (!el.classList.contains("hidden")) {
       el.classList.add("hidden");
-      lastScene = el;
+
+      // Failsafe in case something goes wrong - we don't want the lastScene to ever be the current scene, so we check
+      // to make sure this won't somehow happen
+      if (el !== newScene)
+        lastScene = el;
+
       break;
     }
   }
 
   // Activate the new scene
   newScene.classList.remove("hidden");
+
+  setTimeout(() => sceneSwitching = false, 250);
 }
 
 /**
@@ -128,6 +141,9 @@ function navigateTextScenes(e) {
     return;
 
   switch (e.key) {
+    case "z":
+    case " ":
+    case "Enter":
     case "Escape":
       switchScene(lastScene);
       return;
@@ -214,8 +230,8 @@ function getName() {
  * @param {Event} e 
  */
 function submitName(e) {
-  // If this is a keyup event, check if the key is Enter or Return before triggering
-  if (e.type === "keydown" && !(e.key === "Enter" || e.key === "Return"))
+  // If this is a keyup event, check if the key is Enter before triggering
+  if (e.type === "keydown" && e.key !== "Enter")
     return;
   setName(NAME_INPUT.value);
   switchScene(lastScene);
@@ -373,7 +389,6 @@ function navigateMenu(e) {
     case " ":
     case "z":
     case "Enter":
-    case "Return":
       if (currentIndex === -1)
         return;
       const el = document.activeElement;
@@ -774,7 +789,6 @@ function navigateGame(e) {
     case " ":
     case "z":
     case "Enter":
-    case "Return":
       if (currentIndex === -1)
         return;
       e.stopPropagation();
