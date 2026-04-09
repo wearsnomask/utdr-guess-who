@@ -56,7 +56,7 @@
         </p>
       </div>
       <div id="menu-options">
-        <ul id="menu-options-config">
+        <ul id="menu-options-config" class="no-marker">
           <li>
             <label for="charset-select" tabindex="2" id="charset-label">CHARACTER SET: </label>
             <select name="charset" id="charset-select" tabindex="-1">
@@ -64,11 +64,12 @@
             </select>
           </li>
         </ul>
-        <ul id="menu-options-main">
+        <ul id="menu-options-main" class="no-marker">
           <li><a href="javascript:void(0)" tabindex="1" id="menu-start">START GAME</a><span
               class="game-loading-message hidden"> Loading...</span></li>
           <li><a href="javascript:void(0)" tabindex="1" id="menu-edit-name">EDIT NAME</a></li>
           <li><a href="javascript:void(0)" tabindex="1" id="menu-instructions">INSTRUCTIONS</a></li>
+          <li><a href="javascript:void(0)" tabindex="1" id="menu-credits">CREDITS</a></li>
         </ul>
       </div>
     </div>
@@ -227,6 +228,59 @@
 
       <button id="controls-back" class="scene-back no-bottom-margin">Back</button>
     </div>
+
+    <!-- Credits scene -->
+    <div id="credits-scene" class="scene hidden">
+      <div class="center-container">
+        <h3>CREDITS</h3>
+      </div>
+
+      <div class="credits-item">
+        <img src="img/annoying-dog-icon.png" alt="Toby Fox icon">
+        <div>
+          <h4>Toby Fox, Temmie Chang, and team</h4>
+          Original Undertale and Deltarune games and character designs
+          <ul>
+            <li><a target="_blank" href="https://undertale.com">Undertale.com</a></li>
+            <li><a target="_blank" href="https://deltarune.com">Deltarune.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="credits-item">
+        <img src="img/seek-icon.jpg" alt="Seek icon">
+        <div>
+          <h4>Seek's stuff</h4>
+          Original concept and design for Deltarune Guess Who game
+          <ul>
+            <li><a target="_blank" href="https://seeksstuff.itch.io/deltarune-guess-who">Seek's Cool Deltarune Guess Who
+                Game</a></li>
+            <li><a target="_blank" href="https://www.youtube.com/@Seeks_stuff">Youtube</a></li>
+            <li><a target="_blank" href="https://x.com/seeks_stuff">@Seeks_stuff</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="credits-item">
+        <img src="img/charlotte-icon.jpg" alt="Charlotte Wears No Mask icon">
+        <div>
+          <h4>Charlotte Wears No Mask</h4>
+          Wrote this version of the Guess Who game
+          <ul>
+            <li><a target="_blank" href="https://x.com/LadyWearsNoMask">@LadyWearsNoMask</a></li>
+            <li><a target="_blank"
+                href="https://bsky.app/profile/ladywearsnomask.bsky.social">@LadyWearsNoMask.bsky.social</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="credits-item">
+        <p>
+          See more credits in README at <a target="_blank"
+            href="https://github.com/wearsnomask/utdr-guess-who">https://github.com/wearsnomask/utdr-guess-who</a>
+        </p>
+      </div>
+
+      <button id="credits-back" class="scene-back no-bottom-margin">Back</button>
+    </div>
+
   </div>
 </body>
 

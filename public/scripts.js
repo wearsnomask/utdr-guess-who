@@ -72,6 +72,7 @@ const MENU_SCENE = document.getElementById("menu-scene");
 const GAME_SCENE = document.getElementById("game-scene");
 const INSTRUCTIONS_SCENE = document.getElementById("instructions-scene");
 const CONTROLS_SCENE = document.getElementById("controls-scene");
+const CREDITS_SCENE = document.getElementById("credits-scene");
 
 // Globals
 
@@ -260,7 +261,8 @@ const MENU_NAME = document.getElementById("menu-name");
 const MENU_START_LINK = document.getElementById("menu-start");
 const MENU_NAME_LINK = document.getElementById("menu-edit-name");
 const MENU_INSTRUCTIONS_LINK = document.getElementById("menu-instructions");
-const L_MENU_MAIN_OPTIONS = [MENU_START_LINK, MENU_NAME_LINK, MENU_INSTRUCTIONS_LINK];
+const MENU_CREDITS_LINK = document.getElementById("menu-credits");
+const L_MENU_MAIN_OPTIONS = [MENU_START_LINK, MENU_NAME_LINK, MENU_INSTRUCTIONS_LINK, MENU_CREDITS_LINK];
 
 const MENU_CHARSET_LABEL = document.getElementById("charset-label");
 const MENU_CHARSET_SELECT = document.getElementById("charset-select");
@@ -466,6 +468,7 @@ function fixMenuTabIndex() {
 MENU_START_LINK.addEventListener("click", startGame);
 MENU_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
+MENU_CREDITS_LINK.addEventListener("click", () => switchScene(CREDITS_SCENE));
 const menuSceneSwitchWatcher = new SceneSwitchWatcher(MENU_SCENE, initMenuScene, exitMenuScene);
 
 
@@ -964,6 +967,36 @@ function exitControlsScene() {
 
 CONTROLS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
 const controlsSceneSwitchWatcher = new SceneSwitchWatcher(CONTROLS_SCENE, initControlsScene, exitControlsScene);
+
+
+// Credits scene
+// =============
+
+// Constants and globals
+// ---------------------
+
+// Constant DOM references
+const CREDITS_SCENE_HEADER = document.getElementById("credits-scene");
+const CREDITS_BACK_BUTTON = document.getElementById("credits-back");
+
+// Functions
+// ---------
+
+function initCreditsScene() {
+  CREDITS_BACK_BUTTON.focus({ focusVisible: true });
+  CREDITS_SCENE_HEADER.scrollIntoView();
+  window.addEventListener("keydown", navigateTextScenes);
+}
+
+function exitCreditsScene() {
+  window.removeEventListener("keydown", navigateTextScenes);
+}
+
+// Setup
+// -----
+
+CREDITS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+const creditsSceneSwitchWatcher = new SceneSwitchWatcher(CREDITS_SCENE, initCreditsScene, exitCreditsScene);
 
 
 // Final setup

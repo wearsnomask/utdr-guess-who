@@ -93,6 +93,15 @@ a:hover {
   text-decoration: underline;
 }
 
+a[target="_blank"] {
+  text-decoration: underline;
+  color          : cyan;
+}
+
+a[target="_blank"]:hover {
+  text-decoration: none;
+}
+
 input,
 button {
   border        : 0.25rem solid grey;
@@ -155,10 +164,6 @@ ul>li label:is(:focus-visible) {
 
 ul>li label:is(:focus-visible)+select {
   border-color: yellow;
-}
-
-ul {
-  list-style-type: none;
 }
 
 ul>li,
@@ -246,6 +251,10 @@ textarea {
   flex-direction : column;
   justify-content: start;
   align-items    : center;
+}
+
+.no-marker {
+  list-style-type: none !important;
 }
 
 /* Styling for general items */
@@ -631,4 +640,44 @@ textarea {
 
 #controls-grid .left-column {
   text-align: right;
+}
+
+/* Credits scene */
+
+#credits-scene {
+  padding   : 1rem 0;
+  align-self: center;
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  gap            : 1rem;
+}
+
+.credits-item {
+  max-width      : max-content;
+  display        : flex;
+  justify-content: flex-start;
+  gap            : 0.5rem;
+}
+
+.credits-item:nth-child(even) {
+  align-self    : flex-start;
+  flex-direction: row;
+}
+
+.credits-item:nth-child(odd) {
+  align-self    : flex-end;
+  flex-direction: row-reverse;
+}
+
+.credits-item img {
+  flex         : 0 0 auto;
+  width        : 5rem;
+  height       : 5rem;
+  border-radius: 1rem;
+}
+
+#credits-back {
+  align-self: flex-end;
 }
