@@ -94,6 +94,7 @@ let loadedCharset = null;
 let charsetPath = null;
 let lCharImageNames = null;
 let lCharInfo = null;
+let numImagesToLoadTotal = 0;
 let numImagesLoading = 0;
 
 // The player's character for the current game
@@ -291,11 +292,22 @@ function exitMenuScene() {
   window.removeEventListener("resize", fixMenuTabIndex);
 }
 
+/**
+ * Updates the displayed percent of loading progress on the main menu
+ */
+function updateLoadingPercent() {
+  let loadedPercent = 0;
+  if (numImagesToLoadTotal > 0)
+    loadedPercent = Math.floor(100 * (1 - numImagesLoading / numImagesToLoadTotal));
+  document.querySelectorAll(".game-loading-percent").forEach(el => el.textContent = loadedPercent + "%");
+}
+
 async function startGame() {
   // If the game is already loading, exit to avoid doubling up
   if (gameLoading)
     return;
   gameLoading = true;
+  numImagesToLoadTotal = 0;
   document.querySelectorAll(".game-loading-message").forEach(el => el.classList.remove("hidden"));
 
   // Load the selected character set
@@ -329,8 +341,10 @@ async function startGame() {
 
   // Set the image to be scaled based on its natural size
   ++numImagesLoading;
+  ++numImagesToLoadTotal;
   YOUR_CHAR_IMG.onload = () => {
     --numImagesLoading;
+    updateLoadingPercent();
     // Set the image to be scaled based on its natural size
     scaleImage(YOUR_CHAR_IMG, window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale'));
   }
@@ -670,8 +684,10 @@ async function loadCharacterSet(setName) {
     imgEl.setAttribute("alt", charInfo.name);
 
     ++numImagesLoading;
+    ++numImagesToLoadTotal;
     imgEl.onload = () => {
       --numImagesLoading;
+      updateLoadingPercent();
       // Set the image to be scaled based on its natural size
       scaleImage(imgEl);
     }
