@@ -36,13 +36,20 @@
   <div class="max-width-box">
 
     <!-- Name entry scene -->
-    <div id="name-scene" class="scene">
+    <div id="name-scene" class="scene hidden">
       <div class="empty-item"></div>
       <label for="name-input" id="name-input-label">
         <h2>Please enter your name!</h2>
         <p>It will be displayed in-game</p>
       </label>
-      <input type="text" id="name-input" autocomplete="off">
+      <div class="center-container">
+        <input type="text" id="name-input" autocomplete="off">
+        <br>
+        <label for="remember-name">
+          <input type="checkbox" name="" id="remember-name">
+          <span>REMEMBER ME</span>
+        </label>
+      </div>
       <button type="button" id="name-submit">Continue</button>
     </div>
 
@@ -66,8 +73,8 @@
         </ul>
         <ul id="menu-options-main" class="no-marker">
           <li>
-            <a href="javascript:void(0)" tabindex="1" id="menu-start">START GAME</a><span
-              class="game-loading-message hidden"> Loading... </span><span
+            <a href="javascript:void(0)" tabindex="1" id="menu-start" class="hidden">START GAME</a> <span
+              class="game-loading-message">Loading... </span><span
               class="game-loading-message game-loading-percent hidden">0%</span>
           </li>
           <li><a href="javascript:void(0)" tabindex="1" id="menu-edit-name">EDIT NAME</a></li>

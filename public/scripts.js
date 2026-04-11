@@ -105,6 +105,56 @@ let yourCharIndex = null;
 // ---------
 
 /**
+ * Stores a cookie with the provided information
+ * @param {Object} oItems 
+ * @param {Number} daysToExpire 
+ */
+function setCookie(oItems, daysToExpire = 365) {
+
+  // Craft a string to define the expiry date of the cookie
+  const expTime = new Date();
+  expTime.setTime(expTime.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+  let sExpiry = "expires=" + expTime.toUTCString();
+
+  // Craft a string containing all the keys and values to be in the cookie
+  let sItems = "";
+  for (const [key, value] of Object.entries(oItems)) {
+    sItems += `${key}=${value};`
+  }
+
+  document.cookie = sItems + sExpiry + ";path=/";
+}
+
+/**
+ * Deletes the currently-stored cookie for this page
+ */
+function deleteCookie() {
+
+  // Craft a string to define the expiry date as being in the past
+  const expTime = new Date();
+  expTime.setTime(expTime.getTime() - (24 * 60 * 60 * 1000));
+  let sExpiry = "expires=" + expTime.toUTCString();
+
+  document.cookie = "name=;" + sExpiry + ";path=/";
+}
+
+/**
+ * Get an object provided all information stored in the cookie for this page
+ * @returns {Object}
+ */
+function getCookie() {
+  let oItems = {};
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let lItemStrings = decodedCookie.split(';');
+  for (let i = 0; i < lItemStrings.length; i++) {
+    let key, value;
+    [key, value] = lItemStrings[i].split("=");
+    oItems[key.trim()] = value;
+  }
+  return oItems;
+}
+
+/**
  * Switch to target scene
  * @param {Element} newScene 
  */
@@ -197,6 +247,11 @@ function cycleSelect(selectEl) {
 
 }
 
+// Setup
+// -----
+
+const cookieData = getCookie();
+
 
 // Name scene
 // ==========
@@ -207,6 +262,7 @@ function cycleSelect(selectEl) {
 // Constant DOM references
 const NAME_INPUT = document.getElementById("name-input");
 const NAME_SUBMIT = document.getElementById("name-submit");
+const NAME_REMEMBER = document.getElementById("remember-name");
 
 // Functions
 // ---------
@@ -224,6 +280,14 @@ function setName(name) {
   sessionStorage["name"] = name;
   MENU_NAME.textContent = name;
   document.querySelectorAll(".player-name").forEach((el) => el.textContent = name);
+
+  // If the user desires, store the name in a cookie to remember it
+  if (NAME_REMEMBER.checked) {
+    setCookie({ name: name });
+  } else {
+    // Otherwise delete any previously-set cookie
+    deleteCookie();
+  }
 }
 
 function getName() {
@@ -248,8 +312,18 @@ function submitName(e) {
 
 NAME_INPUT.addEventListener("keydown", submitName);
 NAME_SUBMIT.addEventListener("click", submitName);
-if (sessionStorage.getItem("name"))
-  NAME_INPUT.value = getName();
+
+// Check if the user's name is saved, and set the name entry scene to be skipped if so
+let initName = null;
+if (cookieData.name) {
+  // The user's name is stored in their cookie
+  initName = cookieData.name;
+  NAME_REMEMBER.checked = true;
+} else if (sessionStorage.getItem("name")) {
+  // The user set their name already in this browser session
+  initName = getName();
+}
+
 const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene, exitNameScene);
 
 
@@ -1035,8 +1109,21 @@ const creditsSceneSwitchWatcher = new SceneSwitchWatcher(CREDITS_SCENE, initCred
 // ===========
 window.onload = function () {
   lastScene = MENU_SCENE;
-  NAME_INPUT.focus({ focusVisible: true });
 
   fixMenuTabIndex();
-  loadCharacterSetList();
+  loadCharacterSetList().then(() => {
+    MENU_START_LINK.classList.remove("hidden");
+    document.querySelectorAll(".game-loading-message").forEach(el => el.classList.add("hidden"));
+    if (!MENU_SCENE.classList.contains("hidden"))
+      MENU_START_LINK.focus({ focusVisible: true });
+  });
+
+  if (initName) {
+    setName(initName);
+    NAME_INPUT.value = getName();
+    switchScene(MENU_SCENE);
+  } else {
+    switchScene(NAME_SCENE);
+    NAME_INPUT.focus({ focusVisible: true });
+  }
 }
