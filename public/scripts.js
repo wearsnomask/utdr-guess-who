@@ -105,6 +105,56 @@ let yourCharIndex = null;
 // ---------
 
 /**
+ * Stores a cookie with the provided information
+ * @param {Object} oItems 
+ * @param {Number} daysToExpire 
+ */
+function setCookie(oItems, daysToExpire = 365) {
+
+  // Craft a string to define the expiry date of the cookie
+  const expTime = new Date();
+  expTime.setTime(expTime.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+  let sExpiry = "expires=" + expTime.toUTCString();
+
+  // Craft a string containing all the keys and values to be in the cookie
+  let sItems = "";
+  for (const [key, value] of Object.entries(oItems)) {
+    sItems += `${key}=${value};`
+  }
+
+  document.cookie = sItems + sExpiry + ";path=/";
+}
+
+/**
+ * Deletes the currently-stored cookie for this page
+ */
+function revokeCookie() {
+
+  // Craft a string to define the expiry date as being in the past
+  const expTime = new Date();
+  expTime.setTime(expTime.getTime() - (24 * 60 * 60 * 1000));
+  let sExpiry = "expires=" + expTime.toUTCString();
+
+  document.cookie = "null=;" + sExpiry + ";path=/";
+}
+
+/**
+ * Get an object provided all information stored in the cookie for this page
+ * @returns {Object}
+ */
+function getCookie() {
+  let oItems = {};
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let lItemStrings = decodedCookie.split(';');
+  for (let i = 0; i < lItemStrings.length; i++) {
+    let key, value;
+    [key, value] = lItemStrings[i].split("=");
+    oItems[key.trim()] = value;
+  }
+  return oItems;
+}
+
+/**
  * Switch to target scene
  * @param {Element} newScene 
  */
