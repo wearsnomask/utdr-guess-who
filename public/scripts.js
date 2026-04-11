@@ -1111,7 +1111,10 @@ window.onload = function () {
   lastScene = MENU_SCENE;
 
   fixMenuTabIndex();
-  loadCharacterSetList();
+  loadCharacterSetList().then(() => {
+    MENU_START_LINK.classList.remove("hidden");
+    document.querySelectorAll(".game-loading-message").forEach(el => el.classList.add("hidden"));
+  });
 
   if (initName) {
     setName(initName);
