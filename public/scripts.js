@@ -719,7 +719,7 @@ function scaleImage(img, frameScale = 1) {
   // makes it as big as possible while still less than this size
 
   let width;
-  let naturalWidth = img.naturalWidth, totalWidth = cardScaleInfo.totalWidth * frameScale;
+  let naturalWidth = img.naturalWidth, totalWidth = cardScaleInfo.totalWidth;
 
   if (naturalWidth == 0) {
     // Something went wrong with loading the image and we don't know its size, so size to the default image size
@@ -734,7 +734,7 @@ function scaleImage(img, frameScale = 1) {
     width = naturalWidth * scaleUpFactor;
   }
 
-  img.setAttribute("style", `width: ${width}px;`);
+  img.setAttribute("style", `width: ${width * frameScale}px;`);
 }
 
 /**
