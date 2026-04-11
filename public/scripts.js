@@ -247,6 +247,11 @@ function cycleSelect(selectEl) {
 
 }
 
+// Setup
+// -----
+
+const cookieData = getCookie();
+
 
 // Name scene
 // ==========
@@ -257,6 +262,10 @@ function cycleSelect(selectEl) {
 // Constant DOM references
 const NAME_INPUT = document.getElementById("name-input");
 const NAME_SUBMIT = document.getElementById("name-submit");
+const NAME_REMEMBER = document.getElementById("remember-name");
+
+// Globals
+let skipNameEntry = false;
 
 // Functions
 // ---------
@@ -274,6 +283,14 @@ function setName(name) {
   sessionStorage["name"] = name;
   MENU_NAME.textContent = name;
   document.querySelectorAll(".player-name").forEach((el) => el.textContent = name);
+
+  // If the user desires, store the name in a cookie to remember it
+  if (NAME_REMEMBER.checked) {
+    setCookie({ name: name });
+  } else {
+    // Otherwise delete any previously-set cookie
+    revokeCookie();
+  }
 }
 
 function getName() {
@@ -298,8 +315,24 @@ function submitName(e) {
 
 NAME_INPUT.addEventListener("keydown", submitName);
 NAME_SUBMIT.addEventListener("click", submitName);
-if (sessionStorage.getItem("name"))
+
+// Check if the user's name is saved, and set the name entry scene to be skipped if so
+let initName = null;
+if (cookieData.name) {
+  // The user's name is stored in their cookie
+  initName = cookieData.name;
+  NAME_REMEMBER.checked = true;
+} else if (sessionStorage.getItem("name")) {
+  // The user set their name already in this browser session
+  initName = getName();
+}
+
+if (initName) {
+  setName(initName);
   NAME_INPUT.value = getName();
+  skipNameEntry = true;
+}
+
 const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene, exitNameScene);
 
 
@@ -1085,8 +1118,12 @@ const creditsSceneSwitchWatcher = new SceneSwitchWatcher(CREDITS_SCENE, initCred
 // ===========
 window.onload = function () {
   lastScene = MENU_SCENE;
-  NAME_INPUT.focus({ focusVisible: true });
 
   fixMenuTabIndex();
   loadCharacterSetList();
+
+  if (skipNameEntry)
+    switchScene(MENU_SCENE)
+  else
+    NAME_INPUT.focus({ focusVisible: true });
 }
