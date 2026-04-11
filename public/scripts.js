@@ -410,7 +410,7 @@ async function startGame() {
   yourCharIndex = Math.floor(Math.random() * getNumChars());
   const yourCharInfo = lCharInfo[yourCharIndex];
   YOUR_CHAR_NAME.textContent = yourCharInfo.name;
-  YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imageName);
+  YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imgName);
   YOUR_CHAR_IMG.setAttribute("alt", yourCharInfo.name);
 
   // Set the image to be scaled based on its natural size
@@ -760,33 +760,47 @@ async function loadCharacterSet(setName) {
   // Clear any present character cards
   document.querySelectorAll(".character-card").forEach((el) => el.remove());
 
-  // Get the info for each character
-  let maxCharIndex = -1;
-  lCharImageNames.forEach((charImageName) => {
-    let charIndex = +(charImageName.split("-")[0]);
-    if (charIndex > maxCharIndex)
-      maxCharIndex = charIndex
+  // Check through the names of character images to determine how they should be sorted
+  const lSortedChars = [];
+  const lUnsortedChars = [];
 
-    let charName = charImageName.replace(charIndex + "-", "").replace(".png", "");
-    dCharInfo[charIndex] = { name: charName, imageName: charImageName };
+  lCharImageNames.forEach((charImgName) => {
+    // Check if this name starts with an index
+    let i = parseInt(charImgName.split("-")[0]);
+    if ((i === NaN) || (!charImgName.startsWith(i.toString()))) {
+      // Doesn't appear to start with an index, so add it to the unsorted list
+      lUnsortedChars.push({ imgName: charImgName.replace(" ", "%20"), name: charImgName.replace(".png", "") });
+      return;
+    }
+
+    // This appears to be indexed
+    let charInfo = { imgName: charImgName.replace(" ", "%20"), name: charImgName.replace(i + "-", "").replace(".png", "") };
+
+    // Make sure it can fit into the sorted list and isn't already present
+    if (i > lSortedChars.length - 1)
+      lSortedChars.length = i + i;
+    if (lSortedChars[i] !== undefined) {
+      // This index is already in the list, so log an error and add it to the unsorted list
+      console.error("More than one character has the index " + i + ". Sorting will not appear as intended.");
+      lUnsortedChars.push(charInfo);
+      return;
+    }
+    lSortedChars[i] = charInfo;
   });
 
-  // Sort into a list, in case there are gaps in indices for any reason
+  // Get the info for each character
+  const lAllChars = [...lSortedChars, ...lUnsortedChars];
   lCharInfo = [];
-  for (let i = 0; i <= maxCharIndex; ++i) {
-    if (!dCharInfo[i])
-      continue;
-    lCharInfo.push(dCharInfo[i]);
-  }
-
-  // Add cards to the game scene
-  lCharInfo.forEach((charInfo) => {
+  lAllChars.forEach((charInfo) => {
+    if (charInfo === undefined)
+      return;
+    lCharInfo.push(charInfo);
     const newCard = document.importNode(CHARACTER_CARD_TEMPLATE.content, true).querySelector(".character-card");
 
     newCard.querySelector(".character-name").textContent = charInfo.name;
 
     const imgEl = newCard.querySelector(".character-img");
-    imgEl.setAttribute("src", charsetPath + "/" + charInfo.imageName);
+    imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
     imgEl.setAttribute("alt", charInfo.name);
 
     ++numImagesLoading;
