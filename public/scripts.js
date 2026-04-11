@@ -128,14 +128,14 @@ function setCookie(oItems, daysToExpire = 365) {
 /**
  * Deletes the currently-stored cookie for this page
  */
-function revokeCookie() {
+function deleteCookie() {
 
   // Craft a string to define the expiry date as being in the past
   const expTime = new Date();
   expTime.setTime(expTime.getTime() - (24 * 60 * 60 * 1000));
   let sExpiry = "expires=" + expTime.toUTCString();
 
-  document.cookie = "null=;" + sExpiry + ";path=/";
+  document.cookie = "name=;" + sExpiry + ";path=/";
 }
 
 /**
@@ -264,9 +264,6 @@ const NAME_INPUT = document.getElementById("name-input");
 const NAME_SUBMIT = document.getElementById("name-submit");
 const NAME_REMEMBER = document.getElementById("remember-name");
 
-// Globals
-let skipNameEntry = false;
-
 // Functions
 // ---------
 
@@ -289,7 +286,7 @@ function setName(name) {
     setCookie({ name: name });
   } else {
     // Otherwise delete any previously-set cookie
-    revokeCookie();
+    deleteCookie();
   }
 }
 
@@ -325,12 +322,6 @@ if (cookieData.name) {
 } else if (sessionStorage.getItem("name")) {
   // The user set their name already in this browser session
   initName = getName();
-}
-
-if (initName) {
-  setName(initName);
-  NAME_INPUT.value = getName();
-  skipNameEntry = true;
 }
 
 const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene, exitNameScene);
@@ -1122,8 +1113,12 @@ window.onload = function () {
   fixMenuTabIndex();
   loadCharacterSetList();
 
-  if (skipNameEntry)
-    switchScene(MENU_SCENE)
-  else
+  if (initName) {
+    setName(initName);
+    NAME_INPUT.value = getName();
+    switchScene(MENU_SCENE);
+  } else {
+    switchScene(NAME_SCENE);
     NAME_INPUT.focus({ focusVisible: true });
+  }
 }
