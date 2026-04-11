@@ -1114,6 +1114,8 @@ window.onload = function () {
   loadCharacterSetList().then(() => {
     MENU_START_LINK.classList.remove("hidden");
     document.querySelectorAll(".game-loading-message").forEach(el => el.classList.add("hidden"));
+    if (!MENU_SCENE.classList.contains("hidden"))
+      MENU_START_LINK.focus({ focusVisible: true });
   });
 
   if (initName) {
