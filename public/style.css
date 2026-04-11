@@ -483,6 +483,10 @@ textarea {
   align-items    : center;
 }
 
+#your-char-img-frame img {
+  z-index: -1;
+}
+
 #guesses-display {
   align-self: stretch;
 }
@@ -606,6 +610,10 @@ textarea {
   align-items    : center;
 
   cursor: url('img/sCursorHand.png'), pointer;
+}
+
+.character-img-frame img {
+  z-index: -1;
 }
 
 .character-img-frame,
