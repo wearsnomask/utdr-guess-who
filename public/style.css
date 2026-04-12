@@ -474,9 +474,10 @@ textarea {
 }
 
 #your-char-img-frame {
-  border: calc(var(--your-char-scale) * var(--card-border-width)) solid white;
-  width : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
-  height: calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
+  position: relative;
+  border  : calc(var(--your-char-scale) * var(--card-border-width)) solid white;
+  width   : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
+  height  : calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
 
   display        : flex;
   justify-content: center;
@@ -485,7 +486,17 @@ textarea {
 
 #your-char-img-frame img,
 .character-img-frame img {
-  z-index         : -1;
+  z-index: -1;
+}
+
+#your-char-img-frame .bg,
+.character-img-frame .bg {
+  position        : absolute;
+  top             : 0;
+  left            : 0;
+  width           : 100%;
+  height          : 100%;
+  z-index         : -2;
   background-color: black;
 }
 
