@@ -959,7 +959,8 @@ function inspectCard(e) {
 function uninspectCard(e) {
   e.preventDefault();
 
-  const cardClassList = e.target.closest(".character-card").classList;
+  const card = e.target.closest(".character-card");
+  const cardClassList = card.classList;
 
   // Exit if the card inspection is starting, stopping, or isn't active
   if (cardClassList.contains("inspect-starting") || cardClassList.contains("inspect-fading") ||
@@ -971,6 +972,15 @@ function uninspectCard(e) {
 
   // The fade will take 125ms, so remove the fading class after that to hide the expanded inspection card
   setTimeout(() => cardClassList.remove("inspect-fading"), 125);
+  cardClassList.add("steady-popup");
+  const frame = card.querySelector(".character-img-frame");
+  const inspectFrame = card.querySelector(".inspect-img-frame");
+  const interval = setInterval(() => {
+    if ((document.activeElement === frame) || (inspectFrame.matches(':hover')))
+      return;
+    cardClassList.remove("steady-popup");
+    clearInterval(interval);
+  }, 50);
 }
 
 /**

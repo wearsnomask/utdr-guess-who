@@ -635,7 +635,6 @@ textarea {
 .character-name-popup {
   position : absolute;
   bottom   : var(--card-row-height);
-  animation: 0.125s linear 1 popup;
   z-index  : 2;
   padding  : 0rem 0.5rem;
   min-width: max-content;
@@ -646,6 +645,10 @@ textarea {
   background-color: black;
   font-size       : 0.75rem;
   text-align      : center;
+}
+
+.character-card:not(.steady-popup) .character-name-popup {
+  animation: 0.125s linear 1 popup;
 }
 
 @keyframes popup {
@@ -662,6 +665,42 @@ textarea {
 
 .character-name-popup:not(:has(+.character-img-frame:hover, +.character-img-frame:focus-visible)) {
   display: none;
+}
+
+.character-card.inspect .character-name-popup {
+  animation: 0.125s ease-out 1 shift-up;
+  scale    : 200%;
+  bottom   : calc(1.5 * var(--card-row-height));
+}
+
+@keyframes shift-up {
+  from {
+    scale : 100%;
+    bottom: calc(1.0 * var(--card-row-height));
+  }
+
+  to {
+    scale : 200%;
+    bottom: calc(1.5 * var(--card-row-height));
+  }
+}
+
+.character-card.inspect-fading .character-name-popup {
+  animation: 0.125s ease-in 1 shift-down;
+  scale    : 100%;
+  bottom   : calc(1.0 * var(--card-row-height));
+}
+
+@keyframes shift-down {
+  from {
+    scale : 200%;
+    bottom: calc(1.5 * var(--card-row-height));
+  }
+
+  to {
+    scale : 100%;
+    bottom: calc(1.0 * var(--card-row-height));
+  }
 }
 
 .character-img-frame {
