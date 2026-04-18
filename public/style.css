@@ -499,6 +499,10 @@ textarea {
   animation: 0.125s ease-out 1 grow;
 }
 
+.character-img-frame:focus-visible+.inspect-img-frame {
+  border-color: yellow;
+}
+
 @keyframes grow {
   from {
     scale: 50%;
