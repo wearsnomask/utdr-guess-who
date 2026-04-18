@@ -908,6 +908,51 @@ function markCard(e) {
 }
 
 /**
+ * Toggles inspect mode on and off for a card
+ * @param {Event} e 
+ */
+function toggleInspectCard(e) {
+  const cardClassList = e.target.closest(".character-card").classList;
+  if (!cardClassList.contains("inspect"))
+    inspectCard(e);
+  else if (!cardClassList.contains("inspect-starting"))
+    uninspectCard(e);
+}
+
+/**
+ * Starts inspecting a card, increasing its size
+ * @param {Event} e 
+ */
+function inspectCard(e) {
+  e.preventDefault();
+
+  const cardClassList = e.target.closest(".character-card").classList;
+  cardClassList.remove("inspect-fading");
+  cardClassList.add("inspect");
+
+  // Temporarily add the "inspect-starting" class to prevent holding the key from immediately uninspecting the card
+  cardClassList.add("inspect-starting");
+  setTimeout(() => cardClassList.remove("inspect-starting"), 500);
+
+  // TODO: Set up appropriate triggers for events to end the inspection
+}
+
+/**
+ * Stops inspecting a card, returning it to normal size
+ * @param {Event} e 
+ */
+function uninspectCard(e) {
+  e.preventDefault();
+
+  const cardClassList = e.target.closest(".character-card").classList;
+  cardClassList.remove("inspect");
+  cardClassList.add("inspect-fading");
+
+  // The fade will take 125ms, so remove the fading class after that to hide the expanded inspection card
+  setTimeout(() => cardClassList.remove("inspect-fading"), 125);
+}
+
+/**
  * Sets up the list of all focusable items in the game scene, in the order they'll appear with the current window width
  */
 function arrangeGameFocusableItems() {
@@ -997,6 +1042,9 @@ function navigateGame(e) {
       e.preventDefault();
       openNotes();
       return;
+
+    case "i":
+      return toggleInspectCard(e);
 
     default:
       return;
