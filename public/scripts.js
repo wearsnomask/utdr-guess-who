@@ -416,6 +416,7 @@ async function startGame() {
   // Set the image to be scaled based on its natural size
   ++numImagesLoading;
   ++numImagesToLoadTotal;
+  updateLoadingPercent();
   YOUR_CHAR_IMG.onload = () => {
     --numImagesLoading;
     updateLoadingPercent();
