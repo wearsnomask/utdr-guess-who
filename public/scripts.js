@@ -800,6 +800,7 @@ async function loadCharacterSet(setName) {
   // Get the info for each character
   const lAllChars = [...lSortedChars, ...lUnsortedChars];
   lCharInfo = [];
+  const inspectImgScale = window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale');
   lAllChars.forEach((charInfo) => {
     if (charInfo === undefined)
       return;
@@ -809,7 +810,9 @@ async function loadCharacterSet(setName) {
     newCard.querySelector(".character-name").textContent = charInfo.name;
 
     const imgEl = newCard.querySelector(".character-img");
+    const inspectImgEl = newCard.querySelector(".inspect-img");
     imgEl.setAttribute("alt", charInfo.name);
+    inspectImgEl.setAttribute("alt", charInfo.name);
 
     ++numImagesLoading;
     ++numImagesToLoadTotal;
@@ -819,6 +822,9 @@ async function loadCharacterSet(setName) {
       // Set the image to be scaled based on its natural size
       scaleImage(imgEl);
     }
+    inspectImgEl.onload = () => {
+      scaleImage(inspectImgEl, inspectImgScale);
+    }
     imgEl.onerror = () => {
       // If it can't be loaded, leave it blank - better than hanging forever
       --numImagesLoading;
@@ -826,6 +832,7 @@ async function loadCharacterSet(setName) {
     }
 
     imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
+    inspectImgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
 
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);

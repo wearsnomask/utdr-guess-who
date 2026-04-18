@@ -475,13 +475,53 @@ textarea {
 
 #your-char-img-frame {
   position: relative;
-  border  : calc(var(--your-char-scale) * var(--card-border-width)) solid white;
-  width   : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
-  height  : calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
+}
+
+#your-char-img-frame,
+.inspect-img-frame {
+  border: calc(var(--your-char-scale) * var(--card-border-width)) solid white;
+  width : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
+  height: calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
 
   display        : flex;
   justify-content: center;
   align-items    : center;
+}
+
+.character-card:not(.inspect, .inspect-fading) .inspect-img-frame {
+  display: none;
+}
+
+.inspect-img-frame {
+  position : absolute;
+  top      : calc(2 * var(--card-base-row-gap) - 0.5 * var(--card-row-height));
+  z-index  : 4;
+  animation: 0.125s ease-out 1 grow;
+}
+
+@keyframes grow {
+  from {
+    scale: 50%;
+  }
+
+  to {
+    scale: 100%;
+  }
+}
+
+.character-card.inspect-fading .inspect-img-frame {
+  scale    : 50%;
+  animation: 0.125s ease-in 1 shrink;
+}
+
+@keyframes shrink {
+  from {
+    scale: 100%;
+  }
+
+  to {
+    scale: 50%;
+  }
 }
 
 #your-char-img-frame img,
@@ -489,8 +529,13 @@ textarea {
   z-index: -1;
 }
 
+.inspect-img-frame img {
+  z-index: 4;
+}
+
 #your-char-img-frame .bg,
-.character-img-frame .bg {
+.character-img-frame .bg,
+.inspect-img-frame .bg {
   position        : absolute;
   top             : 0;
   left            : 0;
@@ -498,6 +543,10 @@ textarea {
   height          : 100%;
   z-index         : -2;
   background-color: black;
+}
+
+.inspect-img-frame .bg {
+  z-index: 3;
 }
 
 #guesses-display {
