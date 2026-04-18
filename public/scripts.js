@@ -243,7 +243,7 @@ function cycleSelect(selectEl) {
   if (iSelected >= lOptions.length) {
     iSelected = 0;
   }
-  lOptions[iSelected].setAttribute("selected", "selected");
+  lOptions[iSelected].setAttribute("selected", "true");
 
 }
 
