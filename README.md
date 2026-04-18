@@ -41,7 +41,7 @@ And... that's it! Commit the changes, push to the repository, and wait a minute 
 
 ## Credits
 
-**Undertale and Deltarune game concepts:** Toby Fox and team, notably Temmie Change for character designs used here.
+**Undertale and Deltarune game concepts:** Toby Fox and team, notably Temmie Chang for character designs used here.
 
 * [Undertale](https://undertale.com/)
 * [Deltarune](https://deltarune.com/)
