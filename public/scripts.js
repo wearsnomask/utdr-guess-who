@@ -382,6 +382,8 @@ async function startGame() {
     return;
   gameLoading = true;
   numImagesToLoadTotal = 0;
+  updateLoadingPercent();
+
   document.querySelectorAll(".game-loading-message").forEach(el => el.classList.remove("hidden"));
 
   // Load the selected character set
@@ -410,19 +412,25 @@ async function startGame() {
   yourCharIndex = Math.floor(Math.random() * getNumChars());
   const yourCharInfo = lCharInfo[yourCharIndex];
   YOUR_CHAR_NAME.textContent = yourCharInfo.name;
-  YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imgName);
   YOUR_CHAR_IMG.setAttribute("alt", yourCharInfo.name);
 
   // Set the image to be scaled based on its natural size
   ++numImagesLoading;
   ++numImagesToLoadTotal;
-  updateLoadingPercent();
   YOUR_CHAR_IMG.onload = () => {
     --numImagesLoading;
     updateLoadingPercent();
     // Set the image to be scaled based on its natural size
     scaleImage(YOUR_CHAR_IMG, window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale'));
   }
+  YOUR_CHAR_IMG.onerror = () => {
+    // If it can't be loaded, leave it blank - better than hanging forever
+    --numImagesLoading;
+    updateLoadingPercent();
+  }
+
+  // Start loading the image
+  YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imgName);
 
   // Reset available guesses
   document.querySelectorAll(".guess-icon").forEach((el) => {
@@ -801,7 +809,6 @@ async function loadCharacterSet(setName) {
     newCard.querySelector(".character-name").textContent = charInfo.name;
 
     const imgEl = newCard.querySelector(".character-img");
-    imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
     imgEl.setAttribute("alt", charInfo.name);
 
     ++numImagesLoading;
@@ -812,6 +819,13 @@ async function loadCharacterSet(setName) {
       // Set the image to be scaled based on its natural size
       scaleImage(imgEl);
     }
+    imgEl.onerror = () => {
+      // If it can't be loaded, leave it blank - better than hanging forever
+      --numImagesLoading;
+      updateLoadingPercent();
+    }
+
+    imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
 
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);
