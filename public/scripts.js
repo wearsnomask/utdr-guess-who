@@ -915,7 +915,7 @@ function toggleInspectCard(e) {
   const cardClassList = e.target.closest(".character-card").classList;
   if (!cardClassList.contains("inspect"))
     inspectCard(e);
-  else if (!cardClassList.contains("inspect-starting"))
+  else
     uninspectCard(e);
 }
 
@@ -926,15 +926,24 @@ function toggleInspectCard(e) {
 function inspectCard(e) {
   e.preventDefault();
 
-  const cardClassList = e.target.closest(".character-card").classList;
+  const card = e.target.closest(".character-card");
+  const cardClassList = card.classList;
   cardClassList.remove("inspect-fading");
   cardClassList.add("inspect");
 
   // Temporarily add the "inspect-starting" class to prevent holding the key from immediately uninspecting the card
   cardClassList.add("inspect-starting");
-  setTimeout(() => cardClassList.remove("inspect-starting"), 500);
+  setTimeout(() => cardClassList.remove("inspect-starting"), 125);
 
-  // TODO: Set up appropriate triggers for events to end the inspection
+  // Check for if the card has lost focus or mouseover, and end the inspection if so
+  const frame = card.querySelector(".character-img-frame");
+  const inspectFrame = card.querySelector(".inspect-img-frame");
+  const interval = setInterval(() => {
+    if ((document.activeElement === frame) || (inspectFrame.matches(':hover')))
+      return;
+    uninspectCard(e);
+    clearInterval(interval);
+  }, 50);
 }
 
 /**
@@ -945,6 +954,12 @@ function uninspectCard(e) {
   e.preventDefault();
 
   const cardClassList = e.target.closest(".character-card").classList;
+
+  // Exit if the card inspection is starting, stopping, or isn't active
+  if (cardClassList.contains("inspect-starting") || cardClassList.contains("inspect-fading") ||
+    !cardClassList.contains("inspect"))
+    return;
+
   cardClassList.remove("inspect");
   cardClassList.add("inspect-fading");
 
