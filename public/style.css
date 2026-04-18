@@ -497,6 +497,7 @@ textarea {
   top      : calc(2 * var(--card-base-row-gap) - 0.5 * var(--card-row-height));
   z-index  : 4;
   animation: 0.125s ease-out 1 grow;
+  cursor   : url('img/sCursorHand.png'), pointer;
 }
 
 .character-img-frame:focus-visible+.inspect-img-frame {

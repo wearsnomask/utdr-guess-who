@@ -870,9 +870,7 @@ function flipGuess(e) {
  */
 function flipCard(e) {
   let frameEl;
-  if (e.currentTarget)
-    frameEl = e.currentTarget;
-  else
+  if (!(frameEl = e.currentTarget || e.target))
     frameEl = e;
   const cardClassList = frameEl.closest(".character-card").classList;
 
@@ -912,7 +910,10 @@ function markCard(e) {
  * @param {Event} e 
  */
 function toggleInspectCard(e) {
-  const cardClassList = e.target.closest(".character-card").classList;
+  const card = e.target.closest(".character-card");
+  if (!card)
+    return;
+  const cardClassList = card.classList;
   if (!cardClassList.contains("inspect"))
     inspectCard(e);
   else
@@ -944,6 +945,11 @@ function inspectCard(e) {
     uninspectCard(e);
     clearInterval(interval);
   }, 50);
+  inspectFrame.addEventListener("click", () => {
+    uninspectCard(e);
+    clearInterval(interval);
+    flipCard(e);
+  });
 }
 
 /**
