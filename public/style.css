@@ -415,6 +415,8 @@ textarea {
   --card-row-gap     : calc(var(--card-scale) * var(--card-base-row-gap));
   --card-frame-height: calc(var(--card-img-height) + 2 * var(--card-border-width));
   --card-row-height  : calc(var(--card-frame-height) + var(--card-row-gap));
+
+  --inspect-scale: 3;
 }
 
 #game-scene {
@@ -475,13 +477,59 @@ textarea {
 
 #your-char-img-frame {
   position: relative;
-  border  : calc(var(--your-char-scale) * var(--card-border-width)) solid white;
-  width   : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
-  height  : calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
+}
+
+#your-char-img-frame,
+.inspect-img-frame {
+  border: calc(var(--your-char-scale) * var(--card-border-width)) solid white;
+  width : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
+  height: calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
 
   display        : flex;
   justify-content: center;
   align-items    : center;
+}
+
+.character-card:not(.inspect, .inspect-fading) .inspect-img-frame {
+  display: none;
+}
+
+.inspect-img-frame {
+  position : absolute;
+  top      : calc(2 * var(--card-base-row-gap) - 0.5 * var(--card-row-height));
+  z-index  : 4;
+  animation: 0.125s ease-out 1 grow;
+  cursor   : url('img/sCursorHand.png'), pointer;
+  scale    : calc(0.5 * var(--inspect-scale));
+}
+
+.character-img-frame:focus-visible+.inspect-img-frame {
+  border-color: yellow;
+}
+
+@keyframes grow {
+  from {
+    scale: 50%;
+  }
+
+  to {
+    scale: calc(var(--inspect-scale)*50%);
+  }
+}
+
+.character-card.inspect-fading .inspect-img-frame {
+  scale    : 50%;
+  animation: 0.125s ease-in 1 shrink;
+}
+
+@keyframes shrink {
+  from {
+    scale: calc(var(--inspect-scale)*50%);
+  }
+
+  to {
+    scale: 50%;
+  }
 }
 
 #your-char-img-frame img,
@@ -489,8 +537,13 @@ textarea {
   z-index: -1;
 }
 
+.inspect-img-frame img {
+  z-index: 4;
+}
+
 #your-char-img-frame .bg,
-.character-img-frame .bg {
+.character-img-frame .bg,
+.inspect-img-frame .bg {
   position        : absolute;
   top             : 0;
   left            : 0;
@@ -498,6 +551,10 @@ textarea {
   height          : 100%;
   z-index         : -2;
   background-color: black;
+}
+
+.inspect-img-frame .bg {
+  z-index: 3;
 }
 
 #guesses-display {
@@ -581,7 +638,6 @@ textarea {
 .character-name-popup {
   position : absolute;
   bottom   : var(--card-row-height);
-  animation: 0.125s linear 1 popup;
   z-index  : 2;
   padding  : 0rem 0.5rem;
   min-width: max-content;
@@ -592,6 +648,10 @@ textarea {
   background-color: black;
   font-size       : 0.75rem;
   text-align      : center;
+}
+
+.character-card:not(.steady-popup) .character-name-popup {
+  animation: 0.125s linear 1 popup;
 }
 
 @keyframes popup {
@@ -606,8 +666,45 @@ textarea {
   }
 }
 
-.character-name-popup:not(:has(+.character-img-frame:hover, +.character-img-frame:focus-visible)) {
+.character-name-popup:not(:has(+.character-img-frame:hover,
+    +*+.inspect-img-frame:hover, +.character-img-frame:focus-visible)) {
   display: none;
+}
+
+.character-card.inspect .character-name-popup {
+  animation: 0.125s ease-out 1 shift-up;
+  scale    : calc(var(--inspect-scale) * 100%);
+  bottom   : calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
+}
+
+@keyframes shift-up {
+  from {
+    scale : 100%;
+    bottom: calc(1.0 * var(--card-row-height));
+  }
+
+  to {
+    scale : calc(var(--inspect-scale) * 100%);
+    bottom: calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
+  }
+}
+
+.character-card.inspect-fading .character-name-popup {
+  animation: 0.125s ease-in 1 shift-down;
+  scale    : 100%;
+  bottom   : calc(1.0 * var(--card-row-height));
+}
+
+@keyframes shift-down {
+  from {
+    scale : calc(var(--inspect-scale) * 100%);
+    bottom: calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
+  }
+
+  to {
+    scale : 100%;
+    bottom: calc(1.0 * var(--card-row-height));
+  }
 }
 
 .character-img-frame {

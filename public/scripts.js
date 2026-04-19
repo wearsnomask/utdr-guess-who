@@ -642,7 +642,13 @@ const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
+// Other constants
+const MIN_INSPECT_SCALE = 1.5;
+const MAX_INSPECT_SCALE = 8;
+const INSPECT_SCALE_INCREMENT = 0.5;
+
 // Globals
+let inspectScale = +window.getComputedStyle(document.body).getPropertyValue('--inspect-scale');
 let cardScaleInfo = null;
 let lCharacterCardFrames = [];
 let lGameButtonsBeforePlayArea = null;
@@ -800,6 +806,7 @@ async function loadCharacterSet(setName) {
   // Get the info for each character
   const lAllChars = [...lSortedChars, ...lUnsortedChars];
   lCharInfo = [];
+  const inspectImgScale = window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale');
   lAllChars.forEach((charInfo) => {
     if (charInfo === undefined)
       return;
@@ -809,7 +816,9 @@ async function loadCharacterSet(setName) {
     newCard.querySelector(".character-name").textContent = charInfo.name;
 
     const imgEl = newCard.querySelector(".character-img");
+    const inspectImgEl = newCard.querySelector(".inspect-img");
     imgEl.setAttribute("alt", charInfo.name);
+    inspectImgEl.setAttribute("alt", charInfo.name);
 
     ++numImagesLoading;
     ++numImagesToLoadTotal;
@@ -819,6 +828,9 @@ async function loadCharacterSet(setName) {
       // Set the image to be scaled based on its natural size
       scaleImage(imgEl);
     }
+    inspectImgEl.onload = () => {
+      scaleImage(inspectImgEl, inspectImgScale);
+    }
     imgEl.onerror = () => {
       // If it can't be loaded, leave it blank - better than hanging forever
       --numImagesLoading;
@@ -826,11 +838,33 @@ async function loadCharacterSet(setName) {
     }
 
     imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
+    inspectImgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
 
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);
     frameEl.addEventListener("dblclick", markCard);
+    frameEl.addEventListener("mousedown", (e) => {
+      if (e.button == 1 || e.buttons == 4)
+        toggleInspectCard(e);
+    });
     frameEl.addEventListener("contextmenu", markCard, false);
+
+    const inspectEl = newCard.querySelector(".inspect-img-frame");
+    inspectEl.addEventListener("mousedown", (e) => {
+      if (e.button == 1 || e.buttons == 4)
+        toggleInspectCard(e);
+    });
+    inspectEl.addEventListener("wheel", (e) => {
+      if (e.deltaY > 0) {
+        e.preventDefault();
+        decreaseInspectScale();
+        return false;
+      } else if (e.deltaY < 0) {
+        e.preventDefault();
+        increaseInspectScale();
+        return false;
+      }
+    }, false);
 
     CARD_GRID.appendChild(newCard);
   });
@@ -862,10 +896,9 @@ function flipGuess(e) {
  * @param {Event} e 
  */
 function flipCard(e) {
+
   let frameEl;
-  if (e.currentTarget)
-    frameEl = e.currentTarget;
-  else
+  if (!(frameEl = e.currentTarget || e.target))
     frameEl = e;
   const cardClassList = frameEl.closest(".character-card").classList;
 
@@ -898,6 +931,128 @@ function markCard(e) {
   }
 
   return false;
+}
+
+/**
+ * Toggles inspect mode on and off for a card
+ * @param {Event} e 
+ */
+function toggleInspectCard(e) {
+
+  e.preventDefault();
+
+  // Figure out which card to inspect. The order of priority is:
+  // 1. Visibly-focused card
+  // 2. Hovered-over card
+  // 3. Invisibly-focused card
+
+  // Start with the target of the event and see if it's visibly focused
+  let card = e.target.closest(".character-card");
+
+  if (!card || !card.querySelector(".character-img-frame:focus-visible")) {
+    // No card is currently focused, so check if one is hovered over
+    let hoveredFrame = document.querySelector(".character-img-frame:hover, .inspect-img-frame:hover");
+
+    if (!hoveredFrame && !card) {
+      // No card is focused by any means nor hovered over, so do nothing
+      return;
+    } else if (hoveredFrame) {
+      // A card is hovered over, so choose that for inspection
+      card = hoveredFrame.closest(".character-card");
+    }
+    // Implicit else - inspect the invisibly focused card
+  }
+
+  const cardClassList = card.classList;
+  if (!cardClassList.contains("inspect"))
+    inspectCard(card);
+  else
+    uninspectCard(card);
+
+  return false;
+}
+
+/**
+ * Starts inspecting a card, increasing its size
+ * @param {Event | Element} e 
+ */
+function inspectCard(e) {
+  let card = e;
+  if (e instanceof Event) {
+    e.preventDefault();
+    card = e.target.closest(".character-card");
+  }
+
+  const cardClassList = card.classList;
+  cardClassList.remove("inspect-fading");
+  cardClassList.add("inspect");
+
+  // Temporarily add the "inspect-starting" class to prevent holding the key from immediately uninspecting the card
+  cardClassList.add("inspect-starting");
+  setTimeout(() => cardClassList.remove("inspect-starting"), 125);
+
+  // Check for if the card has lost focus or mouseover, and end the inspection if so
+  const frame = card.querySelector(".character-img-frame");
+  const inspectFrame = card.querySelector(".inspect-img-frame");
+  const interval = setInterval(() => {
+    if ((document.activeElement === frame) || (inspectFrame.matches(':hover')))
+      return;
+    uninspectCard(e);
+    clearInterval(interval);
+  }, 50);
+  inspectFrame.addEventListener("click", () => {
+    uninspectCard(e);
+    clearInterval(interval);
+    flipCard(e);
+  });
+}
+
+/**
+ * Stops inspecting a card, returning it to normal size
+ * @param {Event} e 
+ */
+function uninspectCard(e) {
+  let card = e;
+  if (e instanceof Event) {
+    e.preventDefault();
+    card = e.target.closest(".character-card");
+  }
+
+  const cardClassList = card.classList;
+
+  // Exit if the card inspection is starting, stopping, or isn't active
+  if (cardClassList.contains("inspect-starting") || cardClassList.contains("inspect-fading") ||
+    !cardClassList.contains("inspect"))
+    return;
+
+  cardClassList.remove("inspect");
+  cardClassList.add("inspect-fading");
+
+  // The fade will take 125ms, so remove the fading class after that to hide the expanded inspection card
+  setTimeout(() => cardClassList.remove("inspect-fading"), 125);
+  cardClassList.add("steady-popup");
+  const frame = card.querySelector(".character-img-frame");
+  const inspectFrame = card.querySelector(".inspect-img-frame");
+  const interval = setInterval(() => {
+    if ((document.activeElement === frame) || (inspectFrame.matches(':hover')) || (frame.matches(':hover')))
+      return;
+    cardClassList.remove("steady-popup");
+    clearInterval(interval);
+  }, 50);
+}
+
+function increaseInspectScale() {
+  inspectScale += INSPECT_SCALE_INCREMENT;
+  if (inspectScale > MAX_INSPECT_SCALE)
+    inspectScale = MAX_INSPECT_SCALE
+  document.documentElement.style.setProperty("--inspect-scale", inspectScale);
+}
+
+function decreaseInspectScale() {
+  inspectScale -= INSPECT_SCALE_INCREMENT;
+  if (inspectScale < MIN_INSPECT_SCALE)
+    inspectScale = MIN_INSPECT_SCALE
+  document.documentElement.style.setProperty("--inspect-scale", inspectScale);
 }
 
 /**
@@ -990,6 +1145,16 @@ function navigateGame(e) {
       e.preventDefault();
       openNotes();
       return;
+
+    case "i":
+      return toggleInspectCard(e);
+
+    case "-":
+      return decreaseInspectScale();
+
+    case "+":
+    case "=":
+      return increaseInspectScale();
 
     default:
       return;
