@@ -869,6 +869,15 @@ async function loadCharacterSet(setName) {
         toggleInspectCard(e);
     });
     frameEl.addEventListener("contextmenu", markCard, false);
+    frameEl.addEventListener("wheel", (e) => {
+      if (e.deltaY < 0) {
+        e.preventDefault();
+        inspectScale = MIN_INSPECT_SCALE;
+        setInspectScaleTarget(MIN_INSPECT_SCALE);
+        toggleInspectCard(e);
+        return false;
+      }
+    }, false);
 
     const inspectEl = newCard.querySelector(".inspect-img-frame");
     inspectEl.addEventListener("mousedown", (e) => {
@@ -956,19 +965,22 @@ function markCard(e) {
 
 /**
  * Toggles inspect mode on and off for a card
- * @param {Event} e 
+ * @param {Event | Element} e 
  */
 function toggleInspectCard(e) {
 
-  e.preventDefault();
+  let card = e;
+  if (e instanceof Event) {
+    e.preventDefault();
+    card = e.target.closest(".character-card");
+  } else if (!card.classList.contains(".character-card")) {
+    card = card.closest(".character-card");
+  }
 
   // Figure out which card to inspect. The order of priority is:
   // 1. Visibly-focused card
   // 2. Hovered-over card
   // 3. Invisibly-focused card
-
-  // Start with the target of the event and see if it's visibly focused
-  let card = e.target.closest(".character-card");
 
   if (!card || !card.querySelector(".character-img-frame:focus-visible")) {
     // No card is currently focused, so check if one is hovered over
@@ -1002,6 +1014,8 @@ function inspectCard(e) {
   if (e instanceof Event) {
     e.preventDefault();
     card = e.target.closest(".character-card");
+  } else if (!card.classList.contains(".character-card")) {
+    card = card.closest(".character-card");
   }
 
   const cardClassList = card.classList;
@@ -1062,6 +1076,21 @@ function uninspectCard(e) {
   }, 50);
 }
 
+function setInspectScaleTarget(val) {
+
+  if (inspectScaleAdjustInterval)
+    clearInterval(inspectScaleAdjustInterval);
+
+  targetInspectScale = val;
+  if (targetInspectScale > MAX_INSPECT_SCALE)
+    targetInspectScale = MAX_INSPECT_SCALE;
+  else if (targetInspectScale < MIN_INSPECT_SCALE)
+    targetInspectScale = MIN_INSPECT_SCALE;
+
+  updateInspectScale();
+  inspectScaleAdjustInterval = setInterval(updateInspectScale, 10);
+}
+
 function updateInspectScale() {
   inspectScale = approach(inspectScale, targetInspectScale);
   document.documentElement.style.setProperty("--inspect-scale", inspectScale);
@@ -1072,30 +1101,19 @@ function updateInspectScale() {
 }
 
 function increaseInspectScale() {
-
-  if (inspectScaleAdjustInterval)
-    clearInterval(inspectScaleAdjustInterval);
-
-  targetInspectScale += INSPECT_SCALE_INCREMENT;
-  if (targetInspectScale > MAX_INSPECT_SCALE)
-    targetInspectScale = MAX_INSPECT_SCALE;
-
-  updateInspectScale();
-  inspectScaleAdjustInterval = setInterval(updateInspectScale, 10);
-
+  setInspectScaleTarget(targetInspectScale + INSPECT_SCALE_INCREMENT);
 }
 
 function decreaseInspectScale() {
 
-  if (inspectScaleAdjustInterval)
-    clearInterval(inspectScaleAdjustInterval);
+  // Check if we're already at the minimum scale, in which case we end inspection instead
+  if (targetInspectScale === MIN_INSPECT_SCALE) {
+    for (const card of document.querySelectorAll(".character-card.inspect")) {
+      uninspectCard(card);
+    }
+  }
 
-  targetInspectScale -= INSPECT_SCALE_INCREMENT;
-  if (targetInspectScale < MIN_INSPECT_SCALE)
-    targetInspectScale = MIN_INSPECT_SCALE;
-
-  updateInspectScale();
-  inspectScaleAdjustInterval = setInterval(updateInspectScale, 10);
+  setInspectScaleTarget(targetInspectScale - INSPECT_SCALE_INCREMENT);
 }
 
 /**
@@ -1197,7 +1215,17 @@ function navigateGame(e) {
 
     case "+":
     case "=":
-      return increaseInspectScale();
+      // Check if a frame is focused or hovered and not already being inspected; if so, start inspecting it
+      const lTargetFrames = document.querySelectorAll(".character-card:not(.inspect) .character-img-frame:focus-visible, " +
+        ".character-card:not(.inspect) .character-img-frame:hover, " +
+        ".character-card:not(.inspect) .character-img-frame:focus");
+      if (lTargetFrames.length > 0) {
+        inspectScale = MIN_INSPECT_SCALE;
+        setInspectScaleTarget(MIN_INSPECT_SCALE);
+        toggleInspectCard(lTargetFrames[0]);
+      }
+      else
+        return increaseInspectScale();
 
     default:
       return;
