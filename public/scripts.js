@@ -837,7 +837,17 @@ async function loadCharacterSet(setName) {
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);
     frameEl.addEventListener("dblclick", markCard);
+    frameEl.addEventListener("mousedown", (e) => {
+      if (e.button == 1 || e.buttons == 4)
+        toggleInspectCard(e);
+    });
     frameEl.addEventListener("contextmenu", markCard, false);
+
+    const inspectEl = newCard.querySelector(".inspect-img-frame");
+    inspectEl.addEventListener("mousedown", (e) => {
+      if (e.button == 1 || e.buttons == 4)
+        toggleInspectCard(e);
+    });
 
     CARD_GRID.appendChild(newCard);
   });
@@ -869,6 +879,7 @@ function flipGuess(e) {
  * @param {Event} e 
  */
 function flipCard(e) {
+
   let frameEl;
   if (!(frameEl = e.currentTarget || e.target))
     frameEl = e;
@@ -911,6 +922,8 @@ function markCard(e) {
  */
 function toggleInspectCard(e) {
 
+  e.preventDefault();
+
   // Figure out which card to inspect. The order of priority is:
   // 1. Visibly-focused card
   // 2. Hovered-over card
@@ -938,6 +951,8 @@ function toggleInspectCard(e) {
     inspectCard(card);
   else
     uninspectCard(card);
+
+  return false;
 }
 
 /**
