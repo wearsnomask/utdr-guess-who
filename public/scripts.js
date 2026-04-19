@@ -247,6 +247,24 @@ function cycleSelect(selectEl) {
 
 }
 
+/**
+ * Simple implementation of an ease-out interpolation to a target value
+ * @param {Number} cur 
+ * @param {Number} target 
+ * @param {Number} frac 
+ * @param {Number} minChange 
+ */
+function approach(cur, target, frac = 0.2, minChange = 0.01) {
+  let change = frac * (target - cur);
+  if (minChange > Math.abs(change)) {
+    change = Math.sign(change) * minChange;
+    // Check if this causes us to surpass the target
+    if ((target - cur) * (target - cur - change) < 0)
+      return target;
+  }
+  return cur + change;
+}
+
 // Setup
 // -----
 
@@ -648,7 +666,10 @@ const MAX_INSPECT_SCALE = 8;
 const INSPECT_SCALE_INCREMENT = 0.5;
 
 // Globals
-let inspectScale = +window.getComputedStyle(document.body).getPropertyValue('--inspect-scale');
+let targetInspectScale = +window.getComputedStyle(document.body).getPropertyValue('--inspect-scale');
+let inspectScale = targetInspectScale;
+let inspectScaleAdjustInterval = null;
+
 let cardScaleInfo = null;
 let lCharacterCardFrames = [];
 let lGameButtonsBeforePlayArea = null;
@@ -1041,18 +1062,40 @@ function uninspectCard(e) {
   }, 50);
 }
 
-function increaseInspectScale() {
-  inspectScale += INSPECT_SCALE_INCREMENT;
-  if (inspectScale > MAX_INSPECT_SCALE)
-    inspectScale = MAX_INSPECT_SCALE
+function updateInspectScale() {
+  inspectScale = approach(inspectScale, targetInspectScale);
   document.documentElement.style.setProperty("--inspect-scale", inspectScale);
+  if (inspectScale == targetInspectScale && inspectScaleAdjustInterval) {
+    clearInterval(inspectScaleAdjustInterval);
+    inspectScaleAdjustInterval = null;
+  }
+}
+
+function increaseInspectScale() {
+
+  if (inspectScaleAdjustInterval)
+    clearInterval(inspectScaleAdjustInterval);
+
+  targetInspectScale += INSPECT_SCALE_INCREMENT;
+  if (targetInspectScale > MAX_INSPECT_SCALE)
+    targetInspectScale = MAX_INSPECT_SCALE;
+
+  updateInspectScale();
+  inspectScaleAdjustInterval = setInterval(updateInspectScale, 10);
+
 }
 
 function decreaseInspectScale() {
-  inspectScale -= INSPECT_SCALE_INCREMENT;
-  if (inspectScale < MIN_INSPECT_SCALE)
-    inspectScale = MIN_INSPECT_SCALE
-  document.documentElement.style.setProperty("--inspect-scale", inspectScale);
+
+  if (inspectScaleAdjustInterval)
+    clearInterval(inspectScaleAdjustInterval);
+
+  targetInspectScale -= INSPECT_SCALE_INCREMENT;
+  if (targetInspectScale < MIN_INSPECT_SCALE)
+    targetInspectScale = MIN_INSPECT_SCALE;
+
+  updateInspectScale();
+  inspectScaleAdjustInterval = setInterval(updateInspectScale, 10);
 }
 
 /**
