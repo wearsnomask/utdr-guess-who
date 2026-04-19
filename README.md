@@ -50,11 +50,12 @@ The following features have been added:
 - New character sets:
   - Undertale (soon!)
   - Undertale Yellow
+- Support for basically any device that can run a web browser
 - Flexible scaling and rearrangement of items to fit the size of your browser window
 - Keyboard controls (WASD/arrow keys to move, space/enter/Z to select)
 - Support for multiple character sets (making it as easy as possible to mod and add more)
 - Ability to remember the user's name and skip the name-entry screen
-- Ability to inspect character images to look more closely at them (by pressing the I key or middle-clicking, then +/- keys or mousewheel to scale the size)
+- Ability to inspect character images to look more closely at them (by pressing the I key or middle-clicking, then +/- keys or mousewheel to scale the size). These controls may not work on mobile devices, but you can use pinch-to-zoom there to achieve the same effect
 
 ### Can I further mod/extend this myself?
 
