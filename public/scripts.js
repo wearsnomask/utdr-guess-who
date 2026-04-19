@@ -645,6 +645,7 @@ const CARD_GRID = document.getElementById("card-grid");
 // Other constants
 const MIN_INSPECT_SCALE = 1.5;
 const MAX_INSPECT_SCALE = 8;
+const INSPECT_SCALE_INCREMENT = 0.5;
 
 // Globals
 let inspectScale = +window.getComputedStyle(document.body).getPropertyValue('--inspect-scale');
@@ -853,6 +854,17 @@ async function loadCharacterSet(setName) {
       if (e.button == 1 || e.buttons == 4)
         toggleInspectCard(e);
     });
+    inspectEl.addEventListener("wheel", (e) => {
+      if (e.deltaY > 0) {
+        e.preventDefault();
+        decreaseInspectScale();
+        return false;
+      } else if (e.deltaY < 0) {
+        e.preventDefault();
+        increaseInspectScale();
+        return false;
+      }
+    }, false);
 
     CARD_GRID.appendChild(newCard);
   });
@@ -1030,14 +1042,14 @@ function uninspectCard(e) {
 }
 
 function increaseInspectScale() {
-  inspectScale += 0.5;
+  inspectScale += INSPECT_SCALE_INCREMENT;
   if (inspectScale > MAX_INSPECT_SCALE)
     inspectScale = MAX_INSPECT_SCALE
   document.documentElement.style.setProperty("--inspect-scale", inspectScale);
 }
 
 function decreaseInspectScale() {
-  inspectScale -= 0.5;
+  inspectScale -= INSPECT_SCALE_INCREMENT;
   if (inspectScale < MIN_INSPECT_SCALE)
     inspectScale = MIN_INSPECT_SCALE
   document.documentElement.style.setProperty("--inspect-scale", inspectScale);
