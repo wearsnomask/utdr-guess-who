@@ -32,6 +32,34 @@ Inside this folder, add the images for all the characters in your set, with the 
 
 And... that's it! Commit the changes, push to the repository, and wait a minute for it to be deployed. Your version of the game will be deployed at an address that looks like "https://your-github-username.github.io/utdr-guess-who/", and you can share this with your friends so you can all play with the character set you added.
 
+## Frequently Asked Questions
+
+### How does this relate to the original game by Seek?
+
+This is a complete rewrite from scratch, made with Seek's permission. The Deltarune Ch. 1-4 character set is identical to the set in the original game, so crossplay between the versions is possible.
+
+### What features were added/removed compared to the original game?
+
+Removed features:
+
+- The ability to press a button to reset all cards, which I judged wasn't worth the drawback of risking it being pressed accidentally and losing all progress
+- Sounds, since this functions as a website and people may not be expecting sounds from a website that doesn't obviously play music or audio (I may add this back in as an option at some point)
+
+The following features have been added:
+
+- New character sets:
+  - Undertale (soon!)
+  - Undertale Yellow
+- Flexible scaling and rearrangement of items to fit the size of your browser window
+- Keyboard controls (WASD/arrow keys to move, space/enter/Z to select)
+- Support for multiple character sets (making it as easy as possible to mod and add more)
+- Ability to remember the user's name and skip the name-entry screen
+- Ability to inspect character images to look more closely at them (by pressing the I key or middle-clicking, then +/- keys or mousewheel to scale the size)
+
+### Can I further mod/extend this myself?
+
+Yes, please do! This project has a permissive license, so you don't even need to ask me to go ahead.
+
 ## Contact/Socials
 
 **Charlotte Wears No Mask**
