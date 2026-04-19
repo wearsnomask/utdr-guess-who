@@ -416,7 +416,7 @@ textarea {
   --card-frame-height: calc(var(--card-img-height) + 2 * var(--card-border-width));
   --card-row-height  : calc(var(--card-frame-height) + var(--card-row-gap));
 
-  --inspect-scale: 2;
+  --inspect-scale: 3;
 }
 
 #game-scene {
@@ -500,6 +500,7 @@ textarea {
   z-index  : 4;
   animation: 0.125s ease-out 1 grow;
   cursor   : url('img/sCursorHand.png'), pointer;
+  scale    : calc(0.5 * var(--inspect-scale));
 }
 
 .character-img-frame:focus-visible+.inspect-img-frame {
@@ -512,7 +513,7 @@ textarea {
   }
 
   to {
-    scale: 100%;
+    scale: calc(var(--inspect-scale)*50%);
   }
 }
 
@@ -523,7 +524,7 @@ textarea {
 
 @keyframes shrink {
   from {
-    scale: 100%;
+    scale: calc(var(--inspect-scale)*50%);
   }
 
   to {
@@ -673,7 +674,7 @@ textarea {
 .character-card.inspect .character-name-popup {
   animation: 0.125s ease-out 1 shift-up;
   scale    : calc(var(--inspect-scale) * 100%);
-  bottom   : calc(1.5 * var(--card-row-height));
+  bottom   : calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
 }
 
 @keyframes shift-up {
@@ -684,7 +685,7 @@ textarea {
 
   to {
     scale : calc(var(--inspect-scale) * 100%);
-    bottom: calc(1.5 * var(--card-row-height));
+    bottom: calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
   }
 }
 
@@ -697,7 +698,7 @@ textarea {
 @keyframes shift-down {
   from {
     scale : calc(var(--inspect-scale) * 100%);
-    bottom: calc(1.5 * var(--card-row-height));
+    bottom: calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
   }
 
   to {

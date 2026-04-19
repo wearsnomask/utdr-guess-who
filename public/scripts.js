@@ -642,7 +642,12 @@ const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
+// Other constants
+const MIN_INSPECT_SCALE = 1.5;
+const MAX_INSPECT_SCALE = 8;
+
 // Globals
+let inspectScale = +window.getComputedStyle(document.body).getPropertyValue('--inspect-scale');
 let cardScaleInfo = null;
 let lCharacterCardFrames = [];
 let lGameButtonsBeforePlayArea = null;
@@ -1024,6 +1029,20 @@ function uninspectCard(e) {
   }, 50);
 }
 
+function increaseInspectScale() {
+  inspectScale += 0.5;
+  if (inspectScale > MAX_INSPECT_SCALE)
+    inspectScale = MAX_INSPECT_SCALE
+  document.documentElement.style.setProperty("--inspect-scale", inspectScale);
+}
+
+function decreaseInspectScale() {
+  inspectScale -= 0.5;
+  if (inspectScale < MIN_INSPECT_SCALE)
+    inspectScale = MIN_INSPECT_SCALE
+  document.documentElement.style.setProperty("--inspect-scale", inspectScale);
+}
+
 /**
  * Sets up the list of all focusable items in the game scene, in the order they'll appear with the current window width
  */
@@ -1117,6 +1136,13 @@ function navigateGame(e) {
 
     case "i":
       return toggleInspectCard(e);
+
+    case "-":
+      return decreaseInspectScale();
+
+    case "+":
+    case "=":
+      return increaseInspectScale();
 
     default:
       return;
