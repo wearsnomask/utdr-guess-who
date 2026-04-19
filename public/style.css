@@ -415,6 +415,8 @@ textarea {
   --card-row-gap     : calc(var(--card-scale) * var(--card-base-row-gap));
   --card-frame-height: calc(var(--card-img-height) + 2 * var(--card-border-width));
   --card-row-height  : calc(var(--card-frame-height) + var(--card-row-gap));
+
+  --inspect-scale: 2;
 }
 
 #game-scene {
@@ -663,13 +665,14 @@ textarea {
   }
 }
 
-.character-name-popup:not(:has(+.character-img-frame:hover, +.character-img-frame:focus-visible)) {
+.character-name-popup:not(:has(+.character-img-frame:hover,
+    +*+.inspect-img-frame:hover, +.character-img-frame:focus-visible)) {
   display: none;
 }
 
 .character-card.inspect .character-name-popup {
   animation: 0.125s ease-out 1 shift-up;
-  scale    : 200%;
+  scale    : calc(var(--inspect-scale) * 100%);
   bottom   : calc(1.5 * var(--card-row-height));
 }
 
@@ -680,7 +683,7 @@ textarea {
   }
 
   to {
-    scale : 200%;
+    scale : calc(var(--inspect-scale) * 100%);
     bottom: calc(1.5 * var(--card-row-height));
   }
 }
@@ -693,7 +696,7 @@ textarea {
 
 @keyframes shift-down {
   from {
-    scale : 200%;
+    scale : calc(var(--inspect-scale) * 100%);
     bottom: calc(1.5 * var(--card-row-height));
   }
 

@@ -910,24 +910,47 @@ function markCard(e) {
  * @param {Event} e 
  */
 function toggleInspectCard(e) {
-  const card = e.target.closest(".character-card");
-  if (!card)
-    return;
+
+  // Figure out which card to inspect. The order of priority is:
+  // 1. Visibly-focused card
+  // 2. Hovered-over card
+  // 3. Invisibly-focused card
+
+  // Start with the target of the event and see if it's visibly focused
+  let card = e.target.closest(".character-card");
+
+  if (!card || !card.querySelector(".character-img-frame:focus-visible")) {
+    // No card is currently focused, so check if one is hovered over
+    let hoveredFrame = document.querySelector(".character-img-frame:hover, .inspect-img-frame:hover");
+
+    if (!hoveredFrame && !card) {
+      // No card is focused by any means nor hovered over, so do nothing
+      return;
+    } else if (hoveredFrame) {
+      // A card is hovered over, so choose that for inspection
+      card = hoveredFrame.closest(".character-card");
+    }
+    // Implicit else - inspect the invisibly focused card
+  }
+
   const cardClassList = card.classList;
   if (!cardClassList.contains("inspect"))
-    inspectCard(e);
+    inspectCard(card);
   else
-    uninspectCard(e);
+    uninspectCard(card);
 }
 
 /**
  * Starts inspecting a card, increasing its size
- * @param {Event} e 
+ * @param {Event | Element} e 
  */
 function inspectCard(e) {
-  e.preventDefault();
+  let card = e;
+  if (e instanceof Event) {
+    e.preventDefault();
+    card = e.target.closest(".character-card");
+  }
 
-  const card = e.target.closest(".character-card");
   const cardClassList = card.classList;
   cardClassList.remove("inspect-fading");
   cardClassList.add("inspect");
@@ -957,9 +980,12 @@ function inspectCard(e) {
  * @param {Event} e 
  */
 function uninspectCard(e) {
-  e.preventDefault();
+  let card = e;
+  if (e instanceof Event) {
+    e.preventDefault();
+    card = e.target.closest(".character-card");
+  }
 
-  const card = e.target.closest(".character-card");
   const cardClassList = card.classList;
 
   // Exit if the card inspection is starting, stopping, or isn't active
@@ -976,7 +1002,7 @@ function uninspectCard(e) {
   const frame = card.querySelector(".character-img-frame");
   const inspectFrame = card.querySelector(".inspect-img-frame");
   const interval = setInterval(() => {
-    if ((document.activeElement === frame) || (inspectFrame.matches(':hover')))
+    if ((document.activeElement === frame) || (inspectFrame.matches(':hover')) || (frame.matches(':hover')))
       return;
     cardClassList.remove("steady-popup");
     clearInterval(interval);
