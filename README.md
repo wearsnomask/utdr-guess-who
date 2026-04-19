@@ -55,3 +55,7 @@ And... that's it! Commit the changes, push to the repository, and wait a minute 
 * [Undertale Yellow](https://gamejolt.com/games/UndertaleYellow/136925)
 
 **Font:** m6x11 by [Daniel Linssen](https://managore.itch.io/) (https://managore.itch.io/m6x11)
+
+**Special Thanks:**
+
+* Mysteri Gii - Testing, feedback, and support
