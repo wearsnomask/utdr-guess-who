@@ -494,6 +494,10 @@ textarea {
   gap            : 0.25rem;
 }
 
+[lookup-mode='true'] .game-lookup {
+  cursor: url('img/sCursorSearch.png'), help;
+}
+
 #small-screen-name-display {
   padding-top: 1rem;
 }

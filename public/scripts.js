@@ -694,8 +694,20 @@ function exitGameScene() {
 /**
  * Start lookup mode
  */
-function startLookupMode() {
+function startLookupMode(e) {
+  if (document.documentElement.getAttribute("lookup-mode") == "true") {
+    document.documentElement.setAttribute("lookup-mode", "false");
+    return;
+  }
+
   document.documentElement.setAttribute("lookup-mode", "true");
+  window.addEventListener("click", lookupTarget);
+  e.stopPropagation();
+}
+
+function lookupTarget() {
+  document.documentElement.setAttribute("lookup-mode", "false");
+  window.removeEventListener("click", lookupTarget);
 }
 
 /**
@@ -1307,7 +1319,7 @@ function navigateGame(e) {
 QUIT_GAME_BUTTON.addEventListener("click", () => switchScene(MENU_SCENE));
 RESTART_GAME_BUTTON.addEventListener("click", startGame);
 
-L_LOOKUP_BUTTONS.forEach((el) => el.addEventListener("click", startLookupMode));
+L_LOOKUP_BUTTONS.forEach((el) => el.addEventListener("click", startLookupMode, false));
 
 L_NOTES_BUTTONS.forEach((el) => el.addEventListener("click", openNotes));
 GAME_NOTES_CLOSE.addEventListener("click", closeNotes);
