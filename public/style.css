@@ -14,7 +14,6 @@
 }
 
 :root {
-  cursor          : url('img/sCursor.png'), auto;
   image-rendering : pixelated;
   background-color: #FFFFFF00;
 }
@@ -36,6 +35,8 @@ body {
   flex-direction : column;
   justify-content: stretch;
   align-items    : center;
+
+  cursor: url('img/sCursor.png'), auto;
 
   background-color     : #000000;
   background-attachment: fixed;
@@ -63,7 +64,9 @@ body {
   }
 }
 
-
+[lookup-mode='true'] body {
+  cursor: url('img/sCursorSearch.png'), help;
+}
 
 /* Styling for common elements */
 
@@ -519,6 +522,10 @@ textarea {
   align-items    : center;
 }
 
+[lookup-mode='true'] #your-char-img-frame {
+  cursor: url('img/sCursorSelect.png'), help;
+}
+
 .character-card:not(.inspect, .inspect-fading) .inspect-img-frame {
   display: none;
 }
@@ -530,6 +537,10 @@ textarea {
   animation: 0.125s ease-out 1 grow;
   cursor   : url('img/sCursorHand.png'), pointer;
   scale    : calc(0.5 * var(--inspect-scale));
+}
+
+[lookup-mode='true'] .inspect-img-frame {
+  cursor: url('img/sCursorSelect.png'), help;
 }
 
 .character-img-frame:focus-visible+.inspect-img-frame {
@@ -753,6 +764,10 @@ textarea {
   align-items    : center;
 
   cursor: url('img/sCursorHand.png'), pointer;
+}
+
+[lookup-mode='true'] .character-img-frame {
+  cursor: url('img/sCursorSelect.png'), help;
 }
 
 .character-img-frame,

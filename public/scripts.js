@@ -692,6 +692,13 @@ function exitGameScene() {
 }
 
 /**
+ * Start lookup mode
+ */
+function startLookupMode() {
+  document.documentElement.setAttribute("lookup-mode", "true");
+}
+
+/**
  * Open the notes dialog
  */
 function openNotes() {
@@ -1299,6 +1306,8 @@ function navigateGame(e) {
 
 QUIT_GAME_BUTTON.addEventListener("click", () => switchScene(MENU_SCENE));
 RESTART_GAME_BUTTON.addEventListener("click", startGame);
+
+L_LOOKUP_BUTTONS.forEach((el) => el.addEventListener("click", startLookupMode));
 
 L_NOTES_BUTTONS.forEach((el) => el.addEventListener("click", openNotes));
 GAME_NOTES_CLOSE.addEventListener("click", closeNotes);
