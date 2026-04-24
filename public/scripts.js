@@ -650,6 +650,7 @@ const GAME_NOTES_CLOSE = document.getElementById("game-notes-close");
 
 const QUIT_GAME_BUTTON = document.getElementById("game-quit");
 const RESTART_GAME_BUTTON = document.getElementById("game-restart");
+const L_LOOKUP_BUTTONS = document.querySelectorAll(".game-lookup");
 const L_NOTES_BUTTONS = document.querySelectorAll(".game-notes");
 const L_CONTROLS_BUTTONS = document.querySelectorAll(".game-controls");
 const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
@@ -1122,10 +1123,10 @@ function decreaseInspectScale() {
 function arrangeGameFocusableItems() {
   if (window.innerWidth <= SCREEN_SIZE_BREAKPOINT) {
     lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON,
-      L_NOTES_BUTTONS[0], L_CONTROLS_BUTTONS[0], L_INSTRUCTIONS_BUTTONS[0]];
+      L_LOOKUP_BUTTONS[0], L_NOTES_BUTTONS[0], L_CONTROLS_BUTTONS[0], L_INSTRUCTIONS_BUTTONS[0]];
     lGameButtonsAfterPlayArea = [];
   } else {
-    lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_NOTES_BUTTONS[1]];
+    lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_LOOKUP_BUTTONS[1], L_NOTES_BUTTONS[1]];
     lGameButtonsAfterPlayArea = [L_CONTROLS_BUTTONS[1], L_INSTRUCTIONS_BUTTONS[1]];
   }
   lGameFocusableItems = [...lGameButtonsBeforePlayArea, ...L_GUESS_ICONS, ...lCharacterCardFrames,
