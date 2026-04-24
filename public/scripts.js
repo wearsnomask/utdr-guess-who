@@ -663,6 +663,8 @@ const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
+const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14"
+
 // Other constants
 const MIN_INSPECT_SCALE = 1.5;
 const MAX_INSPECT_SCALE = 8;
@@ -733,8 +735,10 @@ function lookupTarget(e) {
 
   let charName = imgFrame.value;
 
-  // For now, just log the character name
-  console.log("Character name: " + charName);
+  // Construct the URL for the search
+  let searchUrl = DEFAULT_LOOKUP_URL;
+  searchUrl = searchUrl.replace("%s", charName.replace(" ", "%20"));
+  open(searchUrl);
 
   document.documentElement.setAttribute("lookup-mode", "false");
 }
