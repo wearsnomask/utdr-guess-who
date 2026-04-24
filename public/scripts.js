@@ -430,6 +430,7 @@ async function startGame() {
   yourCharIndex = Math.floor(Math.random() * getNumChars());
   const yourCharInfo = lCharInfo[yourCharIndex];
   YOUR_CHAR_NAME.textContent = yourCharInfo.name;
+  YOUR_CHAR_IMG_FRAME.value = yourCharInfo.name;
   YOUR_CHAR_IMG.setAttribute("alt", yourCharInfo.name);
 
   // Set the image to be scaled based on its natural size
@@ -656,6 +657,7 @@ const L_CONTROLS_BUTTONS = document.querySelectorAll(".game-controls");
 const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
 
 const YOUR_CHAR_NAME = document.getElementById("your-char-name");
+const YOUR_CHAR_IMG_FRAME = document.getElementById("your-char-img-frame");
 const YOUR_CHAR_IMG = document.getElementById("your-char-img");
 const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
@@ -695,19 +697,46 @@ function exitGameScene() {
  * Start lookup mode
  */
 function startLookupMode(e) {
+  // If this gets triggered when we're already in lookup mode, end it
   if (document.documentElement.getAttribute("lookup-mode") == "true") {
     document.documentElement.setAttribute("lookup-mode", "false");
     return;
   }
 
   document.documentElement.setAttribute("lookup-mode", "true");
+
+  // Prepare an event to look up the target
   window.addEventListener("click", lookupTarget);
+
+  // Stop propagation, as otherwise the lookupTarget function will be called immediately
   e.stopPropagation();
 }
 
-function lookupTarget() {
+/**
+ * Look up the target character being hovered over
+ */
+function lookupTarget(e) {
+  // First, figure out what's being hovered over. Check the Your Character frame, as well as all character cards
+  let imgFrame = document.querySelector("#your-char-img-frame:hover, .character-img-frame:hover, .inspect-img-frame:hover");
+
+  if (!imgFrame) {
+    // Nothing is hovered over, so dismiss look up mode
+    document.documentElement.setAttribute("lookup-mode", "false");
+    window.removeEventListener("click", lookupTarget);
+    return;
+  }
+
+  // Get the image frame, which will have the character name as its value
+  if (!imgFrame.classList.contains("img-frame")) {
+    imgFrame = imgFrame.closest(".character-card").querySelector(".img-frame");
+  }
+
+  let charName = imgFrame.value;
+
+  // For now, just log the character name
+  console.log("Character name: " + charName);
+
   document.documentElement.setAttribute("lookup-mode", "false");
-  window.removeEventListener("click", lookupTarget);
 }
 
 /**
@@ -854,6 +883,7 @@ async function loadCharacterSet(setName) {
     lCharInfo.push(charInfo);
     const newCard = document.importNode(CHARACTER_CARD_TEMPLATE.content, true).querySelector(".character-card");
 
+    newCard.querySelector(".character-img-frame").value = charInfo.name;
     newCard.querySelector(".character-name").textContent = charInfo.name;
 
     const imgEl = newCard.querySelector(".character-img");
@@ -946,6 +976,10 @@ function flipGuess(e) {
  * @param {Event} e 
  */
 function flipCard(e) {
+
+  // Don't flip if we're in lookup mode
+  if (document.documentElement.getAttribute("lookup-mode") == "true")
+    return;
 
   let frameEl;
   if (!(frameEl = e.currentTarget || e.target))

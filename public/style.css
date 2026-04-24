@@ -495,7 +495,9 @@ textarea {
 }
 
 [lookup-mode='true'] .game-lookup {
-  cursor: url('img/sCursorSearch.png'), help;
+  border-color: yellow;
+  color       : yellow;
+  cursor      : url('img/sCursorSearch.png'), help;
 }
 
 #small-screen-name-display {
