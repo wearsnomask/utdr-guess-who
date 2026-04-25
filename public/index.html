@@ -120,12 +120,19 @@
       <div id="game-info-panel">
 
         <div id="game-top-buttons">
-          <button tabindex="1" id="game-quit" class="small no-margin">Quit to menu</button>
-          <button tabindex="1" id="game-restart" class="small no-margin">Restart</button>
-          <button tabindex="1" class="game-lookup small-screen-only small no-margin">Look up Character</button>
-          <button tabindex="1" class="game-notes small-screen-only small no-margin">Notes</button>
-          <button tabindex="1" class="game-controls small-screen-only small no-margin">Controls</button>
-          <button tabindex="1" class="game-instructions small-screen-only small no-margin">Instructions</button>
+          <button tabindex="1" id="game-quit" class="small no-margin"
+            title="Return to the main menu. Game progress will be lost">Quit to menu</button>
+          <button tabindex="1" id="game-restart" class="small no-margin"
+            title="Reset your character, your guesses, and the flipped state of all character cards. Notes will be retained">Restart</button>
+          <button tabindex="1" class="game-lookup small-screen-only small no-margin"
+            title="Trigger this button, then select a character to look them up online for info about them">Look up
+            Character</button>
+          <button tabindex="1" class="game-notes small-screen-only small no-margin"
+            title="Open a box to write notes, e.g. answers to questions you've asked">Notes</button>
+          <button tabindex="1" class="game-controls small-screen-only small no-margin"
+            title="Show available keyboard, mobile, and mouse controls">Controls</button>
+          <button tabindex="1" class="game-instructions small-screen-only small no-margin"
+            title="Show instructions on how to play the game">Instructions</button>
         </div>
 
         <p id="small-screen-name-display" class="small-screen-only"><span class="player-name"></span>'s POV</p>
@@ -168,8 +175,11 @@
         <div id="cards-top-line" class="big-screen-only">
           <p class="big-screen-only"><span class="player-name"></span>'s POV</p>
           <div>
-            <button tabindex="3" class="game-lookup small no-margin">Look up Character</button>
-            <button tabindex="3" class="game-notes small no-margin">Notes</button>
+            <button tabindex="3" class="game-lookup small no-margin"
+              title="Trigger this button, then select a character to look them up online for info about them">Look up
+              Character</button>
+            <button tabindex="3" class="game-notes small no-margin"
+              title="Open a box to write notes, e.g. answers to questions you've asked">Notes</button>
           </div>
         </div>
 
@@ -178,8 +188,10 @@
         <div id="card-grid"></div>
 
         <div id="card-panel-buttons" class="big-screen-only">
-          <button tabindex="3" class="game-controls small no-margin">Controls</button>
-          <button tabindex="3" class="game-instructions small no-margin">Instructions</button>
+          <button tabindex="3" class="game-controls small no-margin"
+            title="Show available keyboard, mobile, and mouse controls">Controls</button>
+          <button tabindex="3" class="game-instructions small no-margin"
+            title="Show instructions on how to play the game">Instructions</button>
         </div>
 
       </div>
