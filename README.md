@@ -39,7 +39,7 @@ There's one extra feature you can add to your character set: Wiki lookup. If you
 To do this, add a file called "config.json" to the character set folder, with the contents:
 
 ```json
-{"config": "<insert-search-url-here>"}
+{"lookupUrl": "<insert-search-url-here>"}
 ```
 
 In this, replace the string `<insert-search-url-here>` with a URL that can be used to run a search on your wiki of choice, using `%s` in place of the search string. For instance, let's say
@@ -48,7 +48,7 @@ you want to search on [the Undertale wiki](https://undertale.wiki/). You can fin
 Then, look at the URL you get. In this case it will be: `https://undertale.wiki/index.php?search=my+search+string&title=Special:Search&wprov=acrw1_-1&ns0=1` Copy this string into your "config.json" file, and replace the part of it that contains the string you searched for with `%s`. In this example, your config file will now look like this:
 
 ```json
-{"config": "https://undertale.wiki/index.php?search=%s&title=Special:Search&wprov=acrw1_-1&ns0=1"}
+{"lookupUrl": "https://undertale.wiki/index.php?search=%s&title=Special:Search&wprov=acrw1_-1&ns0=1"}
 ```
 
 You can look at the existing "config.json" files in the character sets in this repo for other examples.
