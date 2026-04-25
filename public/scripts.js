@@ -636,6 +636,8 @@ const menuSceneSwitchWatcher = new SceneSwitchWatcher(MENU_SCENE, initMenuScene,
 // Constant DOM references
 const CHARACTER_CARD_TEMPLATE = document.getElementById("character-card-template");
 
+const GAME_LOOKUP_CURSOR = document.getElementById("game-lookup-cursor");
+
 const GAME_NOTES_DIALOG = document.getElementById("game-notes-dialog");
 const GAME_NOTES_INPUT = document.getElementById("game-notes");
 const GAME_NOTES_CLOSE = document.getElementById("game-notes-close");
@@ -716,6 +718,7 @@ function setKeyLookupMode() {
 }
 
 function setOffLookupMode() {
+  window.removeEventListener("mousemove", setMouseLookupMode);
   document.documentElement.setAttribute("lookup-mode", "off");
 }
 
@@ -785,6 +788,14 @@ function lookupTarget(e) {
   let searchUrl = charsetConfig.lookupUrl;
   searchUrl = searchUrl.replace("%s", charName.replace(" ", "%20"));
   open(searchUrl);
+}
+
+function updateLookupCursorPosition() {
+  const focusedElement = document.querySelector(":focus-visible");
+  const rect = focusedElement.getBoundingClientRect();
+  const x = 0.5 * (rect.left + rect.right) + window.scrollX - 0.25 * GAME_LOOKUP_CURSOR.naturalWidth;
+  const y = 0.5 * (rect.top + rect.bottom) + window.scrollY - 0.5 * GAME_LOOKUP_CURSOR.naturalHeight;
+  GAME_LOOKUP_CURSOR.setAttribute("style", `top: ${y}px; left: ${x}px;`);
 }
 
 /**
@@ -1368,12 +1379,15 @@ function navigateGame(e) {
   // If we get here, one of the buttons to navigate has been pressed
 
   // If we were previously in mouse lookup mode, switch to key lookup mode
-  if (mouseLookupModeEnabled())
+  if (mouseLookupModeEnabled()) {
     setKeyLookupMode();
+  }
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first character card
     lCharacterCardFrames[0].focus({ focusVisible: true });
+    if (keyLookupModeEnabled())
+      updateLookupCursorPosition();
     return;
   }
 
@@ -1431,6 +1445,8 @@ function navigateGame(e) {
 
   lGameFocusableItems[currentIndex].focus({ focusVisible: true });
 
+  if (keyLookupModeEnabled())
+    updateLookupCursorPosition();
 }
 
 // Setup
