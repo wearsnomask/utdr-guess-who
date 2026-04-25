@@ -3,6 +3,7 @@
 # Define constants
 CHARSET_META_FILENAME=charset-meta.json
 CHAR_META_FILENAME=char-meta.json
+CONFIG_FILENAME=config.json
 
 # Get the directory for all character sets
 ROOT_DIR=$(dirname -- $(readlink -f $BASH_SOURCE))/..
@@ -47,8 +48,19 @@ for DIRNAME in *; do
 
   done
 
-  # Finish off the character meta file
-  echo -n ']}' >> $CHAR_META_FILENAME
+  # Finish off the character list
+  echo -n ']' >> $CHAR_META_FILENAME
+
+  # Check if a config file is present for this character set, and include the config if so
+  if [[ -f $CONFIG_FILENAME ]]; then
+    echo -n ',"config":' >> $CHAR_META_FILENAME
+    cat $CONFIG_FILENAME >> $CHAR_META_FILENAME
+  else
+    echo -n ',"config":null' >> $CHAR_META_FILENAME
+  fi
+
+  # Finish off the file
+  echo -n '}' >> $CHAR_META_FILENAME
   cd ..
 
 done
