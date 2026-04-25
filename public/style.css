@@ -64,7 +64,7 @@ body {
   }
 }
 
-[lookup-mode='true'] body {
+[lookup-mode='mouse'] body {
   cursor: url('img/sCursorSearch.png'), help;
 }
 
@@ -463,6 +463,16 @@ textarea {
   }
 }
 
+#game-lookup-cursor {
+  display : none;
+  position: absolute;
+  z-index : 5;
+}
+
+[lookup-mode='key'] #game-lookup-cursor {
+  display: block;
+}
+
 #game-notes-dialog[open] {
   display        : flex;
   flex-direction : column;
@@ -494,10 +504,15 @@ textarea {
   gap            : 0.25rem;
 }
 
-[lookup-mode='true'] .game-lookup {
+[lookup-mode='mouse'] .game-lookup,
+[lookup-mode='key'] .game-lookup {
   border-color: yellow;
   color       : yellow;
   cursor      : url('img/sCursorSearch.png'), help;
+}
+
+[lookup-mode='mouse'] .game-lookup {
+  cursor: url('img/sCursorSearch.png'), help;
 }
 
 #small-screen-name-display {
@@ -528,7 +543,7 @@ textarea {
   align-items    : center;
 }
 
-[lookup-mode='true'] #your-char-img-frame {
+[lookup-mode='mouse'] #your-char-img-frame {
   cursor: url('img/sCursorSelect.png'), help;
 }
 
@@ -772,7 +787,7 @@ textarea {
   cursor: url('img/sCursorHand.png'), pointer;
 }
 
-[lookup-mode='true'] .character-img-frame {
+[lookup-mode='mouse'] .character-img-frame {
   cursor: url('img/sCursorSelect.png'), help;
 }
 

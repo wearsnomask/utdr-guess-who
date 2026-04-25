@@ -401,6 +401,9 @@ async function startGame() {
   }
   await loadCharacterSet(setName);
 
+  // Make sure lookup mode starts disabled
+  setOffLookupMode();
+
   // Store a list of all focusable character card frames
   lCharacterCardFrames = document.querySelectorAll(".character-card .character-img-frame");
   arrangeGameFocusableItems();
@@ -696,17 +699,57 @@ function exitGameScene() {
   window.removeEventListener("resize", arrangeGameFocusableItems);
 }
 
+// Functions to set/get aspects of lookup mode
+
+function setMouseLookupMode() {
+  document.documentElement.setAttribute("lookup-mode", "mouse");
+
+  // Remove any events to switch to mouse lookup mode
+  window.removeEventListener("mousemove", setMouseLookupMode);
+}
+
+function setKeyLookupMode() {
+  document.documentElement.setAttribute("lookup-mode", "key");
+
+  // Prepare an event to switch to mouse lookup move when the mouse is moved
+  window.addEventListener("mousemove", setMouseLookupMode);
+}
+
+function setOffLookupMode() {
+  document.documentElement.setAttribute("lookup-mode", "off");
+}
+
+function getLookupMode() {
+  return document.documentElement.getAttribute("lookup-mode");
+}
+
+function lookupModeEnabled() {
+  const lookupMode = getLookupMode();
+  return lookupMode && lookupMode !== "off";
+}
+
+function mouseLookupModeEnabled() {
+  return getLookupMode() === "mouse";
+}
+
+function keyLookupModeEnabled() {
+  return getLookupMode() === "key";
+}
+
 /**
  * Start lookup mode
  */
 function startLookupMode(e) {
   // If this gets triggered when we're already in lookup mode, end it
-  if (document.documentElement.getAttribute("lookup-mode") == "true") {
-    document.documentElement.setAttribute("lookup-mode", "false");
+  if (lookupModeEnabled()) {
+    setOffLookupMode();
     return;
   }
 
-  document.documentElement.setAttribute("lookup-mode", "true");
+  if (e instanceof PointerEvent && e.pointerId !== -1)
+    setMouseLookupMode();
+  else
+    setKeyLookupMode();
 
   // Prepare an event to look up the target
   window.addEventListener("click", lookupTarget);
@@ -719,13 +762,15 @@ function startLookupMode(e) {
  * Look up the target character being hovered over
  */
 function lookupTarget(e) {
+  // End lookup mode
+  setOffLookupMode();
+  window.removeEventListener("click", lookupTarget);
+
   // First, figure out what's being hovered over. Check the Your Character frame, as well as all character cards
   let imgFrame = document.querySelector("#your-char-img-frame:hover, .character-img-frame:hover, .inspect-img-frame:hover");
 
   if (!imgFrame) {
-    // Nothing is hovered over, so dismiss look up mode
-    document.documentElement.setAttribute("lookup-mode", "false");
-    window.removeEventListener("click", lookupTarget);
+    // Nothing is hovered over, so return without doing anything else
     return;
   }
 
@@ -740,8 +785,6 @@ function lookupTarget(e) {
   let searchUrl = charsetConfig.lookupUrl;
   searchUrl = searchUrl.replace("%s", charName.replace(" ", "%20"));
   open(searchUrl);
-
-  document.documentElement.setAttribute("lookup-mode", "false");
 }
 
 /**
@@ -989,7 +1032,7 @@ function flipGuess(e) {
 function flipCard(e) {
 
   // Don't flip if we're in lookup mode
-  if (document.documentElement.getAttribute("lookup-mode") == "true")
+  if (lookupModeEnabled())
     return;
 
   let frameEl;
@@ -1240,18 +1283,37 @@ function navigateGame(e) {
     case " ":
     case "z":
     case "Enter":
-      if (currentIndex === -1)
+      if (currentIndex === -1) {
+        // Nothing is selected, so do nothing (except dismiss lookup mode if in it)
+        if (lookupModeEnabled())
+          setOffLookupMode();
         return;
+      }
       e.stopPropagation();
       e.preventDefault();
-      // Simulate a click event
-      document.activeElement.click();
+      if (lookupModeEnabled()) {
+        lookupTarget(e);
+      } else {
+        // Simulate a click event
+        document.activeElement.click();
+      }
       return;
 
     case "x":
+      // Cancel button
+
+      // Dismiss lookup mode if in it
+      if (lookupModeEnabled()) {
+        setOffLookupMode();
+        return;
+      }
+
+      // Do nothing if not on a character card
       if (currentIndex < numButtonsBeforePlayArea + numGuessIcons ||
         currentIndex >= numButtonsBeforePlayArea + numGuessIcons + numCharacterCards)
         return;
+
+      // On a character card, so mark it
       e.stopPropagation();
       e.preventDefault();
       // Simulate a right-click event, which will trigger marking the card if a card is selected
@@ -1265,6 +1327,13 @@ function navigateGame(e) {
       return;
 
     case "Escape":
+
+      // Dismiss lookup mode if in it
+      if (lookupModeEnabled()) {
+        setOffLookupMode();
+        return;
+      }
+
       if (GAME_NOTES_DIALOG.hasAttribute("open"))
         return;
       e.stopPropagation();
@@ -1295,6 +1364,12 @@ function navigateGame(e) {
     default:
       return;
   }
+
+  // If we get here, one of the buttons to navigate has been pressed
+
+  // If we were previously in mouse lookup mode, switch to key lookup mode
+  if (mouseLookupModeEnabled())
+    setKeyLookupMode();
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first character card
