@@ -724,7 +724,7 @@ textarea {
 .character-card.inspect .character-name-popup {
   animation: 0.125s ease-out 1 shift-up;
   scale    : calc(var(--inspect-scale) * 100%);
-  bottom   : calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
+  bottom   : calc((0.25 + 0.75 * var(--inspect-scale)) * var(--card-row-height));
 }
 
 @keyframes shift-up {
@@ -735,7 +735,7 @@ textarea {
 
   to {
     scale : calc(var(--inspect-scale) * 100%);
-    bottom: calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
+    bottom: calc((0.25 + 0.75 * var(--inspect-scale)) * var(--card-row-height));
   }
 }
 
@@ -748,7 +748,7 @@ textarea {
 @keyframes shift-down {
   from {
     scale : calc(var(--inspect-scale) * 100%);
-    bottom: calc((0.5 + 0.5 * var(--inspect-scale)) * var(--card-row-height));
+    bottom: calc((0.25 + 0.75 * var(--inspect-scale)) * var(--card-row-height));
   }
 
   to {
