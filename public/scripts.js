@@ -778,8 +778,10 @@ function lookupTarget(e) {
   let lookupFeature;
   if (keyLookupModeEnabled())
     lookupFeature = ":focus-visible";
-  else
+  else if (mouseLookupModeEnabled())
     lookupFeature = ":hover";
+  else
+    lookupFeature = ":is(:focus-visible, :hover)";
   let imgFrame = document.querySelector(`#your-char-img-frame${lookupFeature}, .character-img-frame${lookupFeature}, ` +
     `.inspect-img-frame${lookupFeature}`);
 
@@ -1356,6 +1358,11 @@ function navigateGame(e) {
     case "c":
       // Flip all cards
       lCharacterCardFrames.forEach((el) => flipCard(el));
+      return;
+
+    case "l":
+      // Look up character
+      lookupTarget(e);
       return;
 
     case "Escape":
