@@ -111,5 +111,5 @@ Yes, please do! This project has a permissive license, so you don't even need to
 
 * Mysteri Gii - Testing, feedback, and support
 
-- https://x.com/MysteryGii0
-- https://bsky.app/profile/mysterygii0.bsky.social
+  * https://x.com/MysteryGii0
+  * https://bsky.app/profile/mysterygii0.bsky.social
