@@ -719,6 +719,7 @@ function setKeyLookupMode() {
 
 function setOffLookupMode() {
   window.removeEventListener("mousemove", setMouseLookupMode);
+  window.removeEventListener("click", lookupTarget);
   document.documentElement.setAttribute("lookup-mode", "off");
 }
 
@@ -751,11 +752,17 @@ function startLookupMode(e) {
 
   if (e instanceof PointerEvent && e.pointerId !== -1)
     setMouseLookupMode();
-  else
+  else {
     setKeyLookupMode();
+    // If starting in key mode, move focus to the first character card
+    lCharacterCardFrames[0].focus({ focusVisible: true });
+  }
 
   // Prepare an event to look up the target
   window.addEventListener("click", lookupTarget);
+
+  // Set the lookup mode cursor in the proper position
+  updateLookupCursorPosition();
 
   // Stop propagation, as otherwise the lookupTarget function will be called immediately
   e.stopPropagation();
@@ -765,15 +772,20 @@ function startLookupMode(e) {
  * Look up the target character being hovered over
  */
 function lookupTarget(e) {
-  // End lookup mode
-  setOffLookupMode();
-  window.removeEventListener("click", lookupTarget);
 
-  // First, figure out what's being hovered over. Check the Your Character frame, as well as all character cards
-  let imgFrame = document.querySelector("#your-char-img-frame:hover, .character-img-frame:hover, .inspect-img-frame:hover");
+  // First, figure out what to look up. Check the Your Character frame, as well as all character cards. What feature we
+  // check for depends on which lookup mode we're in
+  let lookupFeature;
+  if (keyLookupModeEnabled())
+    lookupFeature = ":focus-visible";
+  else
+    lookupFeature = ":hover";
+  let imgFrame = document.querySelector(`#your-char-img-frame${lookupFeature}, .character-img-frame${lookupFeature}, ` +
+    `.inspect-img-frame${lookupFeature}`);
 
   if (!imgFrame) {
-    // Nothing is hovered over, so return without doing anything else
+    // Nothing is hovered over, so end lookup mode and return without doing anything else
+    setOffLookupMode();
     return;
   }
 
@@ -788,13 +800,22 @@ function lookupTarget(e) {
   let searchUrl = charsetConfig.lookupUrl;
   searchUrl = searchUrl.replace("%s", charName.replace(" ", "%20"));
   open(searchUrl);
+
+  // End lookup mode
+  setOffLookupMode();
 }
 
 function updateLookupCursorPosition() {
+
+  // Determine the position from the focused element, if any
   const focusedElement = document.querySelector(":focus-visible");
+  if (!focusedElement)
+    return;
+
   const rect = focusedElement.getBoundingClientRect();
   const x = 0.5 * (rect.left + rect.right) + window.scrollX - 0.25 * GAME_LOOKUP_CURSOR.naturalWidth;
   const y = 0.5 * (rect.top + rect.bottom) + window.scrollY - 0.5 * GAME_LOOKUP_CURSOR.naturalHeight;
+
   GAME_LOOKUP_CURSOR.setAttribute("style", `top: ${y}px; left: ${x}px;`);
 }
 
