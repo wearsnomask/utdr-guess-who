@@ -89,18 +89,6 @@ let gameLoading = false;
 // Loaded info about all available character sets
 let lCharsets = null;
 
-// Info about and in the currently-loaded character set
-let loadedCharset = null;
-let charsetPath = null;
-let lCharImageNames = null;
-let lCharInfo = null;
-let numImagesToLoadTotal = 0;
-let numImagesLoading = 0;
-
-// The player's character for the current game
-let yourCharIndex = null;
-
-
 // Functions
 // ---------
 
@@ -663,9 +651,10 @@ const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
-const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14"
-
 // Other constants
+const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14"
+const DEFAULT_CHARSET_CONFIG = { "lookupUrl": DEFAULT_LOOKUP_URL }
+
 const MIN_INSPECT_SCALE = 1.5;
 const MAX_INSPECT_SCALE = 8;
 const INSPECT_SCALE_INCREMENT = 0.5;
@@ -680,6 +669,18 @@ let lCharacterCardFrames = [];
 let lGameButtonsBeforePlayArea = null;
 let lGameButtonsAfterPlayArea = null;
 let lGameFocusableItems = null;
+
+// Info about and in the currently-loaded character set
+let loadedCharset = null;
+let charsetPath = null;
+let charsetConfig = null;
+let lCharImageNames = null;
+let lCharInfo = null;
+let numImagesToLoadTotal = 0;
+let numImagesLoading = 0;
+
+// The player's character for the current game
+let yourCharIndex = null;
 
 // Functions
 // ---------
@@ -736,7 +737,7 @@ function lookupTarget(e) {
   let charName = imgFrame.value;
 
   // Construct the URL for the search
-  let searchUrl = DEFAULT_LOOKUP_URL;
+  let searchUrl = charsetConfig.lookupUrl;
   searchUrl = searchUrl.replace("%s", charName.replace(" ", "%20"));
   open(searchUrl);
 
@@ -836,13 +837,19 @@ async function loadCharacterSet(setName) {
   if (setName === loadedCharset)
     return;
 
+  // Load the meta file for the character set
   charsetPath = "character-sets/" + setName.replaceAll(" ", "%20");
-
-  // Fetch the characters in the set from the meta file
   const charMetaUrl = charsetPath + "/char-meta.json";
   const charsetMeta = await loadJSON(charMetaUrl)
     .catch((err) => alert("ERROR: Could not load character information from " + charMetaUrl + ".\n" +
       "Try refreshing the page in case this is a temporary issue. The error message received was: \n" + err));
+
+  // Get the config for the character set from the meta file
+  charsetConfig = charsetMeta.config;
+  if (charsetConfig === null)
+    charsetConfig = DEFAULT_CHARSET_CONFIG;
+
+  // Fetch the characters in the set from the meta file
   lCharImageNames = charsetMeta.chars;
   const dCharInfo = {};
 
