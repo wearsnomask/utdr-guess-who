@@ -89,6 +89,9 @@ let gameLoading = false;
 // Loaded info about all available character sets
 let lCharsets = null;
 
+// Whether or not the site is run as a Tauri app
+let tauriMode = false;
+
 // Functions
 // ---------
 
@@ -254,16 +257,21 @@ function approach(cur, target, frac = 0.2, minChange = 0.01) {
 }
 
 /**
- * Checks if this is run as a Tauri app or not
- * @returns {Boolean}
+ * Checks if this is run as a Tauri app or not and stores the value for here and the CSS
  */
-function tauriMode() {
-  return !!(window.__TAURI__);
+function setTauriMode() {
+  if (window.__TAURI__) {
+    tauriMode = true;
+    document.documentElement.setAttribute("tauri-mode", "true");
+  } else {
+    document.documentElement.setAttribute("tauri-mode", "false");
+  }
 }
 
 // Setup
 // -----
 
+setTauriMode();
 const cookieData = getCookie();
 
 
