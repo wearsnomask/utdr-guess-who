@@ -253,6 +253,14 @@ function approach(cur, target, frac = 0.2, minChange = 0.01) {
   return cur + change;
 }
 
+/**
+ * Checks if this is run as a Tauri app or not
+ * @returns {Boolean}
+ */
+function tauriMode() {
+  return !!(window.__TAURI__);
+}
+
 // Setup
 // -----
 
