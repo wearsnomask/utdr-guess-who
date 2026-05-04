@@ -1,0 +1,12 @@
+{
+  "name": "utdr-guess-who",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "tauri": "./scripts/make-meta.sh && tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}
