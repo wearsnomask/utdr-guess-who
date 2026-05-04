@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Define constants
+# Constants
 CHARSET_META_FILENAME=charset-meta.json
 CHAR_META_FILENAME=char-meta.json
 CONFIG_FILENAME=config.json
@@ -9,8 +9,39 @@ CONFIG_FILENAME=config.json
 ROOT_DIR=$(dirname -- $(readlink -f $BASH_SOURCE))/..
 CHARSET_DIR=$ROOT_DIR/public/character-sets
 
-# Start creating the character set meta file
 cd $CHARSET_DIR
+
+# If doing a Tauri build, we need to correct for a bug where Tauri doesn't support file/dir names with spaces in them,
+# so we move into a build directory for that
+if [ ! -z $TAURI ]; then
+
+  rm -r build
+  mkdir -p build
+
+  for DIRNAME in *; do
+
+    # Skip any files in this directory, as well as the build directory
+    if [[ -f $DIRNAME || "$DIRNAME" == "build" ]]; then
+      echo "Skipping $DIRNAME"
+      continue
+    fi
+
+    # Copy all directories over, replacing spaces with %20
+    SLASH_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /\\ /g')
+    PERCENT_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /%20/g')
+    CMD="cp -r $SLASH_ESCAPED_DIRNAME build/"
+    eval $CMD
+    if [[ ! $SLASH_ESCAPED_DIRNAME == $PERCENT_ESCAPED_DIRNAME ]]; then
+      CMD="mv build/$SLASH_ESCAPED_DIRNAME build/$PERCENT_ESCAPED_DIRNAME"
+      eval $CMD
+    fi
+
+  done
+fi
+
+exit
+
+# Start creating the character set meta file
 echo -n '{"sets":[' > $CHARSET_META_FILENAME
 
 # Loop over character set folders. For each, add its entry to the character set meta file and make its character meta
