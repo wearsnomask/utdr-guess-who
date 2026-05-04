@@ -975,16 +975,20 @@ async function loadCharacterSet(setName) {
   const lUnsortedChars = [];
 
   lCharImageNames.forEach((charImgName) => {
+
+    let escapedCharImgName = charImgName;
+    escapedCharImgName = charImgName.replace(" ", "%20");
+
     // Check if this name starts with an index
     let i = parseInt(charImgName.split("-")[0]);
     if ((i === NaN) || (!charImgName.startsWith(i.toString()))) {
       // Doesn't appear to start with an index, so add it to the unsorted list
-      lUnsortedChars.push({ imgName: charImgName.replace(" ", "%20"), name: charImgName.replace(".png", "") });
+      lUnsortedChars.push({ imgName: escapedCharImgName, name: charImgName.replace(".png", "") });
       return;
     }
 
     // This appears to be indexed
-    let charInfo = { imgName: charImgName.replace(" ", "%20"), name: charImgName.replace(i + "-", "").replace(".png", "") };
+    let charInfo = { imgName: escapedCharImgName, name: charImgName.replace(i + "-", "").replace(".png", "") };
 
     // Make sure it can fit into the sorted list and isn't already present
     if (i > lSortedChars.length - 1)
