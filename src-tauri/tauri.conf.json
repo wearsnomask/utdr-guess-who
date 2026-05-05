@@ -4,7 +4,11 @@
   "version": "1.0.0",
   "identifier": "com.wearsnomask.utdr-guess-who",
   "build": {
-    "frontendDist": "../public"
+    "beforeDevCommand": "./scripts/make_meta.sh",
+    "beforeBuildCommand": "./scripts/make_meta.sh",
+    "afterDevCommand": "rm -rf build/",
+    "afterBuildCommand": "rm -rf build/",
+    "frontendDist": "../build/public"
   },
   "app": {
     "withGlobalTauri": true,
@@ -23,7 +27,7 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "../public/img/sHeart_0.png"
+      "../build/public/img/sHeart_0.png"
     ]
   }
 }

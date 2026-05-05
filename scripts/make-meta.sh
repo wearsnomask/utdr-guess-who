@@ -7,36 +7,38 @@ CONFIG_FILENAME=config.json
 
 # Get the directory for all character sets
 ROOT_DIR=$(dirname -- $(readlink -f $BASH_SOURCE))/..
-CHARSET_DIR=$ROOT_DIR/public/character-sets
-
-cd $CHARSET_DIR
 
 # If doing a Tauri build, we need to correct for a bug where Tauri doesn't support file/dir names with spaces in them,
-# so we move into a build directory for that
+# so we copy everything into a build directory and rename the files and directories there so there are no spaces
 if [ ! -z $TAURI ]; then
 
-  rm -r build
-  mkdir -p build
+  cd $ROOT_DIR
+  rm -rf build
+  mkdir build
+  cp -r public build/
+
+  CHARSET_DIR=$ROOT_DIR/build/public/character-sets
+  cd $CHARSET_DIR
 
   for DIRNAME in *; do
 
-    # Skip any files in this directory, as well as the build directory
+    # Skip any files in this directory
     if [[ -f $DIRNAME || "$DIRNAME" == "build" ]]; then
-      echo "Skipping $DIRNAME"
       continue
     fi
 
-    # Copy all directories over, replacing spaces with %20
+    # Rename all directories, replacing spaces with %20
     SLASH_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /\\ /g')
     PERCENT_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /%20/g')
-    CMD="cp -r $SLASH_ESCAPED_DIRNAME build/"
-    eval $CMD
     if [[ ! $SLASH_ESCAPED_DIRNAME == $PERCENT_ESCAPED_DIRNAME ]]; then
-      CMD="mv build/$SLASH_ESCAPED_DIRNAME build/$PERCENT_ESCAPED_DIRNAME"
+      CMD="mv $SLASH_ESCAPED_DIRNAME $PERCENT_ESCAPED_DIRNAME"
       eval $CMD
     fi
 
   done
+else
+  CHARSET_DIR=$ROOT_DIR/public/character-sets
+  cd $CHARSET_DIR
 fi
 
 exit
