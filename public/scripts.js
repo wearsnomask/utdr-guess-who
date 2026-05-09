@@ -991,12 +991,18 @@ async function loadCharacterSet(setDirName) {
     let i = parseInt(charImgName.split("-")[0]);
     if ((i === NaN) || (!charImgName.startsWith(i.toString()))) {
       // Doesn't appear to start with an index, so add it to the unsorted list
-      lUnsortedChars.push({ imgName: escapedCharImgName, name: charImgName.replace(".png", "") });
+      lUnsortedChars.push({
+        imgName: escapedCharImgName,
+        name: charImgName.replace(".png", "").replaceAll("%20", " ")
+      });
       return;
     }
 
     // This appears to be indexed
-    let charInfo = { imgName: escapedCharImgName, name: charImgName.replace(i + "-", "").replace(".png", "") };
+    let charInfo = {
+      imgName: escapedCharImgName,
+      name: charImgName.replace(i + "-", "").replace(".png", "").replaceAll("%20", " ")
+    };
 
     // Make sure it can fit into the sorted list and isn't already present
     if (i > lSortedChars.length - 1)
