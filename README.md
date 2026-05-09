@@ -1,6 +1,10 @@
 # UTDR Guess Who Unlimited
 
-[Play the game!](https://wearsnomask.github.io/utdr-guess-who/)
+## Quick Start
+
+[Play the game online now](https://wearsnomask.github.io/utdr-guess-who/) or [download it from the project releases](https://github.com/wearsnomask/utdr-guess-who/releases/latest) (you can also download previous versions of it here if you'd prefer). Note that the downloaded version will likely trigger a security warning about installing an untrusted program on your system; you can always just play the online version if you want to be safe.
+
+## About
 
 This is the repo for a Guess Who game for sets of Undertale and Deltarune characters, based on the original concept by Seek's Stuff: https://seeksstuff.itch.io/deltarune-guess-who.
 
@@ -10,7 +14,7 @@ This is a fan game of a fan game, and isn't officially associated with Toby Fox 
 
 ## Adding Character Sets
 
-This game is designed to make it as easy as possible to extend it to add in new sets of characters to play with. Here's how to do it.
+This game is designed to make it as easy as possible to extend it to add in new sets of characters to play with. Here's how to do it:
 
 ### Designing the set
 
@@ -24,7 +28,7 @@ Try to get original sprites if possible, for the best quality - pixel art can ge
 
 ### Adding it to the game
 
-To be able to add any character sets to the game, fork this project, and set it up to be served publicly via GitHub Pages, using the option to deploy via a workflow (using the existing "static.yml" workflow). If you aren't familiar with using GitHub Pages, a good tutorial on using it is provided by The Odin Project here: https://www.theodinproject.com/lessons/foundations-recipes#viewing-your-project-on-the-web. Or if all of this working with a repo is something you aren't familiar with, other tutorials on this site can help you with that too.
+To be able to add any character sets to the game, fork this project, and set it up to be served publicly via GitHub Pages, using the option to deploy via a workflow (using the existing "static.yml" workflow - note that this workflow includes an extra step in it to run a script and set up some needed files). If you aren't familiar with using GitHub Pages, a good tutorial on using it is provided by The Odin Project here: https://www.theodinproject.com/lessons/foundations-recipes#viewing-your-project-on-the-web. Or if all of this working with a repo is something you aren't familiar with, other tutorials on this site can help you with that too.
 
 Then, edit the repo by adding in a folder with your character set in the "public/character-sets" folder. The name of the folder will be used exactly as it for the name of the character set. If you want (but you probably don't need to worry about this), you can add an index before the name of the character set in the folder to affect how it's sorted when the options are given to the player, e.g. folders named `1-Undertale` and `2-Deltarune` will put the Undertale character set first, whereas without the indices it would sort alphabetically with Deltarune first.
 
@@ -82,6 +86,10 @@ The following features have been added:
 ### Can I further mod/extend this myself?
 
 Yes, please do! This project has a permissive license, so you don't even need to ask me to go ahead.
+
+### Are there any differences between the online and downloadable versions of the game?
+
+No substantial differences, just some minor necessary styling differences due to the limitations of the packager (Tauri) for the downloadable version. You can also play older versions of the game with the downloadable version, and it of course lets you play offline and will load a bit faster. But this of course comes with the drawback of needing to install it and trusting it.
 
 ## Contact/Socials
 
