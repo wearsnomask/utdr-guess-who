@@ -87,7 +87,7 @@ let sceneSwitching = false;
 let gameLoading = false;
 
 // Loaded info about all available character sets
-let lCharsets = null;
+let lCharsetDirs = null;
 
 // Whether or not the site is run as a Tauri app
 let tauriMode = false;
@@ -391,7 +391,6 @@ const L_MENU_CONFIG_OPTIONS = [MENU_CHARSET_LABEL, MENU_ADD_CHARSET_LINK];
 
 const L_MENU_OPTIONS = [...L_MENU_MAIN_OPTIONS, ...L_MENU_CONFIG_OPTIONS];
 
-const CHARSET_SELECT = document.getElementById("charset-select");
 const CHARSET_OPTION_TEMPLATE = document.getElementById("charset-option-template");
 
 // Functions
@@ -430,13 +429,13 @@ async function startGame() {
   document.querySelectorAll(".game-loading-message").forEach(el => el.classList.remove("hidden"));
 
   // Load the selected character set
-  const setName = CHARSET_SELECT.value;
-  if (!setName) {
+  const setDirName = MENU_CHARSET_SELECT.value;
+  if (!setDirName) {
     alert("ERROR: No character set selected. Try reloading the page to see if the sets load properly.");
     gameLoading = false;
     return;
   }
-  await loadCharacterSet(setName);
+  await loadCharacterSet(setDirName);
 
   // Make sure lookup mode starts disabled
   setOffLookupMode();
@@ -600,23 +599,32 @@ async function loadCharacterSetList() {
   const charsetMeta = await loadJSON(charsetMetaUrl)
     .catch((err) => alert("ERROR: Could not load character set information from " + charsetMetaUrl + ".\n" +
       "Try refreshing the page in case this is a temporary issue. The error message received was: \n" + err));
-  lCharsets = charsetMeta.sets;
+  lCharsetDirs = charsetMeta.sets;
 
   // Check through the names of character sets to determine how they should be sorted
   const lSortedCharsets = [];
   const lUnsortedCharsets = [];
 
-  lCharsets.forEach((charsetName) => {
+  lCharsetDirs.forEach((charsetDirName) => {
+
     // Check if this name starts with an index
-    let i = parseInt(charsetName.split("-")[0]);
-    if ((i === NaN) || (!charsetName.startsWith(i.toString()))) {
+    const i = parseInt(charsetDirName.split("-")[0]);
+
+    if ((i === NaN) || (!charsetDirName.startsWith(i.toString()))) {
       // Doesn't appear to start with an index, so add it to the unsorted list
-      lUnsortedCharsets.push({ name: charsetName, unindexedName: charsetName });
+      lUnsortedCharsets.push({
+        // In case it's a Tauri build, replace back spaces in the name of the set
+        name: charsetDirName.replaceAll("%20", " "),
+        dirName: charsetDirName,
+      });
       return;
     }
 
     // This appears to be indexed
-    let charsetNameInfo = { name: charsetName, unindexedName: charsetName.replace(i + "-", "") };
+    let charsetNameInfo = {
+      name: charsetDirName.replace(i + "-", "").replaceAll("%20", " "),
+      dirName: charsetDirName
+    };
 
     // Make sure it can fit into the sorted list and isn't already present
     if (i > lSortedCharsets.length - 1)
@@ -636,9 +644,9 @@ async function loadCharacterSetList() {
     if (charsetNameInfo === undefined)
       return;
     const newCharsetOption = document.importNode(CHARSET_OPTION_TEMPLATE.content, true).querySelector(".charset-option");
-    newCharsetOption.textContent = charsetNameInfo.unindexedName;
-    newCharsetOption.value = charsetNameInfo.name;
-    CHARSET_SELECT.appendChild(newCharsetOption);
+    newCharsetOption.textContent = charsetNameInfo.name;
+    newCharsetOption.value = charsetNameInfo.dirName;
+    MENU_CHARSET_SELECT.appendChild(newCharsetOption);
   });
 }
 
@@ -943,16 +951,16 @@ function scaleImage(img, frameScale = 1) {
 
 /**
  * Loads all characters in a character set
- * @param {String} setName 
+ * @param {String} setDirName 
  */
-async function loadCharacterSet(setName) {
+async function loadCharacterSet(setDirName) {
 
   // If this set is already loaded, do nothing
-  if (setName === loadedCharset)
+  if (setDirName === loadedCharset)
     return;
 
   // Load the meta file for the character set
-  charsetPath = "character-sets/" + setName.replaceAll(" ", "%20");
+  charsetPath = "character-sets/" + setDirName.replaceAll(" ", "%20");
   const charMetaUrl = charsetPath + "/char-meta.json";
   const charsetMeta = await loadJSON(charMetaUrl)
     .catch((err) => alert("ERROR: Could not load character information from " + charMetaUrl + ".\n" +
@@ -1079,7 +1087,7 @@ async function loadCharacterSet(setName) {
   });
 
   // Mark this set as loaded
-  loadedCharset = setName;
+  loadedCharset = setDirName;
 }
 
 /**
