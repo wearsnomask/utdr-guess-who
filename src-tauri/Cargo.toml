@@ -1,5 +1,6 @@
 [package]
 name = "utdr-guess-who"
+# This version is only used as a fallback, so it isn't kept up to date
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
