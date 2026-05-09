@@ -1,3 +1,6 @@
+# This workflow is based on the example workflow for publishing Tauri apps, provided at
+# https://tauri.app/distribute/pipelines/github/#example-workflow
+
 name: 'publish'
 
 on:
