@@ -614,7 +614,7 @@ async function loadCharacterSetList() {
       // Doesn't appear to start with an index, so add it to the unsorted list
       lUnsortedCharsets.push({
         // In case it's a Tauri build, replace back spaces in the name of the set
-        name: charsetDirName.replaceAll("_", " "),
+        name: charsetDirName.replaceAll("_", " ").replaceAll("%20", " "),
         dirName: charsetDirName,
       });
       return;
@@ -622,7 +622,7 @@ async function loadCharacterSetList() {
 
     // This appears to be indexed
     let charsetNameInfo = {
-      name: charsetDirName.replace(i + "-", "").replaceAll("_", " "),
+      name: charsetDirName.replace(i + "-", "").replaceAll("_", " ").replaceAll("%20", " "),
       dirName: charsetDirName
     };
 
@@ -988,7 +988,10 @@ async function loadCharacterSet(setDirName) {
   lCharImageNames.forEach((charImgName) => {
 
     let escapedCharImgName = charImgName;
-    escapedCharImgName = charImgName.replace(" ", "_");
+    if (tauriMode)
+      escapedCharImgName = charImgName.replace(" ", "_");
+    else
+      escapedCharImgName = charImgName.replace(" ", "%20");
 
     // Check if this name starts with an index
     let i = parseInt(charImgName.split("-")[0]);
@@ -996,7 +999,7 @@ async function loadCharacterSet(setDirName) {
       // Doesn't appear to start with an index, so add it to the unsorted list
       lUnsortedChars.push({
         imgName: escapedCharImgName,
-        name: charImgName.replace(".png", "").replaceAll("_", " ")
+        name: charImgName.replace(".png", "").replaceAll("_", " ").replaceAll("%20", " ")
       });
       return;
     }
@@ -1004,7 +1007,7 @@ async function loadCharacterSet(setDirName) {
     // This appears to be indexed
     let charInfo = {
       imgName: escapedCharImgName,
-      name: charImgName.replace(i + "-", "").replace(".png", "").replaceAll("_", " ")
+      name: charImgName.replace(i + "-", "").replace(".png", "").replaceAll("_", " ").replaceAll("%20", " ")
     };
 
     // Make sure it can fit into the sorted list and isn't already present
