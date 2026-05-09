@@ -4,10 +4,8 @@
   "version": "1.0.0",
   "identifier": "com.wearsnomask.utdr-guess-who",
   "build": {
-    "beforeDevCommand": "./scripts/make_meta.sh",
-    "beforeBuildCommand": "./scripts/make_meta.sh",
-    "afterDevCommand": "rm -rf build/",
-    "afterBuildCommand": "rm -rf build/",
+    "beforeDevCommand": "./scripts/make-meta.sh",
+    "beforeBuildCommand": "./scripts/make-meta.sh",
     "frontendDist": "../build/public"
   },
   "app": {
