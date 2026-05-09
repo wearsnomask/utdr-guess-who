@@ -28,20 +28,36 @@ if [ ! -z $TAURI ]; then
     fi
 
     # Rename all directories, replacing spaces with %20
-    SLASH_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /\\ /g')
     PERCENT_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /%20/g')
-    if [[ ! $SLASH_ESCAPED_DIRNAME == $PERCENT_ESCAPED_DIRNAME ]]; then
-      CMD="mv $SLASH_ESCAPED_DIRNAME $PERCENT_ESCAPED_DIRNAME"
+    if [[ ! $DIRNAME == $PERCENT_ESCAPED_DIRNAME ]]; then
+      CMD="mv \"$DIRNAME\" \"$PERCENT_ESCAPED_DIRNAME\""
       eval $CMD
     fi
 
+    # Now go into the directory and rename all image files
+    cd "$PERCENT_ESCAPED_DIRNAME"
+
+    for FILENAME in *.png; do
+
+      PERCENT_ESCAPED_FILENAME=$(echo -n $FILENAME | sed -e 's/ /%20/g')
+
+      if [[ ! $FILENAME == $PERCENT_ESCAPED_FILENAME ]]; then
+        CMD="mv \"$FILENAME\" \"$PERCENT_ESCAPED_FILENAME\""
+        eval $CMD
+      fi
+
+    done
+
+    cd ..
+
   done
-else
+
+else # Non-Tauri build
+
   CHARSET_DIR=$ROOT_DIR/public/character-sets
   cd $CHARSET_DIR
-fi
 
-exit
+fi
 
 # Start creating the character set meta file
 echo -n '{"sets":[' > $CHARSET_META_FILENAME

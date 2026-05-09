@@ -2,6 +2,9 @@
 charset-meta.json
 char-meta.json
 
+# Build files
+build
+
 # Junk Windows files
 *:Zone.Identifier
 
