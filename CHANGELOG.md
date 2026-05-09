@@ -2,6 +2,10 @@
 
 ## v1.0.1
 
+## Styling/UX Changes
+
+- Added custom icon for site
+
 ### Miscellaneous Changes
 
 - Added ability to build the game for installation via [Tauri](https://github.com/tauri-apps/tauri), with a new "Publish" workflow to publish it as a Release on GitHub

@@ -25,7 +25,7 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "../build/public/img/sHeart_0.png"
+      "../build/public/img/icon.png"
     ]
   }
 }
