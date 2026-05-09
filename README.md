@@ -4,6 +4,7 @@
 
 [Play the game online now](https://wearsnomask.github.io/utdr-guess-who/) or [download it from the project releases](https://github.com/wearsnomask/utdr-guess-who/releases/latest) (you can also download previous versions of it here if you'd prefer). Note that the downloaded version will likely trigger a security warning about installing an untrusted program on your system; you can always just play the online version if you want to be safe.
 
+
 ## About
 
 This is the repo for a Guess Who game for sets of Undertale and Deltarune characters, based on the original concept by Seek's Stuff: https://seeksstuff.itch.io/deltarune-guess-who.
@@ -11,6 +12,7 @@ This is the repo for a Guess Who game for sets of Undertale and Deltarune charac
 This rewrites the original game to function as a web app, for better cross-platform compatibility, sets it up to be easily moddable to add characters or whole new sets of characters, and adds a few other features.
 
 This is a fan game of a fan game, and isn't officially associated with Toby Fox and team or Seek's Stuff. Undertale and Deltarune characters are used under the broad permission Toby Fox has granted for non-commercial fangames.
+
 
 ## Adding Character Sets
 
@@ -57,6 +59,30 @@ Then, look at the URL you get. In this case it will be: `https://undertale.wiki/
 
 You can look at the existing "config.json" files in the character sets in this repo for other examples.
 
+
+## Notes for Developers
+
+The online version of this game is *mostly* served as-is from the `public` folder, with the exception of running the BASH script `scripts/make_meta.sh` first to generate some necessary files (listing the available character sets and characters so that the game can find them). If you're developing the game locally, you'll need to run this script after making any changes to the character sets or characters so that they'll be discoverable when you test it.
+
+The installable version of this game is built using [Tauri](https://github.com/tauri-apps/tauri). If you wish to test this locally, you'll need to [install Node Package Manager (npm)](https://www.theodinproject.com/lessons/foundations-installing-node-js). Once you have npm installed, to install required packages for this project, navigate to the project directory and run:
+
+```bash
+npm install
+```
+
+You can then run a development server to test the installable version of the game with:
+
+```bash
+npm run tauri dev
+```
+
+And build it with:
+
+```bash
+npm run tauri build
+```
+
+
 ## Frequently Asked Questions
 
 ### How does this relate to the original game by Seek?
@@ -89,7 +115,8 @@ Yes, please do! This project has a permissive license, so you don't even need to
 
 ### Are there any differences between the online and downloadable versions of the game?
 
-No substantial differences, just some minor necessary styling differences due to the limitations of the packager (Tauri) for the downloadable version. You can also play older versions of the game with the downloadable version, and it of course lets you play offline and will load a bit faster. But this of course comes with the drawback of needing to install it and trusting it.
+No substantial differences, just some minor necessary styling differences due to the limitations of the packager ([Tauri](https://github.com/tauri-apps/tauri)) for the downloadable version. You can also play older versions of the game with the downloadable version, and it of course lets you play offline and will load a bit faster. But this of course comes with the drawback of needing to install it and trusting it.
+
 
 ## Contact/Socials
 
@@ -97,6 +124,7 @@ No substantial differences, just some minor necessary styling differences due to
 
 - https://x.com/LadyWearsNoMask
 - https://bsky.app/profile/ladywearsnomask.bsky.social
+
 
 ## Credits
 
@@ -117,7 +145,7 @@ No substantial differences, just some minor necessary styling differences due to
 
 **Special Thanks:**
 
-* Mysteri Gii - Testing, feedback, and support
+* Mysteri Gii (Chief Encouragement Officer) - Testing, feedback, and support
 
   * https://x.com/MysteryGii0
   * https://bsky.app/profile/mysterygii0.bsky.social
