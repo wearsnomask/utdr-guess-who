@@ -322,6 +322,10 @@ textarea {
   margin: 0 !important;
 }
 
+.med-left-margin {
+  margin-left: 1rem !important;
+}
+
 .small-bottom-margin {
   margin-bottom: 0.25rem !important;
 }
@@ -413,7 +417,7 @@ textarea {
 }
 
 #menu-logo {
-  width        : 292px;
+  width        : 512px;
   margin-bottom: 0.5rem;
 }
 
