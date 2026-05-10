@@ -1,8 +1,14 @@
 # Changelog
 
-## v1.0.1
+## v1.0.2
 
 ## Styling/UX Changes
+
+- Replaced previous logo with new custom logo, since the previous logo contained Seek's branding and it's probably best to not give the impression that this version is maintained by Seek
+
+## v1.0.1
+
+### Styling/UX Changes
 
 - Added custom icon for site
 
