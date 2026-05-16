@@ -49,15 +49,15 @@ And... that's it! Commit the changes, push to the repository, and wait a minute 
 The default size for character images is 80x128px, but this may not work for your purposes. To adjust this, you can add a file called "config.json" to the character set folder, with the contents:
 
 ```json
-{"cardWidth": "<insert-width-here>",
-"cardHeight": "<insert-height-here>"}
+{"cardWidth": <insert-width-here>,
+"cardHeight": <insert-height-here>}
 ```
 
 (or if it already exists for other options, add this option to it). Replace the strings `<insert-width-here>` and `<insert-height-here>` with your desired width and height in pixels, e.g.:
 
 ```json
-{"cardWidth": "128",
-"cardHeight": "80"}
+{"cardWidth": 128,
+"cardHeight": 80}
 ```
 
 will flip the aspect ratio to 128x80px for fatter, shorter cards.
@@ -65,7 +65,7 @@ will flip the aspect ratio to 128x80px for fatter, shorter cards.
 You can also only provide one of width and height, and the other will scale up or down by the same factor. E.g.:
 
 ```json
-{"cardWidth": "160"}
+{"cardWidth": 160}
 ```
 
 will double the width and height of all cards.
