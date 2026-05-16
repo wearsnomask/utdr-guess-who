@@ -984,6 +984,12 @@ async function loadCharacterSet(setDirName) {
     // Use the full default config if none is provided
     charsetConfig = DEFAULT_CHARSET_CONFIG;
   } else {
+    // If card width and/or height are present, convert them to integers
+    if (charsetConfig.cardWidth)
+      charsetConfig.cardWidth = parseInt(charsetConfig.cardWidth);
+    if (charsetConfig.cardHeight)
+      charsetConfig.cardHeight = parseInt(charsetConfig.cardHeight);
+
     // For card width and height, we handle them explicitly so the user can scale by modifying just one or both
     if (charsetConfig.cardWidth && !charsetConfig.cardHeight) {
       // The user set width but not height, so scale the height to match
