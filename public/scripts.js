@@ -994,11 +994,11 @@ async function loadCharacterSet(setDirName) {
     if (charsetConfig.cardWidth && !charsetConfig.cardHeight) {
       // The user set width but not height, so scale the height to match
       charsetConfig.cardHeight = DEFAULT_CHARSET_CONFIG.cardHeight *
-        (DEFAULT_CHARSET_CONFIG.cardWidth / charsetConfig.cardWidth);
+        (charsetConfig.cardWidth / DEFAULT_CHARSET_CONFIG.cardWidth);
     } else if (charsetConfig.cardHeight && !charsetConfig.cardWidth) {
       // The user set height but not width, so scale the width to match
       charsetConfig.cardWidth = DEFAULT_CHARSET_CONFIG.cardWidth *
-        (DEFAULT_CHARSET_CONFIG.cardHeight / charsetConfig.cardHeight);
+        (charsetConfig.cardHeight / DEFAULT_CHARSET_CONFIG.cardHeight);
     }
     // If the user set both, we don't need to do anything. If they set neither, the standard filling in of details below
     // will handle it
