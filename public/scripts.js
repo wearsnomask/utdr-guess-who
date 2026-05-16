@@ -701,16 +701,25 @@ const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
-// Other constants
-const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14"
-const DEFAULT_CHARSET_CONFIG = { "lookupUrl": DEFAULT_LOOKUP_URL }
+// Default configuration values
+const BODY_STYLE = window.getComputedStyle(document.body);
+const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14";
+const DEFAULT_CARD_SCALE = +BODY_STYLE.getPropertyValue('--card-scale');
+const DEFAULT_CARD_WIDTH = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-width')) * DEFAULT_CARD_SCALE;
+const DEFAULT_CARD_HEIGHT = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-height')) * DEFAULT_CARD_SCALE;
+const DEFAULT_CHARSET_CONFIG = {
+  "lookupUrl": DEFAULT_LOOKUP_URL,
+  "cardWidth": DEFAULT_CARD_WIDTH,
+  "cardHeight": DEFAULT_CARD_HEIGHT,
+};
 
+// Other constants
 const MIN_INSPECT_SCALE = 1.5;
 const MAX_INSPECT_SCALE = 8;
 const INSPECT_SCALE_INCREMENT = 0.5;
 
 // Globals
-let targetInspectScale = +window.getComputedStyle(document.body).getPropertyValue('--inspect-scale');
+let targetInspectScale = +BODY_STYLE.getPropertyValue('--inspect-scale');
 let inspectScale = targetInspectScale;
 let inspectScaleAdjustInterval = null;
 
@@ -971,8 +980,35 @@ async function loadCharacterSet(setDirName) {
 
   // Get the config for the character set from the meta file
   charsetConfig = charsetMeta.config;
-  if (charsetConfig === null)
+  if (charsetConfig === null) {
+    // Use the full default config if none is provided
     charsetConfig = DEFAULT_CHARSET_CONFIG;
+  } else {
+    // For card width and height, we handle them explicitly so the user can scale by modifying just one or both
+    if (charsetConfig.cardWidth && !charsetConfig.cardHeight) {
+      // The user set width but not height, so scale the height to match
+      charsetConfig.cardHeight = DEFAULT_CHARSET_CONFIG.cardHeight *
+        (DEFAULT_CHARSET_CONFIG.cardWidth / charsetConfig.cardWidth);
+    } else if (charsetConfig.cardHeight && !charsetConfig.cardWidth) {
+      // The user set height but not width, so scale the width to match
+      charsetConfig.cardWidth = DEFAULT_CHARSET_CONFIG.cardWidth *
+        (DEFAULT_CHARSET_CONFIG.cardHeight / charsetConfig.cardHeight);
+    }
+    // If the user set both, we don't need to do anything. If they set neither, the standard filling in of details below
+    // will handle it
+
+    // Check for any missing values in the config and fill them with defaults
+    for (const [key, val] of Object.entries(DEFAULT_CHARSET_CONFIG)) {
+      if (!charsetConfig[key])
+        charsetConfig[key] = val;
+    }
+  }
+
+  // Apply config options as appropriate
+  document.documentElement.style.setProperty("--card-base-img-width",
+    charsetConfig.cardWidth / DEFAULT_CARD_SCALE + "px");
+  document.documentElement.style.setProperty("--card-base-img-height",
+    charsetConfig.cardHeight / DEFAULT_CARD_SCALE + "px");
 
   // Fetch the characters in the set from the meta file
   lCharImageNames = charsetMeta.chars;
