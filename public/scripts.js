@@ -968,6 +968,9 @@ async function loadCharacterSet(setDirName) {
   if (setDirName === loadedCharset)
     return;
 
+  // Unload scale info, which might change with this new set
+  cardScaleInfo = null;
+
   // Load the meta file for the character set
   if (tauriMode)
     charsetPath = "character-sets/" + setDirName.replaceAll(" ", "_");
