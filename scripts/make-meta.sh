@@ -31,7 +31,6 @@ if [ ! -z $TAURI ]; then
     PERCENT_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /_/g')
     if [[ ! $DIRNAME == $PERCENT_ESCAPED_DIRNAME ]]; then
       CMD="mv \"$DIRNAME\" \"$PERCENT_ESCAPED_DIRNAME\""
-      echo "Running command: $CMD"
       eval $CMD
     fi
 
@@ -44,7 +43,6 @@ if [ ! -z $TAURI ]; then
 
       if [[ ! $FILENAME == $PERCENT_ESCAPED_FILENAME ]]; then
         CMD="mv \"$FILENAME\" \"$PERCENT_ESCAPED_FILENAME\""
-        echo "Running command: $CMD"
         eval $CMD
       fi
 
@@ -112,16 +110,9 @@ for DIRNAME in *; do
 
   # Finish off the file
   echo -n '}' >> $CHAR_META_FILENAME
-  echo "Generated character meta file $CHAR_META_FILENAME:"
-  cat $CHAR_META_FILENAME
-  echo ""
   cd ..
 
 done
 
 # Finish off the character set meta file
 echo -n ']}' >> $CHARSET_META_FILENAME
-
-echo "Generated character set meta file $CHARSET_META_FILENAME:"
-cat $CHARSET_META_FILENAME
-echo ""
