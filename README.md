@@ -26,7 +26,9 @@ Decide on a theme for the set and make a list of characters you want to include.
 
 Once you've decided on the characters, get a `.png` image for each of them. Try not to make all the images simple face-on poses - more varied and dynamic poses will help make the game more interesting, by allowing questions like "Are you sitting down in your image?" If the background is transparent, it will default to black, so consider if this is best for the character. If they have design elements such as black or dark colors at the edge, you might want to choose another background color - consider checking where they appear in the game and use the dominant color of that background.
 
-The game displays images at a size of 80px (width) by 128px (height), and will scale up or down by the best integer scale so that the provided image width will fit in this size. This means the ideal sizes are 80x128, 40x64, and 20x32. If the width is pretty far off from one of these values, trim, pad, and/or scale it to match. If the height is too small, don't worry - the image will be centered vertically. But if it's too high, it will overflow the frame, so you might need to add padding to either side.
+By default, the game displays images at a size of 80px (width) by 128px (height), and will scale up or down by the best integer scale so that the provided image width will fit in this size. If this size doesn't work well for you, see the [section below](#card-width-and-height) for how to change it.
+
+This means the ideal sizes are integer multiples or divisions of it such as 160x256, 80x128, 40x64, 20x32, etc. If the width is pretty far off from one of these values, you'll get best results by trimming, padding, and/or scaling it to match. If the height is too small, the image will be centered vertically. If it's too high, it will overflow the frame, so you'll want to trim it vertically or pad it horizontally to prevent this.
 
 Try to get original sprites if possible, for the best quality - pixel art can get blurry if you copy it via screen capture. It'll still be playable if you do, just not as crisp.
 
@@ -40,9 +42,37 @@ Inside this folder, add the images for all the characters in your set, with the 
 
 And... that's it! Commit the changes, push to the repository, and wait a minute for it to be deployed. Your version of the game will be deployed at an address that looks like "https://your-github-username.github.io/utdr-guess-who/", and you can share this with your friends so you can all play with the character set you added.
 
-### Enabling wiki lookup
+### Other configuration
 
-There's one extra feature you can add to your character set: Wiki lookup. If you don't set up anything special, then the "Look up character" option will do a Google search when used with your character set. But with a bit of extra config, you can set it to search a specific wiki for the character instead, like is done for the sets built into the game.
+#### Card width and height
+
+The default size for character images is 80x128px, but this may not work for your purposes. To adjust this, you can add a file called "config.json" to the character set folder, with the contents:
+
+```json
+{"cardWidth": "<insert-width-here>",
+"cardHeight": "<insert-height-here>"}
+```
+
+(or if it already exists for other options, add this option to it). Replace the strings `<insert-width-here>` and `<insert-height-here>` with your desired width and height in pixels, e.g.:
+
+```json
+{"cardWidth": "128",
+"cardHeight": "80"}
+```
+
+will flip the aspect ratio to 128x80px for fatter, shorter cards.
+
+You can also only provide one of width and height, and the other will scale up or down by the same factor. E.g.:
+
+```json
+{"cardWidth": "160"}
+```
+
+will double the width and height of all cards.
+
+#### Enabling wiki lookup
+
+One extra feature you can add to your character set is wiki lookup. If you don't set up anything special, then the "Look up character" option will do a Google search when used with your character set. But with a bit of extra config, you can set it to search a specific wiki for the character instead, like is done for the sets built into the game.
 
 To do this, add a file called "config.json" to the character set folder, with the contents:
 
@@ -50,7 +80,7 @@ To do this, add a file called "config.json" to the character set folder, with th
 {"lookupUrl": "<insert-search-url-here>"}
 ```
 
-In this, replace the string `<insert-search-url-here>` with a URL that can be used to run a search on your wiki of choice, using `%s` in place of the search string. For instance, let's say
+(or if it already exists for other options, add this option to it). In this, replace the string `<insert-search-url-here>` with a URL that can be used to run a search on your wiki of choice, using `%s` in place of the search string. For instance, let's say
 you want to search on [the Undertale wiki](https://undertale.wiki/). You can find the search string by going to that wiki, then performing a search that won't land any direct hits, e.g. searching for "my search string".
 
 Then, look at the URL you get. In this case it will be: `https://undertale.wiki/index.php?search=my+search+string&title=Special:Search&wprov=acrw1_-1&ns0=1` Copy this string into your "config.json" file, and replace the part of it that contains the string you searched for with `%s`. In this example, your config file will now look like this:
