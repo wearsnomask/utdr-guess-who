@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.3
+
+## API/Modding Changes
+
+- Added ability to define custom card widths and heights in a character set's `config.json` file
+
+## Styling/UX Changes
+
+- Adjusted display of top-row buttons to fit the window better in widths of ~800-900px
+
 ## v1.0.2
 
 ## Styling/UX Changes
