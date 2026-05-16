@@ -322,12 +322,20 @@ textarea {
   margin: 0 !important;
 }
 
+.small-left-margin {
+  margin-left: 0.25rem !important;
+}
+
 .med-left-margin {
   margin-left: 1rem !important;
 }
 
 .small-bottom-margin {
   margin-bottom: 0.25rem !important;
+}
+
+.smallmed-bottom-margin {
+  margin-bottom: 0.5rem !important;
 }
 
 .no-bottom-margin {
@@ -709,9 +717,19 @@ textarea {
 }
 
 #cards-top-line {
+  max-width      : 100%;
   display        : flex;
+  flex-wrap      : wrap;
+  gap            : 0.25rem;
   justify-content: space-between;
   align-items    : center;
+}
+
+@media (max-width: 900px) {
+  #cards-top-line {
+    flex-direction: column;
+    align-items   : flex-start;
+  }
 }
 
 #card-grid {
