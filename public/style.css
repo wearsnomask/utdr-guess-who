@@ -899,24 +899,40 @@ textarea {
   padding: 1rem 0;
 }
 
-/* Controls scene */
+/* Settings scene */
 
-#controls-scene {
+#settings-scene {
   padding   : 1rem 0;
   align-self: center;
   max-width : 735px;
 }
 
-#controls-grid {
+#settings-grid {
   display              : grid;
   grid-template-columns: 1fr 2fr;
-  row-gap              : 1rem;
-  column-gap           : 1rem;
+  gap                  : 1rem;
 }
 
-#controls-grid .left-column {
+#settings-grid .left-column {
   text-align: right;
-  color     : yellow;
+}
+
+/* Config scene */
+
+#config-scene {
+  padding   : 1rem 0;
+  align-self: center;
+  max-width : 735px;
+}
+
+#config-grid {
+  display              : grid;
+  grid-template-columns: 3fr 1fr;
+  gap                  : 1rem;
+}
+
+#config-grid .left-column {
+  text-align: right;
 }
 
 /* Credits scene */
