@@ -1653,6 +1653,104 @@ CONTROLS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
 const controlsSceneSwitchWatcher = new SceneSwitchWatcher(CONTROLS_SCENE, initControlsScene, exitControlsScene);
 
 
+// Settings scene
+// ==============
+
+// Constants and globals
+// ---------------------
+
+// Constant DOM references
+const SETTINGS_SCENE_HEADER = document.getElementById("settings-scene");
+
+const SETTINGS_NAME_EDIT = document.getElementById("settings-edit-name");
+const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
+const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
+const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
+
+const L_SETTINGS_OPTIONS = [SETTINGS_NAME_EDIT, SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BACK_BUTTON];
+
+const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
+
+
+// Functions
+// ---------
+
+function initSettingsScene() {
+  SETTINGS_BACK_BUTTON.focus({ focusVisible: true });
+  SETTINGS_SCENE_HEADER.scrollIntoView();
+  window.addEventListener("keydown", navigateSettings);
+}
+
+function exitSettingsScene() {
+  window.removeEventListener("keydown", navigateSettings);
+}
+
+/**
+ * Keyboard navigation for the settings scene
+ * @param {KeyboardEvent} e 
+ */
+function navigateSettings(e) {
+  let currentIndex = L_SETTINGS_OPTIONS.findIndex((el) => document.activeElement === el);
+
+  // Check the direction of navigation
+  let dir;
+
+  switch (e.key) {
+    case "ArrowDown":
+    case "ArrowRight":
+    case "s":
+    case "d":
+      dir = 1;
+      break;
+
+    case "ArrowUp":
+    case "ArrowLeft":
+    case "w":
+    case "a":
+      dir = -1;
+      break;
+
+    case " ":
+    case "z":
+    case "Enter":
+      if (currentIndex === -1)
+        return;
+      const el = document.activeElement;
+      if ([SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT].includes(el)) {
+        cycleSelect(el);
+      } else {
+        el.click();
+      }
+      return;
+
+    default:
+      return;
+  }
+
+  if (currentIndex == -1) {
+    // Not in the options currently, so go to the first
+    L_SETTINGS_OPTIONS[0].focus({ focusVisible: true });
+    return;
+  }
+
+  // move to the next or previous item, and loop around if necessary
+  currentIndex += dir;
+  if (currentIndex < 0) {
+    currentIndex = L_SETTINGS_OPTIONS.length - 1;
+  }
+  else if (currentIndex >= L_SETTINGS_OPTIONS.length) {
+    currentIndex = 0;
+  }
+
+}
+
+// Setup
+// -----
+
+SETTINGS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);
+
+
 // Credits scene
 // =============
 
