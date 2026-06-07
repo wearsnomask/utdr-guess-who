@@ -72,6 +72,7 @@ const MENU_SCENE = document.getElementById("menu-scene");
 const GAME_SCENE = document.getElementById("game-scene");
 const INSTRUCTIONS_SCENE = document.getElementById("instructions-scene");
 const CONTROLS_SCENE = document.getElementById("controls-scene");
+const SETTINGS_SCENE = document.getElementById("settings-scene");
 const CREDITS_SCENE = document.getElementById("credits-scene");
 
 // Other constants
@@ -181,11 +182,6 @@ function switchScene(newScene = MENU_SCENE) {
  * @param {KeyboardEvent} e
  */
 function navigateTextScenes(e) {
-  // Only execute in appropriate scenes
-  if (INSTRUCTIONS_SCENE.classList.contains("hidden") && CONTROLS_SCENE.classList.contains("hidden") &&
-    NAME_SCENE.classList.contains("hidden"))
-    return;
-
   switch (e.key) {
     case "z":
     case " ":
@@ -379,10 +375,10 @@ const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene,
 const MENU_NAME = document.getElementById("menu-name");
 
 const MENU_START_LINK = document.getElementById("menu-start");
-const MENU_NAME_LINK = document.getElementById("menu-edit-name");
+const MENU_SETTINGS_LINK = document.getElementById("menu-settings");
 const MENU_INSTRUCTIONS_LINK = document.getElementById("menu-instructions");
 const MENU_CREDITS_LINK = document.getElementById("menu-credits");
-const L_MENU_MAIN_OPTIONS = [MENU_START_LINK, MENU_NAME_LINK, MENU_INSTRUCTIONS_LINK, MENU_CREDITS_LINK];
+const L_MENU_MAIN_OPTIONS = [MENU_START_LINK, MENU_SETTINGS_LINK, MENU_INSTRUCTIONS_LINK, MENU_CREDITS_LINK];
 
 const MENU_CHARSET_LABEL = document.getElementById("charset-label");
 const MENU_CHARSET_SELECT = document.getElementById("charset-select");
@@ -504,10 +500,6 @@ async function startGame() {
  * @param {KeyboardEvent} e 
  */
 function navigateMenu(e) {
-  // Only execute if the menu scene is active
-  if (MENU_SCENE.classList.contains("hidden"))
-    return;
-
   let currentIndex = L_MENU_OPTIONS.findIndex((el) => document.activeElement === el);
 
   // Check the direction of navigation
@@ -666,6 +658,7 @@ function fixMenuTabIndex() {
 // -----
 
 MENU_START_LINK.addEventListener("click", startGame);
+MENU_SETTINGS_LINK.addEventListener("click", () => switchScene(SETTINGS_SCENE));
 MENU_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
 MENU_CREDITS_LINK.addEventListener("click", () => switchScene(CREDITS_SCENE));
@@ -1385,10 +1378,6 @@ function arrangeGameFocusableItems() {
  * @param {KeyboardEvent} e 
  */
 function navigateGame(e) {
-  // Only execute if the game scene is active
-  if (GAME_SCENE.classList.contains("hidden"))
-    return;
-
   // Get current position
   let currentIndex = lGameFocusableItems.findIndex((el) => document.activeElement === el);
 
