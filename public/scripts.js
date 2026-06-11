@@ -80,8 +80,9 @@ const SCREEN_SIZE_BREAKPOINT = 800;
 
 // Globals
 
-// The previously loaded scene, as a target for any Back buttons
-let lastScene = null;
+// The scenes the user as traversed, so we can go back. The final item will always be the current scene, and second-to-
+// final will be the previous scene, etc.
+const lSceneStack = []
 
 // State locks
 let sceneSwitching = false;
@@ -146,34 +147,95 @@ function getCookie() {
   return oItems;
 }
 
+
+/**
+ * Get the currently-active scene
+ * @returns {Element}
+ */
+function getCurrentScene() {
+  if (lSceneStack.length>0)
+    return lSceneStack.at(-1);
+  return null;
+}
+
+/**
+ * Get the previously-active scene
+ * @returns {Element}
+ */
+function getLastScene() {
+  if (lSceneStack.length>1)
+    return lSceneStack.at(-2);
+  return null;
+}
+
+/**
+ * Remove any duplicates from the scene stack
+ */
+function cleanSceneStack() {
+
+  // Construct a clean stack which only contains unique scenes
+  const lCleanSceneStack = [];
+  for (const scene of lSceneStack) {
+    if (!lCleanSceneStack.includes(scene))
+      lCleanSceneStack.push(scene);
+  }
+
+  // Check if the scene stack is already clean
+  if (lSceneStack.length==lCleanSceneStack.length)
+    return;
+
+  // Fix the scene stack
+  lSceneStack.length = lCleanSceneStack.length;
+  for (let i=0; i<lSceneStack.length; ++i) {
+    lSceneStack[i] = lCleanSceneStack[i];
+  }
+}
+
 /**
  * Switch to target scene
- * @param {Element} newScene 
+ * @param {Element | null} newScene The scene to switch to. If null, will switch to the previous scene
  */
-function switchScene(newScene = MENU_SCENE) {
+function switchScene(newScene = null) {
 
   // Check for scene switch lock so we don't overlap scene switches
   if (sceneSwitching)
     return;
-  sceneSwitching = true;
 
-  // Find the current scene, deactivate it, and mark it as the last scene
-  for (let el of L_SCENES) {
-    if (!el.classList.contains("hidden")) {
-      el.classList.add("hidden");
+  // Check if we're switching to the last scene
+  if (newScene == null || newScene instanceof Event) {
+    newScene = getLastScene();
 
-      // Failsafe in case something goes wrong - we don't want the lastScene to ever be the current scene, so we check
-      // to make sure this won't somehow happen
-      if (el !== newScene)
-        lastScene = el;
-
-      break;
-    }
+    // If `newScene` is still null, that means there is no last scene, so cancel the switch
+    if (newScene == null) 
+      return;
   }
 
-  // Activate the new scene
+  const currentScene = getCurrentScene();
+
+  // If `newScene` is the current scene, cancel the switch. And just in case this occurred because the last scene in the
+  // stack is the same as the current scene (shouldn't normally happen), clean up the scene stack for good measure
+  if (newScene == currentScene) {
+    cleanSceneStack();
+    return;
+  }
+
+  // Adjust the scene stack as appropriate for this change
+
+  if (!lSceneStack.includes(newScene)) {
+    // If the new scene isn't in the stack, add it
+    lSceneStack.push(newScene);
+  } else {
+    // Rewind the stack back to where the new scene is in it
+    lSceneStack.length = lSceneStack.findIndex((el) => el==newScene) + 1;
+  }
+
+  // Perform the scene switch
+  if (currentScene)
+    currentScene.classList.add("hidden");
   newScene.classList.remove("hidden");
 
+  // Flag that a scene switch is in progress so user actions don't trigger an overlapping switch in the next bit of time
+  sceneSwitching = true;
   setTimeout(() => sceneSwitching = false, 250);
 }
 
@@ -187,7 +249,7 @@ function navigateTextScenes(e) {
     case " ":
     case "Enter":
     case "Escape":
-      switchScene(lastScene);
+      switchScene();
       return;
 
     default:
@@ -326,7 +388,7 @@ function submitName(e) {
   if (e.type === "keydown" && e.key !== "Enter")
     return;
   setName(NAME_INPUT.value);
-  switchScene(lastScene);
+  switchScene();
   e.stopPropagation();
 }
 
@@ -659,7 +721,6 @@ function fixMenuTabIndex() {
 
 MENU_START_LINK.addEventListener("click", startGame);
 MENU_SETTINGS_LINK.addEventListener("click", () => switchScene(SETTINGS_SCENE));
-MENU_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
 MENU_CREDITS_LINK.addEventListener("click", () => switchScene(CREDITS_SCENE));
 const menuSceneSwitchWatcher = new SceneSwitchWatcher(MENU_SCENE, initMenuScene, exitMenuScene);
@@ -1618,7 +1679,7 @@ function exitInstructionsScene() {
 // Setup
 // -----
 
-INSTRUCTIONS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+INSTRUCTIONS_BACK_BUTTON.addEventListener("click", switchScene);
 const instructionsSceneSwitchWatcher = new SceneSwitchWatcher(INSTRUCTIONS_SCENE,
   initInstructionsScene, exitInstructionsScene);
 
@@ -1649,7 +1710,7 @@ function exitControlsScene() {
 // Setup
 // -----
 
-CONTROLS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+CONTROLS_BACK_BUTTON.addEventListener("click", switchScene);
 const controlsSceneSwitchWatcher = new SceneSwitchWatcher(CONTROLS_SCENE, initControlsScene, exitControlsScene);
 
 
@@ -1662,12 +1723,12 @@ const controlsSceneSwitchWatcher = new SceneSwitchWatcher(CONTROLS_SCENE, initCo
 // Constant DOM references
 const SETTINGS_SCENE_HEADER = document.getElementById("settings-scene");
 
-const SETTINGS_NAME_EDIT = document.getElementById("settings-edit-name");
+const SETTINGS_NAME_LINK = document.getElementById("settings-edit-name");
 const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
 const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
-const L_SETTINGS_OPTIONS = [SETTINGS_NAME_EDIT, SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BACK_BUTTON];
+const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 
@@ -1747,7 +1808,8 @@ function navigateSettings(e) {
 // Setup
 // -----
 
-SETTINGS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
+SETTINGS_BACK_BUTTON.addEventListener("click", switchScene);
 const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);
 
 
@@ -1777,14 +1839,14 @@ function exitCreditsScene() {
 // Setup
 // -----
 
-CREDITS_BACK_BUTTON.addEventListener("click", () => switchScene(lastScene));
+CREDITS_BACK_BUTTON.addEventListener("click", switchScene);
 const creditsSceneSwitchWatcher = new SceneSwitchWatcher(CREDITS_SCENE, initCreditsScene, exitCreditsScene);
 
 
 // Final setup
 // ===========
 window.onload = function () {
-  lastScene = MENU_SCENE;
+  lSceneStack.push(MENU_SCENE);
 
   fixMenuTabIndex();
   loadCharacterSetList().then(() => {
@@ -1797,7 +1859,7 @@ window.onload = function () {
   if (initName) {
     setName(initName);
     NAME_INPUT.value = getName();
-    switchScene(MENU_SCENE);
+    MENU_SCENE.classList.remove("hidden");
   } else {
     switchScene(NAME_SCENE);
     NAME_INPUT.focus({ focusVisible: true });
