@@ -277,6 +277,15 @@ select {
   margin-top: -2px;
 }
 
+select:hover {
+  border-color: white;
+  cursor      : url('img/sCursorHand.png'), pointer;
+}
+
+select:focus-visible {
+  outline: none;
+}
+
 dialog {
   border: 4px solid white;
   width : 90%;
@@ -952,9 +961,20 @@ textarea {
   outline     : none;
 }
 
-.before-selectable:is(*:has(+*>.selectable:focus-visible)>.before-selectable)::before {
+.before-selectable:is(*:has(+*>.selectable:focus-visible)>.before-selectable)::before,
+.selectable:focus-visible:not(*:has(.before-selectable)+*>.selectable:focus-visible)::before {
   content     : url("img/sHeart_0.png");
   margin-right: 0.125rem;
+}
+
+input.selectable:hover {
+  text-decoration: underline;
+  cursor         : url('img/sCursorHand.png'), pointer;
+  border-color   : white;
+}
+
+.before-selectable:is(*:has(+*>.selectable:hover)>.before-selectable) {
+  cursor: url('img/sCursorHand.png'), pointer;
 }
 
 #example-character-card {
