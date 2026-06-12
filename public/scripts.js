@@ -342,7 +342,7 @@ const cookieData = getCookie();
 // Constant DOM references
 const NAME_INPUT = document.getElementById("name-input");
 const NAME_SUBMIT = document.getElementById("name-submit");
-const NAME_REMEMBER = document.getElementById("remember-name");
+const NAME_REMEMBER_BOX = document.getElementById("remember-name");
 
 // Globals
 let naughtyPlayer = false;
@@ -361,14 +361,22 @@ function exitNameScene() {
   NAME_INPUT.setAttribute("disabled", "disabled");
 }
 
+function saveSettings() {
+  setCookie({
+    name: sessionStorage["name"],
+    numGuesses: sessionStorage["numGuesses"],
+    cardScale: sessionStorage["cardScale"]
+  });
+}
+
 function setName(name) {
   sessionStorage["name"] = name;
-  MENU_NAME.textContent = name;
+  NAME_INPUT.value = name;
   document.querySelectorAll(".player-name").forEach((el) => el.textContent = name);
 
   // If the user desires, store the name in a cookie to remember it
-  if (NAME_REMEMBER.checked) {
-    setCookie({ name: name });
+  if (NAME_REMEMBER_BOX.checked) {
+    saveSettings();
   } else {
     // Otherwise delete any previously-set cookie
     deleteCookie();
@@ -405,6 +413,13 @@ function monitorName(e) {
   }
 }
 
+/**
+ * Sync the Remember Name and Remember Settings checkboxes
+ */
+function updateRememberName() {
+  SETTINGS_REMEMBER_BOX.checked = NAME_REMEMBER_BOX.checked;
+}
+
 // Setup
 // -----
 
@@ -412,13 +427,14 @@ NAME_INPUT.addEventListener("keydown", submitName);
 NAME_INPUT.addEventListener("keyup", monitorName);
 NAME_INPUT.addEventListener("change", monitorName);
 NAME_SUBMIT.addEventListener("click", submitName);
+NAME_REMEMBER_BOX.addEventListener("change", updateRememberName);
 
 // Check if the user's name is saved, and set the name entry scene to be skipped if so
 let initName = null;
 if (cookieData.name) {
   // The user's name is stored in their cookie
   initName = cookieData.name;
-  NAME_REMEMBER.checked = true;
+  NAME_REMEMBER_BOX.checked = true;
 } else if (sessionStorage.getItem("name")) {
   // The user set their name already in this browser session
   initName = getName();
@@ -434,8 +450,6 @@ const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene,
 // ---------------------
 
 // Constant DOM references
-const MENU_NAME = document.getElementById("menu-name");
-
 const MENU_START_LINK = document.getElementById("menu-start");
 const MENU_SETTINGS_LINK = document.getElementById("menu-settings");
 const MENU_INSTRUCTIONS_LINK = document.getElementById("menu-instructions");
@@ -1748,6 +1762,25 @@ function initSettingsScene() {
 
 function exitSettingsScene() {
   window.removeEventListener("keydown", navigateSettings);
+
+  // Save settings on exiting the scene
+  sessionStorage["numGuesses"] = SETTINGS_GUESS_SELECT.value;
+  sessionStorage["cardScale"] = SETTINGS_SCALE_SELECT.value;
+
+  // If the user desires, store the value in a cookie to remember it
+  if (SETTINGS_REMEMBER_BOX.checked) {
+    saveSettings();
+  } else {
+    // Otherwise delete any previously-set cookie
+    deleteCookie();
+  }
+}
+
+/**
+ * Sync the Remember Name and Remember Settings checkboxes
+ */
+function updateRememberSettings() {
+  NAME_REMEMBER_BOX.checked = SETTINGS_REMEMBER_BOX.checked;
 }
 
 /**
@@ -1818,6 +1851,7 @@ function navigateSettings(e) {
 // -----
 
 SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
+SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 SETTINGS_BACK_BUTTON.addEventListener("click", switchScene);
 const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);
 
@@ -1867,10 +1901,11 @@ window.onload = function () {
 
   if (initName) {
     setName(initName);
-    NAME_INPUT.value = getName();
     MENU_SCENE.classList.remove("hidden");
   } else {
     switchScene(NAME_SCENE);
     NAME_INPUT.focus({ focusVisible: true });
   }
+
+  updateRememberName();
 }
