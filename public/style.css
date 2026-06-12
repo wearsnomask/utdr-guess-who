@@ -957,6 +957,16 @@ textarea {
   margin-right: 0.125rem;
 }
 
+#example-character-card {
+  position: relative;
+}
+
+#example-character-card>.img-frame {
+  position: absolute;
+  left    : 0;
+  top     : calc(0.5rem - 4px - 0.5 * var(--card-img-height));
+}
+
 /* Credits scene */
 
 #credits-scene {
