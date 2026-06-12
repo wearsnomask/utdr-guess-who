@@ -153,7 +153,7 @@ function getCookie() {
  * @returns {Element}
  */
 function getCurrentScene() {
-  if (lSceneStack.length>0)
+  if (lSceneStack.length > 0)
     return lSceneStack.at(-1);
   return null;
 }
@@ -163,7 +163,7 @@ function getCurrentScene() {
  * @returns {Element}
  */
 function getLastScene() {
-  if (lSceneStack.length>1)
+  if (lSceneStack.length > 1)
     return lSceneStack.at(-2);
   return null;
 }
@@ -181,12 +181,12 @@ function cleanSceneStack() {
   }
 
   // Check if the scene stack is already clean
-  if (lSceneStack.length==lCleanSceneStack.length)
+  if (lSceneStack.length == lCleanSceneStack.length)
     return;
 
   // Fix the scene stack
   lSceneStack.length = lCleanSceneStack.length;
-  for (let i=0; i<lSceneStack.length; ++i) {
+  for (let i = 0; i < lSceneStack.length; ++i) {
     lSceneStack[i] = lCleanSceneStack[i];
   }
 }
@@ -206,7 +206,7 @@ function switchScene(newScene = null) {
     newScene = getLastScene();
 
     // If `newScene` is still null, that means there is no last scene, so cancel the switch
-    if (newScene == null) 
+    if (newScene == null)
       return;
   }
 
@@ -226,7 +226,7 @@ function switchScene(newScene = null) {
     lSceneStack.push(newScene);
   } else {
     // Rewind the stack back to where the new scene is in it
-    lSceneStack.length = lSceneStack.findIndex((el) => el==newScene) + 1;
+    lSceneStack.length = lSceneStack.findIndex((el) => el == newScene) + 1;
   }
 
   // Perform the scene switch
@@ -1724,11 +1724,15 @@ const controlsSceneSwitchWatcher = new SceneSwitchWatcher(CONTROLS_SCENE, initCo
 const SETTINGS_SCENE_HEADER = document.getElementById("settings-scene");
 
 const SETTINGS_NAME_LINK = document.getElementById("settings-edit-name");
+const SETTINGS_GUESS_LABEL = document.getElementById("num-guesses-label");
 const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
+const SETTINGS_SCALE_LABEL = document.getElementById("card-scale-label");
 const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
+const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
-const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BACK_BUTTON];
+const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_REMEMBER_BOX,
+  SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 
@@ -1737,7 +1741,7 @@ const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 // ---------
 
 function initSettingsScene() {
-  SETTINGS_BACK_BUTTON.focus({ focusVisible: true });
+  SETTINGS_NAME_LINK.focus({ focusVisible: true });
   SETTINGS_SCENE_HEADER.scrollIntoView();
   window.addEventListener("keydown", navigateSettings);
 }
@@ -1776,9 +1780,13 @@ function navigateSettings(e) {
     case "Enter":
       if (currentIndex === -1)
         return;
+      e.stopPropagation();
+      e.preventDefault();
       const el = document.activeElement;
-      if ([SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT].includes(el)) {
-        cycleSelect(el);
+      if (el == SETTINGS_GUESS_LABEL) {
+        cycleSelect(SETTINGS_GUESS_SELECT);
+      } else if (el == SETTINGS_SCALE_LABEL) {
+        cycleSelect(SETTINGS_SCALE_SELECT);
       } else {
         el.click();
       }
@@ -1802,6 +1810,7 @@ function navigateSettings(e) {
   else if (currentIndex >= L_SETTINGS_OPTIONS.length) {
     currentIndex = 0;
   }
+  L_SETTINGS_OPTIONS[currentIndex].focus({ focusVisible: true });
 
 }
 

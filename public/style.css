@@ -225,16 +225,17 @@ label:has(>input[type="checkbox"]:focus-visible) {
   color: yellow;
 }
 
-input[type="text"]:is(:focus-visible) {
-  outline: none;
+input[type="text"]:focus-visible {
+  outline     : none;
+  border-color: yellow;
 }
 
-ul>li label:is(:focus-visible) {
+ul>li label:focus-visible {
   outline: none;
   color  : yellow;
 }
 
-ul>li label:is(:focus-visible)+select {
+ul>li label:focus-visible+select {
   border-color: yellow;
 }
 
@@ -243,15 +244,17 @@ ol>li {
   margin-bottom: 0.5rem;
 }
 
-ul>li a:is(:focus-visible)::before,
-ul>li label:is(:focus-visible)::before {
+ul>li a:focus-visible::before,
+ul>li label:focus-visible::before {
   content     : url("img/sHeart_0.png");
   margin-left : -0.75rem;
   margin-right: 0.125rem;
 }
 
-:not(li)>a:focus-visible::before {
-  content: url("img/sHeart_0.png");
+:not(li)>a:focus-visible::before,
+:not(li)>label:focus-visible::before {
+  content     : url("img/sHeart_0.png");
+  margin-right: 0.125rem;
 }
 
 select,
@@ -939,6 +942,19 @@ textarea {
 
 #settings-grid .left-column {
   text-align: right;
+}
+
+.selectable:focus-visible,
+.after-selectable:is(*:has(>.selectable:focus-visible)+*>.after-selectable),
+.before-selectable:is(*:has(+*>.selectable:focus-visible)>.before-selectable) {
+  border-color: yellow;
+  color       : yellow;
+  outline     : none;
+}
+
+.before-selectable:is(*:has(+*>.selectable:focus-visible)>.before-selectable)::before {
+  content     : url("img/sHeart_0.png");
+  margin-right: 0.125rem;
 }
 
 /* Credits scene */

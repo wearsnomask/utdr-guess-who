@@ -299,10 +299,11 @@
         <div class="right-column empty"></div>
 
         <div class="left-column">
-          <label for="num-guesses-select" tabindex="1" id="num-guesses-label">Number of guesses:</label>
+          <label for="num-guesses-select" tabindex="1" id="num-guesses-label" class="selectable">Number of
+            guesses:</label>
         </div>
         <div class="mid-column">
-          <select name="num-guesses-select" id="num-guesses-select" tabindex="-1">
+          <select name="num-guesses-select" id="num-guesses-select" class="after-selectable" tabindex="-1">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3" selected>3</option>
@@ -318,10 +319,10 @@
         <div class="right-column empty"></div>
 
         <div class="left-column">
-          <label for="card-scale-select" tabindex="1" id="card-scale-label">Card scale:</label>
+          <label for="card-scale-select" tabindex="1" id="card-scale-label" class="selectable">Card scale:</label>
         </div>
         <div class="mid-column">
-          <select name="card-scale-select" id="card-scale-select" tabindex="-1">
+          <select name="card-scale-select" id="card-scale-select" class="after-selectable" tabindex="-1">
             <option value="1">50%</option>
             <option value="1.5">75%</option>
             <option value="2" selected>100%</option>
@@ -344,10 +345,11 @@
         </div>
 
         <div class="left-column">
-          <label for="remember-settings" tabindex="1" id="card-scale-label">Remember settings:</label>
+          <label for="remember-settings" tabindex="-1" id="card-scale-label" class="before-selectable">Remember
+            settings:</label>
         </div>
         <div class="mid-column">
-          <input type="checkbox" name="save-settings" id="remember-settings" tabindex="-1">
+          <input type="checkbox" name="save-settings" id="remember-settings" class="selectable" tabindex="1">
         </div>
         <div class="right-column empty"></div>
       </div>
