@@ -190,6 +190,11 @@ input[type="checkbox"] {
   transform       : translateY(4px);
 }
 
+input[type="checkbox"]:hover,
+label:has(>input[type="checkbox"]):hover {
+  cursor: url('img/sCursorHand.png'), pointer;
+}
+
 input[type="checkbox"]:checked::before {
   position   : absolute;
   left       : 3px;
