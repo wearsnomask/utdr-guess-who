@@ -1864,9 +1864,24 @@ SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 SETTINGS_SCALE_SELECT.addEventListener("change", updateCardScale);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 SETTINGS_BACK_BUTTON.addEventListener("click", switchScene);
+
+// Check if the card scale is saved, and use it if so
+let initCardScale = null;
+if (cookieData.cardScale) {
+  // The card scale is stored in the cookie
+  initCardScale = cookieData.cardScale;
+  NAME_REMEMBER_BOX.checked = true;
+} else if (sessionStorage.getItem("cardScale")) {
+  // The card scale was set in this browser session
+  initCardScale = sessionStorage["cardScale"];
+}
+if (initCardScale) {
+  SETTINGS_SCALE_SELECT.value = initCardScale;
+}
+updateCardScale();
+
 const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);
 
-updateCardScale();
 
 
 // Credits scene
