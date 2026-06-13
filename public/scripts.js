@@ -983,6 +983,17 @@ function updateNumChars() {
   });
 }
 
+function setCardScaleInfo() {
+  const scale = BODY_STYLE.getPropertyValue('--card-scale');
+  function getPxVal(x) {
+    return +(BODY_STYLE.getPropertyValue(x).replace("px", ""));
+  }
+  cardScaleInfo = {
+    width: scale * getPxVal('--card-base-img-width'),
+    height: scale * getPxVal('--card-base-img-height')
+  }
+}
+
 /**
  * Scale an image with the optimal scaling factor to fit in the provided frame
  * @param {HTMLImageElement} img 
@@ -990,36 +1001,25 @@ function updateNumChars() {
 function scaleImage(img, frameScale = 1) {
   // Determine card scale info if not already determined
   if (!cardScaleInfo) {
-    const style = window.getComputedStyle(CARD_GRID);
-    const scale = style.getPropertyValue('--card-scale');
-    function getPxVal(x) {
-      return +(style.getPropertyValue(x).replace("px", ""));
-    }
-    cardScaleInfo = {
-      width: scale * getPxVal('--card-base-img-width'),
-      height: scale * getPxVal('--card-base-img-height'),
-      borderWidth: scale * getPxVal('--card-base-border-width')
-    }
-    cardScaleInfo.totalWidth = cardScaleInfo.width + 2 * cardScaleInfo.borderWidth;
-    cardScaleInfo.totalHeight = cardScaleInfo.height + 2 * cardScaleInfo.borderWidth;
+    setCardScaleInfo();
   }
 
-  // The maximum size we want the scaled image to be is the width of the frame, so we find the integer scale factor that
-  // makes it as big as possible while still less than this size
+  // The maximum size we want the scaled image to be is the width of the card, so we find the half-integer scale factor
+  // that makes it as big as possible while still less than this size
 
   let width;
-  let naturalWidth = img.naturalWidth, totalWidth = cardScaleInfo.totalWidth;
+  let naturalWidth = img.naturalWidth, cardWidth = cardScaleInfo.width;
 
   if (naturalWidth == 0) {
     // Something went wrong with loading the image and we don't know its size, so size to the default image size
     width = cardScaleInfo.width;
-  } else if (naturalWidth > totalWidth) {
+  } else if (naturalWidth > cardWidth) {
     // We'll need to scale it down
-    let scaleDownFactor = Math.ceil(naturalWidth / totalWidth);
-    width = Math.round(naturalWidth / scaleDownFactor);
+    let scaleDownFactor = Math.ceil(naturalWidth / cardWidth);
+    width = 0.5 * Math.round(2 * naturalWidth / scaleDownFactor);
   } else {
     // We'll need to either leave it alone or scale it up
-    let scaleUpFactor = Math.floor(totalWidth / naturalWidth);
+    let scaleUpFactor = 0.5 * Math.floor(2 * cardWidth / naturalWidth);
     width = naturalWidth * scaleUpFactor;
   }
 
@@ -1742,6 +1742,7 @@ const SETTINGS_GUESS_LABEL = document.getElementById("num-guesses-label");
 const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
 const SETTINGS_SCALE_LABEL = document.getElementById("card-scale-label");
 const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
+const SETTINGS_SCALE_IMG = document.getElementById("example-character-img");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
@@ -1774,6 +1775,15 @@ function exitSettingsScene() {
     // Otherwise delete any previously-set cookie
     deleteCookie();
   }
+}
+
+/**
+ * Update the CSS card scale property and the example card image
+ */
+function updateCardScale() {
+  document.documentElement.style.setProperty("--card-scale", SETTINGS_SCALE_SELECT.value);
+  setCardScaleInfo();
+  scaleImage(SETTINGS_SCALE_IMG);
 }
 
 /**
@@ -1851,9 +1861,12 @@ function navigateSettings(e) {
 // -----
 
 SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
+SETTINGS_SCALE_SELECT.addEventListener("change", updateCardScale);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 SETTINGS_BACK_BUTTON.addEventListener("click", switchScene);
 const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);
+
+updateCardScale();
 
 
 // Credits scene
