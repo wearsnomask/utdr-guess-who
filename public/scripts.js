@@ -101,6 +101,28 @@ let tauriMode = false;
 // ---------
 
 /**
+ * Sets the selected option in a select box to the one that has the provided value
+ * @param {Element} el The select element
+ * @param {str} val The desired option value
+ */
+function setSelectByValue(el, val) {
+  const lOptions = el.querySelectorAll("option");
+  let iTarget = -1;
+  let iSelected = -1;
+  lOptions.forEach((optEl, i) => {
+    if (optEl.value == val)
+      iTarget = i;
+    if (optEl.hasAttribute("selected"))
+      iSelected = i;
+  });
+
+  if (iTarget >= 0) {
+    lOptions[iSelected].removeAttribute("selected");
+    lOptions[iTarget].setAttribute("selected", "true");
+  }
+}
+
+/**
  * Stores a cookie with the provided information
  * @param {Object} oItems 
  * @param {Number} daysToExpire 
@@ -1871,6 +1893,7 @@ function navigateSettings(e) {
         cycleSelect(SETTINGS_GUESS_SELECT);
       } else if (el == SETTINGS_SCALE_LABEL) {
         cycleSelect(SETTINGS_SCALE_SELECT);
+        updateCardScale();
       } else {
         el.click();
       }
@@ -1950,8 +1973,8 @@ window.onload = function () {
     () => { NAME_REMEMBER_BOX.checked = false; SETTINGS_REMEMBER_BOX.checked = false });
 
   // Get and apply other saved settings
-  loadSetting("numGuesses", () => SETTINGS_GUESS_SELECT.value = initSettings.numGuesses);
-  loadSetting("cardScale", () => SETTINGS_SCALE_SELECT.value = initSettings.cardScale);
+  loadSetting("numGuesses", () => setSelectByValue(SETTINGS_GUESS_SELECT, initSettings.numGuesses));
+  loadSetting("cardScale", () => setSelectByValue(SETTINGS_SCALE_SELECT, initSettings.cardScale));
   updateCardScale();
 
   fixMenuTabIndex();
