@@ -88,6 +88,9 @@ const lSceneStack = []
 let sceneSwitching = false;
 let gameLoading = false;
 
+// Initial setting values
+const initSettings = {};
+
 // Loaded info about all available character sets
 let lCharsetDirs = null;
 
@@ -115,7 +118,7 @@ function setCookie(oItems, daysToExpire = 365) {
     sItems += `${key}=${value};`
   }
 
-  document.cookie = sItems + sExpiry + ";path=/";
+  document.cookie = encodeURIComponent(sItems + sExpiry + ";path=/");
 }
 
 /**
@@ -128,7 +131,7 @@ function deleteCookie() {
   expTime.setTime(expTime.getTime() - (24 * 60 * 60 * 1000));
   let sExpiry = "expires=" + expTime.toUTCString();
 
-  document.cookie = "name=;" + sExpiry + ";path=/";
+  document.cookie = encodeURIComponent(sExpiry + ";path=/");
 }
 
 /**
@@ -147,6 +150,47 @@ function getCookie() {
   return oItems;
 }
 
+/**
+ * Load a saved setting
+ * @param {str} key The name of the setting
+ * @param {() => null | null} onFound Callback if the setting is found saved
+ * @param {() => null | null} onNotFound Callback if the setting is not found saved
+ * @param {() => null | null} onCookie Callback if the setting is found in the cookie
+ * @param {() => null | null} onNotCookie Callback if the setting is not found in the cookie
+ */
+function loadSetting(key, onFound = null, onNotFound = null, onCookie = null, onNotCookie = null) {
+
+  let found = false;
+  let foundInCookie = false;
+
+  // Try to find the setting, checking in the cookie first, or else the session storage
+  if (cookieData[key]) {
+    found = foundInCookie = true;
+    initSettings[key] = sessionStorage[key] = cookieData[key];
+  } else if (sessionStorage.getItem(key)) {
+    found = true;
+    initSettings[key] = sessionStorage[key];
+  } else {
+    initSettings[key] = null;
+  }
+
+  // Call the appropriate callbacks
+  if (found) {
+    if (onFound)
+      onFound();
+  } else {
+    if (onNotFound)
+      onNotFound();
+  }
+  if (foundInCookie) {
+    if (onCookie)
+      onCookie();
+  } else {
+    if (onNotCookie)
+      onNotCookie();
+  }
+
+}
 
 /**
  * Get the currently-active scene
@@ -353,7 +397,7 @@ let naughtyPlayer = false;
 function initNameScene() {
   if (!naughtyPlayer) {
     NAME_INPUT.removeAttribute("disabled");
-    setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
+    setTimeout(() => NAME_INPUT.focus({ focusVisible: false }), 100);
   }
 }
 
@@ -362,6 +406,14 @@ function exitNameScene() {
 }
 
 function saveSettings() {
+  // If any values aren't loaded in sessionStorage, set them now based on inputs
+  if (!sessionStorage.getItem("name"))
+    sessionStorage["name"] = NAME_INPUT.value;
+  if (!sessionStorage.getItem("numGuesses"))
+    sessionStorage["numGuesses"] = SETTINGS_GUESS_SELECT.value;
+  if (!sessionStorage.getItem("cardScale"))
+    sessionStorage["cardScale"] = SETTINGS_SCALE_SELECT.value;
+
   setCookie({
     name: sessionStorage["name"],
     numGuesses: sessionStorage["numGuesses"],
@@ -428,17 +480,6 @@ NAME_INPUT.addEventListener("keyup", monitorName);
 NAME_INPUT.addEventListener("change", monitorName);
 NAME_SUBMIT.addEventListener("click", submitName);
 NAME_REMEMBER_BOX.addEventListener("change", updateRememberName);
-
-// Check if the user's name is saved, and set the name entry scene to be skipped if so
-let initName = null;
-if (cookieData.name) {
-  // The user's name is stored in their cookie
-  initName = cookieData.name;
-  NAME_REMEMBER_BOX.checked = true;
-} else if (sessionStorage.getItem("name")) {
-  // The user set their name already in this browser session
-  initName = getName();
-}
 
 const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene, exitNameScene);
 
@@ -1865,23 +1906,7 @@ SETTINGS_SCALE_SELECT.addEventListener("change", updateCardScale);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 SETTINGS_BACK_BUTTON.addEventListener("click", switchScene);
 
-// Check if the card scale is saved, and use it if so
-let initCardScale = null;
-if (cookieData.cardScale) {
-  // The card scale is stored in the cookie
-  initCardScale = cookieData.cardScale;
-  NAME_REMEMBER_BOX.checked = true;
-} else if (sessionStorage.getItem("cardScale")) {
-  // The card scale was set in this browser session
-  initCardScale = sessionStorage["cardScale"];
-}
-if (initCardScale) {
-  SETTINGS_SCALE_SELECT.value = initCardScale;
-}
-updateCardScale();
-
 const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);
-
 
 
 // Credits scene
@@ -1919,6 +1944,16 @@ const creditsSceneSwitchWatcher = new SceneSwitchWatcher(CREDITS_SCENE, initCred
 window.onload = function () {
   lSceneStack.push(MENU_SCENE);
 
+  // Get the saved name, if any. If it's found in the cookie, set the "remember" boxes to be checked
+  loadSetting("name", null, null,
+    () => { NAME_REMEMBER_BOX.checked = true; SETTINGS_REMEMBER_BOX.checked = true },
+    () => { NAME_REMEMBER_BOX.checked = false; SETTINGS_REMEMBER_BOX.checked = false });
+
+  // Get and apply other saved settings
+  loadSetting("numGuesses", () => SETTINGS_GUESS_SELECT.value = initSettings.numGuesses);
+  loadSetting("cardScale", () => SETTINGS_SCALE_SELECT.value = initSettings.cardScale);
+  updateCardScale();
+
   fixMenuTabIndex();
   loadCharacterSetList().then(() => {
     MENU_START_LINK.classList.remove("hidden");
@@ -1927,8 +1962,8 @@ window.onload = function () {
       MENU_START_LINK.focus({ focusVisible: true });
   });
 
-  if (initName) {
-    setName(initName);
+  if (initSettings.name) {
+    setName(initSettings.name);
     MENU_SCENE.classList.remove("hidden");
   } else {
     switchScene(NAME_SCENE);
