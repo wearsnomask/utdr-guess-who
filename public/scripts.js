@@ -1932,7 +1932,7 @@ window.onload = function () {
     MENU_SCENE.classList.remove("hidden");
   } else {
     switchScene(NAME_SCENE);
-    NAME_INPUT.focus({ focusVisible: true });
+    NAME_INPUT.focus({ focusVisible: false });
   }
 
   updateRememberName();
