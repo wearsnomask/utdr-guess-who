@@ -1,19 +1,28 @@
 # Changelog
 
+## v1.1.0
+
+## New Features
+
+- Added settings menu with the following options:
+  - Edit name (moved here from main menu)
+  - Edit number of guesses in a game
+  - Edit the size of character cards
+
 ## v1.0.3
 
-## API/Modding Changes
+### API/Modding Changes
 
 - Added ability to define custom card widths and heights in a character set's `config.json` file
 
-## Styling/UX Changes
+### Styling/UX Changes
 
 - Adjusted display of top-row buttons to fit the window better in widths of ~800-900px
 - If the set of character cards doesn't fully fill the available space, the "Cards left" display will now be positioned closer to it
 
 ## v1.0.2
 
-## Styling/UX Changes
+### Styling/UX Changes
 
 - Replaced previous logo with new custom logo, since the previous logo contained Seek's branding and it's probably best to not give the impression that this version is maintained by Seek
 
