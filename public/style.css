@@ -187,7 +187,7 @@ input[type="checkbox"] {
   appearance      : none;
   background-color: black;
   outline         : none;
-  transform       : translateY(4px);
+  position        : relative;
 }
 
 input[type="checkbox"]:hover,
@@ -372,6 +372,10 @@ textarea {
 
 .no-marker {
   list-style-type: none !important;
+}
+
+.shift-up-small {
+  transform: translateY(4px);
 }
 
 /* Styling for general items */
@@ -943,9 +947,13 @@ textarea {
 /* Settings scene */
 
 #settings-scene {
-  padding   : 1rem 0;
-  align-self: center;
-  max-width : 735px;
+  padding        : 1rem 0;
+  align-self     : center;
+  max-width      : 735px;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  justify-content: flex-start;
 }
 
 #settings-grid {
