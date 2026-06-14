@@ -287,6 +287,14 @@ select:hover {
   cursor      : url('img/sCursorHand.png'), pointer;
 }
 
+label:hover:has(+select) {
+  cursor: url('img/sCursor.png'), auto;
+}
+
+label:hover+select {
+  border-color: grey;
+}
+
 select:focus-visible {
   outline: none;
 }

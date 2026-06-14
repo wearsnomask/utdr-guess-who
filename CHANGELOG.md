@@ -9,6 +9,10 @@
   - Edit number of guesses in a game
   - Edit the size of character cards
 
+### Styling/UX Changes
+
+- Miscellaneous minor changes
+
 ## v1.0.3
 
 ### API/Modding Changes
