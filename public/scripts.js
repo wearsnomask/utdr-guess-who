@@ -419,7 +419,7 @@ let naughtyPlayer = false;
 function initNameScene() {
   if (!naughtyPlayer) {
     NAME_INPUT.removeAttribute("disabled");
-    setTimeout(() => NAME_INPUT.focus({ focusVisible: false }), 100);
+    setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
   }
 }
 
@@ -2020,7 +2020,7 @@ window.onload = function () {
     MENU_SCENE.classList.remove("hidden");
   } else {
     switchScene(NAME_SCENE);
-    NAME_INPUT.focus({ focusVisible: false });
+    NAME_INPUT.focus({ focusVisible: true });
   }
 
   updateRememberName();

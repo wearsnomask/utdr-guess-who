@@ -232,7 +232,7 @@ label:has(>input[type="checkbox"]:focus-visible) {
 
 input[type="text"]:focus-visible {
   outline     : none;
-  border-color: yellow;
+  border-color: white;
 }
 
 ul>li label:focus-visible {
@@ -317,6 +317,22 @@ textarea {
 
 .hidden {
   display: none !important;
+}
+
+.unselectable {
+  -moz-user-select   : -moz-none;
+  -khtml-user-select : none;
+  -webkit-user-select: none;
+  -o-user-select     : none;
+  user-select        : none;
+}
+
+.selectable {
+  -moz-user-select   : -moz-text;
+  -khtml-user-select : text;
+  -webkit-user-select: text;
+  -o-user-select     : text;
+  user-select        : text;
 }
 
 .small-text {

@@ -38,7 +38,7 @@
 <!-- Main page content -->
 
 <body>
-  <div class="max-width-box">
+  <div class="max-width-box unselectable">
 
     <!-- Name entry scene -->
     <div id="name-scene" class="scene hidden">
@@ -150,7 +150,7 @@
         <div id="your-char-display" class="center-container">
 
           <p class="center-text">YOU ARE:</p>
-          <p id="your-char-name"></p>
+          <p id="your-char-name" class="selectable"></p>
           <div id="your-char-img-frame" class="img-frame">
             <div class="bg"></div>
             <img id="your-char-img" draggable="false">
@@ -210,7 +210,7 @@
 
 
     <!-- Instructions scene -->
-    <div id="instructions-scene" class="scene hidden">
+    <div id="instructions-scene" class="scene hidden selectable">
       <div class="center-container">
         <h3>INSTRUCTIONS</h3>
       </div>
@@ -251,7 +251,7 @@
 
 
     <!-- Controls scene -->
-    <div id="controls-scene" class="scene hidden">
+    <div id="controls-scene" class="scene hidden selectable">
       <div class="center-container">
         <h3>CONTROLS</h3>
       </div>
@@ -360,11 +360,11 @@
 
     <!-- Credits scene -->
     <div id="credits-scene" class="scene hidden">
-      <div class="center-container">
+      <div class="center-container selectable">
         <h3>CREDITS</h3>
       </div>
 
-      <div class="credits-item">
+      <div class="credits-item selectable">
         <img src="img/annoying-dog-icon.png" alt="Toby Fox icon">
         <div>
           <h4>Toby Fox, Temmie Chang, and team</h4>
@@ -375,7 +375,7 @@
           </ul>
         </div>
       </div>
-      <div class="credits-item">
+      <div class="credits-item selectable">
         <img src="img/seek-icon.jpg" alt="Seek icon">
         <div>
           <h4>Seek's stuff</h4>
@@ -388,7 +388,7 @@
           </ul>
         </div>
       </div>
-      <div class="credits-item">
+      <div class="credits-item selectable">
         <img src="img/charlotte-icon.jpg" alt="Charlotte Wears No Mask icon">
         <div>
           <h4>Charlotte Wears No Mask</h4>
@@ -400,7 +400,7 @@
           </ul>
         </div>
       </div>
-      <div class="credits-item">
+      <div class="credits-item selectable">
         <p>
           See more credits in README at <a target="_blank"
             href="https://github.com/wearsnomask/utdr-guess-who">https://github.com/wearsnomask/utdr-guess-who</a>
