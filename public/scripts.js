@@ -553,6 +553,38 @@ function updateLoadingPercent() {
   document.querySelectorAll(".game-loading-percent").forEach(el => el.textContent = loadedPercent + "%");
 }
 
+function loadGuessIcons() {
+
+  const targetNumGuessIcons = sessionStorage.getItem("numGuesses");
+  lGuessIcons = document.querySelectorAll(".guess-icon");
+
+  // Check if we have the correct number of guesses, need to add some, or need to remove some
+  if (lGuessIcons.length > targetNumGuessIcons) {
+    // Remove guesses down to the correct number
+    lGuessIcons.forEach((el, i) => {
+      if (i >= targetNumGuessIcons)
+        el.remove();
+    });
+
+    lGuessIcons = document.querySelectorAll(".guess-icon");
+  } else if (lGuessIcons.length < targetNumGuessIcons) {
+    // Add guesses up to the correct number
+    for (let i = lGuessIcons.length; i < targetNumGuessIcons; ++i) {
+      GUESS_ICON_LINE.appendChild(lGuessIcons[0].cloneNode(true));
+    }
+    lGuessIcons = document.querySelectorAll(".guess-icon");
+  }
+
+  // Reset available guesses to all be active
+  lGuessIcons.forEach((el) => {
+    el.classList.add("active");
+    el.classList.remove("inactive");
+  });
+
+  // Connect all the icons to the event to flip them
+  lGuessIcons.forEach((el) => el.addEventListener("click", flipGuess));
+}
+
 async function startGame() {
   // If the game is already loading, exit to avoid doubling up
   if (gameLoading)
@@ -562,6 +594,8 @@ async function startGame() {
   updateLoadingPercent();
 
   document.querySelectorAll(".game-loading-message").forEach(el => el.classList.remove("hidden"));
+
+  loadGuessIcons();
 
   // Load the selected character set
   const setDirName = MENU_CHARSET_SELECT.value;
@@ -575,7 +609,8 @@ async function startGame() {
   // Make sure lookup mode starts disabled
   setOffLookupMode();
 
-  // Store a list of all focusable character card frames
+  // Store lists of focusable items
+  lGuessIcons = document.querySelectorAll(".guess-icon");
   lCharacterCardFrames = document.querySelectorAll(".character-card .character-img-frame");
   arrangeGameFocusableItems();
 
@@ -612,12 +647,6 @@ async function startGame() {
 
   // Start loading the image
   YOUR_CHAR_IMG.setAttribute("src", charsetPath + "/" + yourCharInfo.imgName);
-
-  // Reset available guesses
-  document.querySelectorAll(".guess-icon").forEach((el) => {
-    el.classList.add("active");
-    el.classList.remove("inactive");
-  });
 
   // Wait until all images are loaded before we switch to the game scene
   const interval = setInterval(() => {
@@ -825,10 +854,10 @@ const L_NOTES_BUTTONS = document.querySelectorAll(".game-notes");
 const L_CONTROLS_BUTTONS = document.querySelectorAll(".game-controls");
 const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
 
+const GUESS_ICON_LINE = document.getElementById("guesses-line");
 const YOUR_CHAR_NAME = document.getElementById("your-char-name");
 const YOUR_CHAR_IMG_FRAME = document.getElementById("your-char-img-frame");
 const YOUR_CHAR_IMG = document.getElementById("your-char-img");
-const L_GUESS_ICONS = document.querySelectorAll(".guess-icon");
 
 const CARD_GRID = document.getElementById("card-grid");
 
@@ -855,6 +884,7 @@ let inspectScale = targetInspectScale;
 let inspectScaleAdjustInterval = null;
 
 let cardScaleInfo = null;
+let lGuessIcons = [];
 let lCharacterCardFrames = [];
 let lGameButtonsBeforePlayArea = null;
 let lGameButtonsAfterPlayArea = null;
@@ -1507,7 +1537,7 @@ function arrangeGameFocusableItems() {
     lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_LOOKUP_BUTTONS[1], L_NOTES_BUTTONS[1]];
     lGameButtonsAfterPlayArea = [L_CONTROLS_BUTTONS[1], L_INSTRUCTIONS_BUTTONS[1]];
   }
-  lGameFocusableItems = [...lGameButtonsBeforePlayArea, ...L_GUESS_ICONS, ...lCharacterCardFrames,
+  lGameFocusableItems = [...lGameButtonsBeforePlayArea, ...lGuessIcons, ...lCharacterCardFrames,
   ...lGameButtonsAfterPlayArea];
 }
 
@@ -1520,7 +1550,7 @@ function navigateGame(e) {
   let currentIndex = lGameFocusableItems.findIndex((el) => document.activeElement === el);
 
   const numButtonsBeforePlayArea = lGameButtonsBeforePlayArea.length;
-  const numGuessIcons = L_GUESS_ICONS.length;
+  const numGuessIcons = lGuessIcons.length;
   const numCharacterCards = lCharacterCardFrames.length;
   const numFocusable = lGameFocusableItems.length;
 
@@ -1724,7 +1754,6 @@ GAME_NOTES_CLOSE.addEventListener("click", closeNotes);
 L_CONTROLS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(CONTROLS_SCENE)));
 L_INSTRUCTIONS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE)));
 
-L_GUESS_ICONS.forEach((el) => el.addEventListener("click", flipGuess));
 // Character cards are added dynamically, so the click event to flip them has to be added when they're added
 
 const gameSceneSwitchWatcher = new SceneSwitchWatcher(GAME_SCENE, initGameScene, exitGameScene);
@@ -1807,6 +1836,7 @@ const SETTINGS_SCALE_LABEL = document.getElementById("card-scale-label");
 const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
 const SETTINGS_SCALE_IMG = document.getElementById("example-character-img");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
+
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
 const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_REMEMBER_BOX,
