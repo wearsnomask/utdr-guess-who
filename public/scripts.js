@@ -864,6 +864,7 @@ const CARD_GRID = document.getElementById("card-grid");
 // Default configuration values
 const BODY_STYLE = window.getComputedStyle(document.body);
 const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14";
+const DEFAULT_NUM_GUESSES = document.querySelectorAll(".guess-icon").length;
 const DEFAULT_CARD_SCALE = +BODY_STYLE.getPropertyValue('--card-scale');
 const DEFAULT_CARD_WIDTH = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-width')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_HEIGHT = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-height')) * DEFAULT_CARD_SCALE;
@@ -1837,10 +1838,12 @@ const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
 const SETTINGS_SCALE_IMG = document.getElementById("example-character-img");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
+const SETTINGS_RESTORE_DEFAULT_BUTTON = document.getElementById("settings-restore-default");
+const SETTINGS_RESTORE_INIT_BUTTON = document.getElementById("settings-restore-init");
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
 const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_REMEMBER_BOX,
-  SETTINGS_BACK_BUTTON];
+  SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON, SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 
@@ -1884,6 +1887,16 @@ function updateCardScale() {
  */
 function updateRememberSettings() {
   NAME_REMEMBER_BOX.checked = SETTINGS_REMEMBER_BOX.checked;
+}
+
+function restoreDefaultSettings() {
+  setSelectByValue(SETTINGS_GUESS_SELECT, DEFAULT_NUM_GUESSES);
+  setSelectByValue(SETTINGS_SCALE_SELECT, DEFAULT_CARD_SCALE);
+}
+
+function restoreInitSettings() {
+  setSelectByValue(SETTINGS_GUESS_SELECT, initSettings["numGuesses"]);
+  setSelectByValue(SETTINGS_SCALE_SELECT, initSettings["cardScale"]);
 }
 
 /**
@@ -1957,6 +1970,9 @@ function navigateSettings(e) {
 SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 SETTINGS_SCALE_SELECT.addEventListener("change", updateCardScale);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
+
+SETTINGS_RESTORE_DEFAULT_BUTTON.addEventListener("click", restoreDefaultSettings);
+SETTINGS_RESTORE_INIT_BUTTON.addEventListener("click", restoreInitSettings);
 SETTINGS_BACK_BUTTON.addEventListener("click", switchScene);
 
 const settingsSceneSwitchWatcher = new SceneSwitchWatcher(SETTINGS_SCENE, initSettingsScene, exitSettingsScene);

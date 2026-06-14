@@ -155,6 +155,7 @@ button {
   background-color: black;
   color           : grey;
   font-size       : 1.5rem;
+  line-height     : 1.6825rem;
 }
 
 button.small {
@@ -162,6 +163,7 @@ button.small {
   padding     : 0.25rem 0.5rem;
   font-size   : 0.75rem;
   border-width: 0.125rem;
+  line-height : 0.84375rem;
 }
 
 button:hover {
@@ -982,7 +984,7 @@ textarea {
 
 #settings-grid {
   display              : grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 0.5fr 1fr;
   gap                  : 1rem;
 }
 
