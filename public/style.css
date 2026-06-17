@@ -1003,6 +1003,7 @@ textarea {
 .before-selectable:is(*:has(+*>.selectable:focus-visible)>.before-selectable)::before,
 .selectable:focus-visible:not(*:has(.before-selectable)+*>.selectable:focus-visible)::before {
   content     : url("img/sHeart_0.png");
+  margin-left : -0.875rem;
   margin-right: 0.125rem;
 }
 
