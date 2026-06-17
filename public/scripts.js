@@ -408,9 +408,13 @@ const cookieData = getCookie();
 // ---------------------
 
 // Constant DOM references
+const NAME_SCENE_HEADER = document.getElementById("name-scene");
+
 const NAME_INPUT = document.getElementById("name-input");
-const NAME_SUBMIT = document.getElementById("name-submit");
 const NAME_REMEMBER_BOX = document.getElementById("remember-name");
+const NAME_SUBMIT = document.getElementById("name-submit");
+
+const L_NAME_OPTIONS = [NAME_INPUT, NAME_REMEMBER_BOX, NAME_SUBMIT];
 
 // Globals
 let naughtyPlayer = false;
@@ -423,10 +427,13 @@ function initNameScene() {
     NAME_INPUT.removeAttribute("disabled");
     setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
   }
+  NAME_SCENE_HEADER.scrollIntoView();
+  window.addEventListener("keydown", navigateName);
 }
 
 function exitNameScene() {
   NAME_INPUT.setAttribute("disabled", "disabled");
+  window.removeEventListener("keydown", navigateName);
 }
 
 function saveSettings() {
@@ -494,6 +501,75 @@ function monitorName(e) {
  */
 function updateRememberName() {
   SETTINGS_REMEMBER_BOX.checked = NAME_REMEMBER_BOX.checked;
+}
+
+
+/**
+ * Keyboard navigation for the name scene
+ * @param {KeyboardEvent} e 
+ */
+function navigateName(e) {
+  let currentIndex = L_NAME_OPTIONS.findIndex((el) => document.activeElement === el);
+
+  // Check the direction of navigation
+  let dir;
+  const el = document.activeElement;
+
+  switch (e.key) {
+    case "s":
+      if (el === NAME_INPUT)
+        return;
+    case "ArrowDown":
+      dir = 1;
+      e.stopPropagation();
+      e.preventDefault();
+      break;
+
+    case "w":
+      if (el === NAME_INPUT)
+        return;
+    case "ArrowUp":
+      dir = -1;
+      e.stopPropagation();
+      e.preventDefault();
+      break;
+
+    case " ":
+    case "z":
+      if (el === NAME_INPUT)
+        return;
+    case "Enter":
+      if (currentIndex === -1)
+        return;
+      e.stopPropagation();
+      e.preventDefault();
+      if (el == NAME_REMEMBER_BOX || el == NAME_SUBMIT) {
+        el.click()
+      } else {
+        NAME_SUBMIT.click();
+      }
+      return;
+
+    default:
+      return;
+  }
+
+  if (currentIndex == -1) {
+    // Not in the options currently, so go to the first
+    L_NAME_OPTIONS[0].focus({ focusVisible: true });
+    return;
+  }
+
+  // move to the next or previous item, and loop around if necessary
+  currentIndex += dir;
+  if (currentIndex < 0) {
+    currentIndex = L_NAME_OPTIONS.length - 1;
+  }
+  else if (currentIndex >= L_NAME_OPTIONS.length) {
+    currentIndex = 0;
+  }
+  L_NAME_OPTIONS[currentIndex].focus({ focusVisible: true });
+
 }
 
 // Setup
