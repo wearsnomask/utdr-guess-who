@@ -345,7 +345,9 @@ function cycleSelect(selectEl) {
 
   // Find the selected option, then select the next one
   const lOptions = selectEl.querySelectorAll("option");
-  let iSelected = -1;
+
+  // Default to the first option if none are marked as selected
+  let iSelected = 0;
   lOptions.forEach((optionEl, i) => {
     if (optionEl.hasAttribute("selected")) {
       optionEl.removeAttribute("selected");
