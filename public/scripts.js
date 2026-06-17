@@ -1894,11 +1894,13 @@ function updateRememberSettings() {
 function restoreDefaultSettings() {
   setSelectByValue(SETTINGS_GUESS_SELECT, DEFAULT_NUM_GUESSES);
   setSelectByValue(SETTINGS_SCALE_SELECT, DEFAULT_CARD_SCALE);
+  updateCardScale()();
 }
 
 function restoreInitSettings() {
   setSelectByValue(SETTINGS_GUESS_SELECT, initSettings["numGuesses"]);
   setSelectByValue(SETTINGS_SCALE_SELECT, initSettings["cardScale"]);
+  updateCardScale()();
 }
 
 /**
