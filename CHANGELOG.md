@@ -2,7 +2,7 @@
 
 ## v1.1.0
 
-## New Features
+### New Features
 
 - Added settings menu with the following options:
   - Edit name (moved here from main menu)
@@ -12,6 +12,10 @@
 ### Styling/UX Changes
 
 - Miscellaneous minor changes
+
+### Bugfixes
+
+- Fixed an issue where using keyboard select (spacebar or enter) on the character set selection would do nothing the first time
 
 ## v1.0.3
 
