@@ -8,6 +8,7 @@
   - Edit name (moved here from main menu)
   - Edit number of guesses in a game
   - Edit the size of character cards
+- Added keyboard navigation to the name input scene
 
 ### Styling/UX Changes
 
