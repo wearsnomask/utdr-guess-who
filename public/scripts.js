@@ -931,6 +931,7 @@ const L_LOOKUP_BUTTONS = document.querySelectorAll(".game-lookup");
 const L_NOTES_BUTTONS = document.querySelectorAll(".game-notes");
 const L_CONTROLS_BUTTONS = document.querySelectorAll(".game-controls");
 const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
+const L_SETTINGS_BUTTONS = document.querySelectorAll(".game-settings");
 
 const GUESS_ICON_LINE = document.getElementById("guesses-line");
 const YOUR_CHAR_NAME = document.getElementById("your-char-name");
@@ -1609,12 +1610,12 @@ function decreaseInspectScale() {
  */
 function arrangeGameFocusableItems() {
   if (window.innerWidth <= SCREEN_SIZE_BREAKPOINT) {
-    lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON,
-      L_LOOKUP_BUTTONS[0], L_NOTES_BUTTONS[0], L_CONTROLS_BUTTONS[0], L_INSTRUCTIONS_BUTTONS[0]];
+    lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_LOOKUP_BUTTONS[0],
+      L_NOTES_BUTTONS[0], L_CONTROLS_BUTTONS[0], L_INSTRUCTIONS_BUTTONS[0], L_SETTINGS_BUTTONS[0]];
     lGameButtonsAfterPlayArea = [];
   } else {
     lGameButtonsBeforePlayArea = [QUIT_GAME_BUTTON, RESTART_GAME_BUTTON, L_LOOKUP_BUTTONS[1], L_NOTES_BUTTONS[1]];
-    lGameButtonsAfterPlayArea = [L_CONTROLS_BUTTONS[1], L_INSTRUCTIONS_BUTTONS[1]];
+    lGameButtonsAfterPlayArea = [L_CONTROLS_BUTTONS[1], L_INSTRUCTIONS_BUTTONS[1], L_SETTINGS_BUTTONS[1]];
   }
   lGameFocusableItems = [...lGameButtonsBeforePlayArea, ...lGuessIcons, ...lCharacterCardFrames,
   ...lGameButtonsAfterPlayArea];
@@ -1832,6 +1833,7 @@ GAME_NOTES_CLOSE.addEventListener("click", closeNotes);
 
 L_CONTROLS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(CONTROLS_SCENE)));
 L_INSTRUCTIONS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE)));
+L_SETTINGS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(SETTINGS_SCENE)));
 
 // Character cards are added dynamically, so the click event to flip them has to be added when they're added
 
