@@ -14,10 +14,6 @@
 
 - Miscellaneous minor changes
 
-### Bugfixes
-
-- Fixed an issue where using keyboard select (spacebar or enter) on the character set selection would do nothing the first time
-
 ## v1.0.3
 
 ### API/Modding Changes
