@@ -108,18 +108,16 @@ let tauriMode = false;
 function setSelectByValue(el, val) {
   const lOptions = el.querySelectorAll("option");
   let iTarget = -1;
-  let iSelected = -1;
   lOptions.forEach((optEl, i) => {
     if (optEl.value == val)
       iTarget = i;
-    if (optEl.hasAttribute("selected"))
-      iSelected = i;
+    optEl.removeAttribute("selected");
   });
 
   if (iTarget >= 0) {
-    lOptions[iSelected].removeAttribute("selected");
     lOptions[iTarget].setAttribute("selected", "true");
   }
+  el.value = lOptions[iTarget].value;
 }
 
 /**
