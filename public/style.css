@@ -1082,6 +1082,10 @@ input.focusable:hover {
   border-radius: 1rem;
 }
 
+.credits-text {
+  max-width: calc(95vw - 5rem);
+}
+
 #credits-back {
   align-self: flex-end;
 }
