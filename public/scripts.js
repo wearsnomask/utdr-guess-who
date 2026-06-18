@@ -1958,6 +1958,7 @@ function updateCardScale() {
   document.documentElement.style.setProperty("--card-scale", SETTINGS_SCALE_SELECT.value);
   setCardScaleInfo();
   scaleImage(SETTINGS_SCALE_IMG);
+  document.querySelectorAll(".character-img").forEach((el) => scaleImage(el));
 }
 
 /**
@@ -1970,13 +1971,13 @@ function updateRememberSettings() {
 function restoreDefaultSettings() {
   setSelectByValue(SETTINGS_GUESS_SELECT, DEFAULT_NUM_GUESSES);
   setSelectByValue(SETTINGS_SCALE_SELECT, DEFAULT_CARD_SCALE);
-  updateCardScale()();
+  updateCardScale();
 }
 
 function restoreInitSettings() {
   setSelectByValue(SETTINGS_GUESS_SELECT, initSettings["numGuesses"]);
   setSelectByValue(SETTINGS_SCALE_SELECT, initSettings["cardScale"]);
-  updateCardScale()();
+  updateCardScale();
 }
 
 /**
