@@ -349,10 +349,10 @@ function cycleSelect(selectEl) {
   // Default to the first option if none are marked as selected
   let iSelected = 0;
   lOptions.forEach((optionEl, i) => {
-    if (optionEl.hasAttribute("selected")) {
-      optionEl.removeAttribute("selected");
+    if (optionEl.value == selectEl.value) {
       iSelected = i;
     }
+    optionEl.removeAttribute("selected");
   });
 
   // Select the next option. If by chance no option was selected, going from -1 to 0 here will select the first
@@ -361,6 +361,7 @@ function cycleSelect(selectEl) {
     iSelected = 0;
   }
   lOptions[iSelected].setAttribute("selected", "true");
+  selectEl.value = lOptions[iSelected].value;
 
 }
 
@@ -777,6 +778,8 @@ function navigateMenu(e) {
     case "Enter":
       if (currentIndex === -1)
         return;
+      e.stopPropagation();
+      e.preventDefault();
       const el = document.activeElement;
       if (el === MENU_CHARSET_LABEL) {
         cycleSelect(MENU_CHARSET_SELECT);
