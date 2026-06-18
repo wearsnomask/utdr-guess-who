@@ -13,6 +13,7 @@
 ### Styling/UX Changes
 
 - Page elements should no longer be hidden by the navigation bar on mobile when the page can fit them
+- Improved appearance on mobile in various ways
 - Miscellaneous minor changes
 
 ## v1.0.3

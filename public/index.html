@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" scene="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=0.5">
   <link href="img/icon.png" type="image/png" rel="icon">
   <title>UTDR Guess Who Unlimited</title>
 
@@ -195,7 +195,9 @@
 
         <div>
           <p class="cards-left-display">Possibilities left: <span class="cards-left-count"></span></p>
-          <div id="card-grid"></div>
+          <div id="card-grid-container">
+            <div id="card-grid"></div>
+          </div>
         </div>
 
         <div id="card-panel-buttons" class="big-screen-only">
@@ -299,11 +301,11 @@
         <div class="right-column empty"></div>
 
         <div class="left-column">
-          <div tabindex="1" id="num-guesses-label" class="selectable">Number of
+          <div tabindex="1" id="num-guesses-label" class="focusable">Number of
             guesses:</div>
         </div>
         <div class="mid-column">
-          <select name="num-guesses-select" id="num-guesses-select" class="after-selectable" tabindex="-1">
+          <select name="num-guesses-select" id="num-guesses-select" class="after-focusable" tabindex="-1">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3" selected>3</option>
@@ -319,10 +321,10 @@
         <div class="right-column empty"></div>
 
         <div class="left-column">
-          <div tabindex="1" id="card-scale-label" class="selectable">Card scale:</div>
+          <div tabindex="1" id="card-scale-label" class="focusable">Card scale:</div>
         </div>
         <div class="mid-column">
-          <select name="card-scale-select" id="card-scale-select" class="after-selectable" tabindex="-1">
+          <select name="card-scale-select" id="card-scale-select" class="after-focusable" tabindex="-1">
             <option value="1">50%</option>
             <option value="1.5">75%</option>
             <option value="2" selected>100%</option>
@@ -345,11 +347,11 @@
         </div>
 
         <div class="left-column">
-          <label tabindex="-1" for="remember-settings" id="card-scale-label" class="before-selectable">Remember
+          <label tabindex="-1" for="remember-settings" id="card-scale-label" class="before-focusable">Remember
             settings:</label>
         </div>
         <div class="mid-column">
-          <input type="checkbox" name="remember-settings" id="remember-settings" class="selectable" tabindex="1">
+          <input type="checkbox" name="remember-settings" id="remember-settings" class="focusable" tabindex="1">
         </div>
         <div class="right-column empty"></div>
 
@@ -373,7 +375,7 @@
 
       <div class="credits-item selectable">
         <img src="img/annoying-dog-icon.png" alt="Toby Fox icon">
-        <div>
+        <div class="credits-text">
           <h4>Toby Fox, Temmie Chang, and team</h4>
           Original Undertale and Deltarune games and character designs
           <ul>
@@ -384,7 +386,7 @@
       </div>
       <div class="credits-item selectable">
         <img src="img/seek-icon.jpg" alt="Seek icon">
-        <div>
+        <div class="credits-text">
           <h4>Seek's stuff</h4>
           Original concept and design for Deltarune Guess Who game
           <ul>
@@ -397,7 +399,7 @@
       </div>
       <div class="credits-item selectable">
         <img src="img/charlotte-icon.jpg" alt="Charlotte Wears No Mask icon">
-        <div>
+        <div class="credits-text">
           <h4>Charlotte Wears No Mask</h4>
           Wrote this version of the Guess Who game
           <ul>
@@ -407,7 +409,7 @@
           </ul>
         </div>
       </div>
-      <div class="credits-item selectable">
+      <div class="credits-item">
         <p>
           See more credits in README at <a target="_blank"
             href="https://github.com/wearsnomask/utdr-guess-who">https://github.com/wearsnomask/utdr-guess-who</a>
