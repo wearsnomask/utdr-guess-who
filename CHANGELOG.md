@@ -4,9 +4,9 @@
 
 ### New Features
 
-- Added settings menu with the following options:
+- Added settings menu (linked from main menu and game scene) with the following options:
   - Edit name (moved here from main menu)
-  - Edit number of guesses in a game
+  - Edit number of guesses in a game (requires game restart to take effect)
   - Edit the size of character cards
 - Added keyboard navigation to the name input scene
 
@@ -15,6 +15,10 @@
 - Page elements should no longer be hidden by the navigation bar on mobile when the page can fit them
 - Improved appearance on mobile in various ways
 - Miscellaneous minor changes
+
+### Bugfixes
+
+- Fixed a bug where when using mixed mouse and keyboard controls, select boxes would occasionally enter a glitched state
 
 ## v1.0.3
 
