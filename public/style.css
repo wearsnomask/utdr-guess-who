@@ -905,11 +905,13 @@ textarea {
 }
 
 .marked .character-img-frame,
-.marked .character-name-popup {
+.marked .character-name-popup,
+.marked .inspect-img-frame {
   border-color: purple;
 }
 
-.unmarked .character-img-frame .character-question-marker {
+.unmarked .character-img-frame .character-question-marker,
+.unmarked .inspect-img-frame .character-question-marker {
   display: none;
 }
 
@@ -924,11 +926,22 @@ textarea {
   background-color: purple;
 }
 
+.inspect-img-frame .character-question-marker {
+  width  : 1.25rem;
+  height : 1.25rem;
+  z-index: 5;
+}
+
 .character-question-icon {
   padding-top: 2px;
   color      : white;
   font-size  : 0.5rem;
   text-align : center;
+}
+
+.inspect-img-frame .character-question-icon {
+  padding-top: 4px;
+  font-size  : 1rem;
 }
 
 .inactive .character-img-frame {

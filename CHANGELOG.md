@@ -19,6 +19,7 @@
 ### Bugfixes
 
 - Fixed a bug where when using mixed mouse and keyboard controls, select boxes would occasionally enter a glitched state
+- Fixed a bug where marked cards wouldn't appear marked when inspected
 
 ## v1.0.3
 
