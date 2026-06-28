@@ -659,11 +659,11 @@ textarea {
 
 @keyframes grow {
   from {
-    scale: 50%;
+    scale: 0.5;
   }
 
   to {
-    scale: calc(var(--inspect-scale)*50%);
+    scale: calc(0.5 * var(--inspect-scale));
   }
 }
 
@@ -927,8 +927,13 @@ textarea {
 }
 
 .inspect-img-frame .character-question-marker {
-  width  : 1.25rem;
-  height : 1.25rem;
+  /* Overhang a bit to prevent it separating slightly while zooming in/out */
+  top  : -2px;
+  right: -2px;
+
+  width : calc(1.25rem + 2px);
+  height: calc(1.25rem + 2px);
+
   z-index: 5;
 }
 
@@ -940,7 +945,7 @@ textarea {
 }
 
 .inspect-img-frame .character-question-icon {
-  padding-top: 4px;
+  padding-top: 6px;
   font-size  : 1rem;
 }
 
