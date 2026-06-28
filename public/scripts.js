@@ -1370,6 +1370,7 @@ async function loadCharacterSet(setDirName) {
       if (e.button == 1 || e.buttons == 4)
         toggleInspectCard(e);
     });
+    inspectEl.addEventListener("contextmenu", markCard, false);
     inspectEl.addEventListener("wheel", (e) => {
       if (e.deltaY > 0) {
         e.preventDefault();
