@@ -1964,6 +1964,7 @@ function updateCardScale() {
   scaleImage(SETTINGS_SCALE_IMG);
   scaleImage(YOUR_CHAR_IMG, window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale'))
   document.querySelectorAll(".character-img").forEach((el) => scaleImage(el));
+  const inspectImgScale = window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale');
   document.querySelectorAll(".inspect-img").forEach((el) => scaleImage(el, inspectImgScale));
 }
 
