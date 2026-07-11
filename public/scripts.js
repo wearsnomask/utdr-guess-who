@@ -846,12 +846,13 @@ async function loadCharacterSetList() {
 
   lCharsetDirs.forEach((charsetDirName) => {
 
-    // Check if this name starts with an index
-    const i = parseInt(charsetDirName.split("-")[0]);
+    // Check if this name starts with a sort key
+    const sortKey = parseFloat(charsetDirName.split("-")[0]);
 
-    if ((i === NaN) || (!charsetDirName.startsWith(i.toString()))) {
-      // Doesn't appear to start with an index, so add it to the unsorted list
+    if ((sortKey === NaN) || (!charsetDirName.startsWith(sortKey.toString()))) {
+      // Doesn't appear to start with a sort key, so add it to the unsorted list
       lUnsortedCharsets.push({
+        sortKey: null,
         // In case it's a Tauri build, replace back spaces in the name of the set
         name: charsetDirName.replaceAll("_", " ").replaceAll("%20", " "),
         dirName: charsetDirName,
@@ -859,23 +860,15 @@ async function loadCharacterSetList() {
       return;
     }
 
-    // This appears to be indexed
-    let charsetNameInfo = {
-      name: charsetDirName.replace(i + "-", "").replaceAll("_", " ").replaceAll("%20", " "),
+    // This appears to have a sort key
+    lSortedCharsets.push({
+      sortKey: sortKey,
+      name: charsetDirName.replace(sortKey + "-", "").replaceAll("_", " ").replaceAll("%20", " "),
       dirName: charsetDirName
-    };
-
-    // Make sure it can fit into the sorted list and isn't already present
-    if (i > lSortedCharsets.length - 1)
-      lSortedCharsets.length = i + i;
-    if (lSortedCharsets[i] !== undefined) {
-      // This index is already in the list, so log an error and add it to the unsorted list
-      console.error("More than one character set has the index " + i + ". Sorting will not appear as intended.");
-      lUnsortedCharsets.push(charsetNameInfo);
-      return;
-    }
-    lSortedCharsets[i] = charsetNameInfo;
+    });
   });
+
+  lSortedCharsets.sort((a, b) => a.sortKey - b.sortKey);
 
   // Fill the options for the character set select box
   const lAllCharsets = [...lSortedCharsets, ...lUnsortedCharsets];
