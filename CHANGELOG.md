@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.2.0
+
+### New Features
+
+- Added "Deltarune Ch. 5" character set
+- Added ability to apply specific modifiers (css classes) to either a character set (via "cssClass" in `config.json`) or individual cards (via adding `+.class-name` to the filename before the extension). Added modifiers are:
+  - `smooth-scaling` - The image(s) will use interpolated scaling when not appearing at native resolution, as opposed to pixel scaling which is normally the default for this app
+  - `pixel-scaling` - The image(s) will use pixel scaling when not appearing at native resolution. This is the default behaviour, so will only have an effect if this is applied to an individual image while `smooth-scaling` is applied to the whole character set
+
 ## v1.1.0
 
 ### New Features
