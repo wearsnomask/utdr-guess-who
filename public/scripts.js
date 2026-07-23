@@ -703,6 +703,7 @@ async function startGame() {
   // Randomly determine the player's character and set it up
   yourCharIndex = Math.floor(Math.random() * getNumChars());
   const yourCharInfo = lCharInfo[yourCharIndex];
+  YOUR_CHAR_CLASSES.className = yourCharInfo.lClasses.join(" ");
   YOUR_CHAR_NAME.textContent = yourCharInfo.name;
   YOUR_CHAR_IMG_FRAME.value = yourCharInfo.name;
   YOUR_CHAR_IMG.setAttribute("alt", yourCharInfo.name);
@@ -928,11 +929,12 @@ const L_INSTRUCTIONS_BUTTONS = document.querySelectorAll(".game-instructions");
 const L_SETTINGS_BUTTONS = document.querySelectorAll(".game-settings");
 
 const GUESS_ICON_LINE = document.getElementById("guesses-line");
+const YOUR_CHAR_SET_CLASSES = document.getElementById("your-card-set-classes");
+const YOUR_CHAR_CLASSES = document.getElementById("your-card-classes");
 const YOUR_CHAR_NAME = document.getElementById("your-char-name");
 const YOUR_CHAR_IMG_FRAME = document.getElementById("your-char-img-frame");
 const YOUR_CHAR_IMG = document.getElementById("your-char-img");
 
-const YOUR_CARD_CLASSES = document.getElementById("your-card-classes");
 const CARD_CLASSES = document.getElementById("card-classes");
 const CARD_GRID = document.getElementById("card-grid");
 
@@ -1264,7 +1266,7 @@ async function loadCharacterSet(setDirName) {
 
   // Set any classes that apply to the whole character set
   CARD_CLASSES.className = charsetConfig.cssClass;
-  YOUR_CARD_CLASSES.className = charsetConfig.cssClass;
+  YOUR_CHAR_SET_CLASSES.className = charsetConfig.cssClass;
 
   // Clear any present character cards
   document.querySelectorAll(".character-card").forEach((el) => el.remove());
