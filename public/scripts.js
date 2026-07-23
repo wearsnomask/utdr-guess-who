@@ -1273,21 +1273,37 @@ async function loadCharacterSet(setDirName) {
     else
       escapedCharImgName = charImgName.replace(" ", "%20");
 
+    let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("_", " ").replaceAll("%20", " ");
+
+    // Check for any classes specific to this character in the image name
+    let charClassStr = "";
+    const lCharNameClassSegments = prettyCharName.split("+.");
+    if (lCharNameClassSegments.length == 2) {
+      [prettyCharName, charClassStr] = lCharNameClassSegments;
+    } else if (lCharNameClassSegments > 2) {
+      prettyCharName = lCharNameClassSegments[0];
+      charClassStr = lCharNameClassSegments.slice(1).join(".");
+    }
+    const lCharClasses = charClassStr.split(".");
+
     // Check if this name starts with an index
-    let i = parseInt(charImgName.split("-")[0]);
+    const i = parseInt(charImgName.split("-")[0]);
     if ((i === NaN) || (!charImgName.startsWith(i.toString()))) {
       // Doesn't appear to start with an index, so add it to the unsorted list
       lUnsortedChars.push({
         imgName: escapedCharImgName,
-        name: charImgName.replace(".png", "").replaceAll("_", " ").replaceAll("%20", " ")
+        name: prettyCharName,
+        lClasses: lCharClasses
       });
       return;
     }
 
     // This appears to be indexed
+    prettyCharName = prettyCharName.replace(i + "-", "");
     let charInfo = {
       imgName: escapedCharImgName,
-      name: charImgName.replace(i + "-", "").replace(".png", "").replaceAll("_", " ").replaceAll("%20", " ")
+      name: prettyCharName,
+      lClasses: lCharClasses
     };
 
     // Make sure it can fit into the sorted list and isn't already present
@@ -1312,14 +1328,23 @@ async function loadCharacterSet(setDirName) {
     lCharInfo.push(charInfo);
     const newCard = document.importNode(CHARACTER_CARD_TEMPLATE.content, true).querySelector(".character-card");
 
+    // Set the character name for the appropriate elements
     newCard.querySelector(".character-img-frame").value = charInfo.name;
     newCard.querySelector(".character-name").textContent = charInfo.name;
 
+    // Set the image filename for the appropriate elements
     const imgEl = newCard.querySelector(".character-img");
     const inspectImgEl = newCard.querySelector(".inspect-img");
     imgEl.setAttribute("alt", charInfo.name);
     inspectImgEl.setAttribute("alt", charInfo.name);
 
+    // Add any custom classes to the card
+    charInfo.lClasses.forEach((cssClass) => {
+      if (cssClass)
+        newCard.classList.add(cssClass);
+    });
+
+    // Start loading the image
     ++numImagesLoading;
     ++numImagesToLoadTotal;
     imgEl.onload = () => {
@@ -1340,6 +1365,7 @@ async function loadCharacterSet(setDirName) {
     imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
     inspectImgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
 
+    // Set up events for the card
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);
     frameEl.addEventListener("dblclick", markCard);
