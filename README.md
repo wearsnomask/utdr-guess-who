@@ -91,6 +91,31 @@ Then, look at the URL you get. In this case it will be: `https://undertale.wiki/
 
 You can look at the existing "config.json" files in the character sets in this repo for other examples.
 
+#### Applying special modifiers
+
+It's possible to add special modifiers (CSS classes) to either whole character sets or individual character images, to apply some specific effects (listed below).
+
+To apply a modifier to a whole character set, add an entry to its `config.json` file (creating the file in the character set folder if it doesn't exist):
+
+```json
+"cssClass": "class-name other-class-name"
+```
+
+where the value here is a space-separated list of CSS class names to be applied to the whole character set.
+
+To apply a modifier to an individual character image, modify its filename by adding a section before the extension at the end, looking like:
+
+```
+1-Character Name+.class-name.other-class-name.png
+```
+
+Here, `+.` marks the start of the modifier section, and the modifiers afterward are `.`-separated.
+
+In principle, any CSS rule in the `style.css` file which applies to a class can be used as a modifier. You can edit it to add new modifiers by adding new declarations as well. The following modifiers are currently supported:
+
+`smooth-scaling` - By default, images in the game use pixel scaling (no interpolation) to maintain the crispness of the pixel art. This may not be appropriate for all images though (particularly if this is used for characters from other media). The `smooth-scaling` modifier will restore the default scaling, which applies interpolation so non-pixel-art images will tend to look better when scaled up or down from their native resolution.
+
+`pixel-scaling` - This modifier restores the pixel scaling behaviour, which will only have an effect if `smooth-scaling` is applied to the whole character set and this is applied to individual images, where it will take precedence and make those particular images use pixel scaling.
 
 ## Notes for Developers
 
