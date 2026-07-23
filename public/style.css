@@ -410,6 +410,10 @@ textarea {
   image-rendering: auto;
 }
 
+.pixel-scaling {
+  image-rendering: pixelated;
+}
+
 /* Styling for general items */
 
 .max-width-box {
