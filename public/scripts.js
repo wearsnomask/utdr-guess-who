@@ -932,6 +932,8 @@ const YOUR_CHAR_NAME = document.getElementById("your-char-name");
 const YOUR_CHAR_IMG_FRAME = document.getElementById("your-char-img-frame");
 const YOUR_CHAR_IMG = document.getElementById("your-char-img");
 
+const YOUR_CARD_CLASSES = document.getElementById("your-card-classes");
+const CARD_CLASSES = document.getElementById("card-classes");
 const CARD_GRID = document.getElementById("card-grid");
 
 // Default configuration values
@@ -941,10 +943,12 @@ const DEFAULT_NUM_GUESSES = document.querySelectorAll(".guess-icon").length;
 const DEFAULT_CARD_SCALE = +BODY_STYLE.getPropertyValue('--card-scale');
 const DEFAULT_CARD_WIDTH = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-width')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_HEIGHT = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-height')) * DEFAULT_CARD_SCALE;
+const DEFAULT_CARD_CSS_CLASS = "";
 const DEFAULT_CHARSET_CONFIG = {
   "lookupUrl": DEFAULT_LOOKUP_URL,
   "cardWidth": DEFAULT_CARD_WIDTH,
   "cardHeight": DEFAULT_CARD_HEIGHT,
+  "cssClass": DEFAULT_CARD_CSS_CLASS
 };
 
 // Other constants
@@ -1257,6 +1261,10 @@ async function loadCharacterSet(setDirName) {
   // Fetch the characters in the set from the meta file
   lCharImageNames = charsetMeta.chars;
   const dCharInfo = {};
+
+  // Set any classes that apply to the whole character set
+  CARD_CLASSES.className = charsetConfig.cssClass;
+  YOUR_CARD_CLASSES.className = charsetConfig.cssClass;
 
   // Clear any present character cards
   document.querySelectorAll(".character-card").forEach((el) => el.remove());
