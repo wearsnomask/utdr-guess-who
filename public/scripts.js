@@ -605,6 +605,9 @@ const L_MENU_OPTIONS = [...L_MENU_MAIN_OPTIONS, ...L_MENU_CONFIG_OPTIONS];
 
 const CHARSET_OPTION_TEMPLATE = document.getElementById("charset-option-template");
 
+// Globals
+const S_PRELOADED_IMAGES = new Set();
+
 // Functions
 // ---------
 
@@ -618,6 +621,38 @@ function initMenuScene() {
 function exitMenuScene() {
   window.removeEventListener("keydown", navigateMenu);
   window.removeEventListener("resize", fixMenuTabIndex);
+}
+
+/**
+ * Preload an image stored at the provided URL, so it can be loaded faster when needed later
+ * @param {String} url 
+ */
+async function preloadImage(url) {
+  // Check if the image has already been preloaded
+  if (S_PRELOADED_IMAGES.has(url))
+    return;
+  S_PRELOADED_IMAGES.add(url);
+
+  const link = document.createElement("link");
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = url;
+  link.fetchPriority = "high";
+
+  document.head.append(link);
+}
+
+/** 
+ * Preload the currently-selected character set
+ */
+async function preloadCharset() {
+  const setDirName = MENU_CHARSET_SELECT.value;
+  if (!setDirName) {
+    // Quietly return if no character set is selected; this is just preloading, no need to raise an error if this fails
+    return;
+  }
+
+  loadCharacterSet(setDirName, true);
 }
 
 /**
@@ -1203,65 +1238,82 @@ function scaleImage(img, frameScale = 1) {
  * Loads all characters in a character set
  * @param {String} setDirName 
  */
-async function loadCharacterSet(setDirName) {
+async function loadCharacterSet(setDirName, preload = False) {
 
   // If this set is already loaded, do nothing
   if (setDirName === loadedCharset)
     return;
 
-  // Unload scale info, which might change with this new set
-  cardScaleInfo = null;
-
   // Load the meta file for the character set
+  let loadingCharsetPath = "";
   if (tauriMode)
-    charsetPath = "character-sets/" + setDirName.replaceAll(" ", "_");
+    loadingCharsetPath = "character-sets/" + setDirName.replaceAll(" ", "_");
   else
-    charsetPath = "character-sets/" + setDirName.replaceAll(" ", "%20");
-  const charMetaUrl = charsetPath + "/char-meta.json";
+    loadingCharsetPath = "character-sets/" + setDirName.replaceAll(" ", "%20");
+  if (!preload)
+    charsetPath = loadingCharsetPath;
+
+  const charMetaUrl = loadingCharsetPath + "/char-meta.json";
   const charsetMeta = await loadJSON(charMetaUrl)
     .catch((err) => alert("ERROR: Could not load character information from " + charMetaUrl + ".\n" +
       "Try refreshing the page in case this is a temporary issue. The error message received was: \n" + err));
 
-  // Get the config for the character set from the meta file
-  charsetConfig = charsetMeta.config;
-  if (charsetConfig === null) {
-    // Use the full default config if none is provided
-    charsetConfig = DEFAULT_CHARSET_CONFIG;
-  } else {
-    // If card width and/or height are present, convert them to integers
-    if (charsetConfig.cardWidth)
-      charsetConfig.cardWidth = parseInt(charsetConfig.cardWidth);
-    if (charsetConfig.cardHeight)
-      charsetConfig.cardHeight = parseInt(charsetConfig.cardHeight);
+  if (!preload) {
 
-    // For card width and height, we handle them explicitly so the user can scale by modifying just one or both
-    if (charsetConfig.cardWidth && !charsetConfig.cardHeight) {
-      // The user set width but not height, so scale the height to match
-      charsetConfig.cardHeight = DEFAULT_CHARSET_CONFIG.cardHeight *
-        (charsetConfig.cardWidth / DEFAULT_CHARSET_CONFIG.cardWidth);
-    } else if (charsetConfig.cardHeight && !charsetConfig.cardWidth) {
-      // The user set height but not width, so scale the width to match
-      charsetConfig.cardWidth = DEFAULT_CHARSET_CONFIG.cardWidth *
-        (charsetConfig.cardHeight / DEFAULT_CHARSET_CONFIG.cardHeight);
-    }
-    // If the user set both, we don't need to do anything. If they set neither, the standard filling in of details below
-    // will handle it
+    // Unload scale info, which might change with this new set
+    cardScaleInfo = null;
 
-    // Check for any missing values in the config and fill them with defaults
-    for (const [key, val] of Object.entries(DEFAULT_CHARSET_CONFIG)) {
-      if (!charsetConfig[key])
-        charsetConfig[key] = val;
+    // Get the config for the character set from the meta file
+    charsetConfig = charsetMeta.config;
+    if (charsetConfig === null) {
+      // Use the full default config if none is provided
+      charsetConfig = DEFAULT_CHARSET_CONFIG;
+    } else {
+      // If card width and/or height are present, convert them to integers
+      if (charsetConfig.cardWidth)
+        charsetConfig.cardWidth = parseInt(charsetConfig.cardWidth);
+      if (charsetConfig.cardHeight)
+        charsetConfig.cardHeight = parseInt(charsetConfig.cardHeight);
+
+      // For card width and height, we handle them explicitly so the user can scale by modifying just one or both
+      if (charsetConfig.cardWidth && !charsetConfig.cardHeight) {
+        // The user set width but not height, so scale the height to match
+        charsetConfig.cardHeight = DEFAULT_CHARSET_CONFIG.cardHeight *
+          (charsetConfig.cardWidth / DEFAULT_CHARSET_CONFIG.cardWidth);
+      } else if (charsetConfig.cardHeight && !charsetConfig.cardWidth) {
+        // The user set height but not width, so scale the width to match
+        charsetConfig.cardWidth = DEFAULT_CHARSET_CONFIG.cardWidth *
+          (charsetConfig.cardHeight / DEFAULT_CHARSET_CONFIG.cardHeight);
+      }
+      // If the user set both, we don't need to do anything. If they set neither, the standard filling in of details below
+      // will handle it
+
+      // Check for any missing values in the config and fill them with defaults
+      for (const [key, val] of Object.entries(DEFAULT_CHARSET_CONFIG)) {
+        if (!charsetConfig[key])
+          charsetConfig[key] = val;
+      }
     }
+
+    // Apply config options as appropriate
+    document.documentElement.style.setProperty("--card-base-img-width",
+      charsetConfig.cardWidth / DEFAULT_CARD_SCALE + "px");
+    document.documentElement.style.setProperty("--card-base-img-height",
+      charsetConfig.cardHeight / DEFAULT_CARD_SCALE + "px");
   }
 
-  // Apply config options as appropriate
-  document.documentElement.style.setProperty("--card-base-img-width",
-    charsetConfig.cardWidth / DEFAULT_CARD_SCALE + "px");
-  document.documentElement.style.setProperty("--card-base-img-height",
-    charsetConfig.cardHeight / DEFAULT_CARD_SCALE + "px");
-
   // Fetch the characters in the set from the meta file
-  lCharImageNames = charsetMeta.chars;
+  const lLoadingCharImageNames = charsetMeta.chars;
+
+  // If we're just preloading, we can do so now and then return without setting everything up
+  if (preload) {
+    lLoadingCharImageNames.forEach((charImgName) => {
+      preloadImage(loadingCharsetPath + "/" + charImgName);
+    });
+    return;
+  }
+
+  lCharImageNames = lLoadingCharImageNames;
   const dCharInfo = {};
 
   // Set any classes that apply to the whole character set
@@ -1275,7 +1327,7 @@ async function loadCharacterSet(setDirName) {
   const lSortedChars = [];
   const lUnsortedChars = [];
 
-  lCharImageNames.forEach((charImgName) => {
+  lLoadingCharImageNames.forEach((charImgName) => {
 
     let escapedCharImgName = charImgName;
     if (tauriMode)
@@ -1372,8 +1424,8 @@ async function loadCharacterSet(setDirName) {
       updateLoadingPercent();
     }
 
-    imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
-    inspectImgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
+    imgEl.setAttribute("src", loadingCharsetPath + "/" + charInfo.imgName);
+    inspectImgEl.setAttribute("src", loadingCharsetPath + "/" + charInfo.imgName);
 
     // Set up events for the card
     const frameEl = newCard.querySelector(".character-img-frame");
