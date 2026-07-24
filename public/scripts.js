@@ -633,13 +633,8 @@ async function preloadImage(url) {
     return;
   S_PRELOADED_IMAGES.add(url);
 
-  const link = document.createElement("link");
-  link.rel = 'preload';
-  link.as = 'image';
-  link.href = url;
-  link.fetchPriority = "high";
-
-  document.head.append(link);
+  const img = new Image();
+  img.src = url;
 }
 
 /** 
@@ -916,6 +911,9 @@ async function loadCharacterSetList() {
     newCharsetOption.value = charsetNameInfo.dirName;
     MENU_CHARSET_SELECT.appendChild(newCharsetOption);
   });
+
+  // Preload the initially-selected character set
+  preloadCharset();
 }
 
 function fixMenuTabIndex() {
@@ -937,6 +935,7 @@ MENU_START_LINK.addEventListener("click", startGame);
 MENU_SETTINGS_LINK.addEventListener("click", () => switchScene(SETTINGS_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
 MENU_CREDITS_LINK.addEventListener("click", () => switchScene(CREDITS_SCENE));
+MENU_CHARSET_SELECT.addEventListener("change", preloadCharset);
 const menuSceneSwitchWatcher = new SceneSwitchWatcher(MENU_SCENE, initMenuScene, exitMenuScene);
 
 
@@ -1238,7 +1237,7 @@ function scaleImage(img, frameScale = 1) {
  * Loads all characters in a character set
  * @param {String} setDirName 
  */
-async function loadCharacterSet(setDirName, preload = False) {
+async function loadCharacterSet(setDirName, preload = false) {
 
   // If this set is already loaded, do nothing
   if (setDirName === loadedCharset)
