@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.2.1
+
+### Miscellaneous Changes
+
+- Implemented preloading of character sets to reduce wait time. A set will start loading as soon as it's selected in the main menu, without waiting for the user to start a game
+
 ## v1.2.0
 
 ### New Features
