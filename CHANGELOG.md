@@ -2,6 +2,10 @@
 
 ## v1.2.1
 
+### Styling/UX Changes
+
+- Added links on main menu to report bugs or request features, and to the game's page on GameJolt
+
 ### Optimisation Changes
 
 - Implemented preloading of character sets to reduce wait time. A set will start loading as soon as it's selected in the main menu, without waiting for the user to start a game

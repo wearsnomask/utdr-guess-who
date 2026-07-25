@@ -590,6 +590,9 @@ const nameSceneSwitchWatcher = new SceneSwitchWatcher(NAME_SCENE, initNameScene,
 // ---------------------
 
 // Constant DOM references
+const MENU_ISSUE_LINK = document.getElementById("menu-issue-link");
+const MENU_FOLLOW_LINK = document.getElementById("menu-follow-link");
+
 const MENU_START_LINK = document.getElementById("menu-start");
 const MENU_SETTINGS_LINK = document.getElementById("menu-settings");
 const MENU_INSTRUCTIONS_LINK = document.getElementById("menu-instructions");
