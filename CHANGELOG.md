@@ -6,6 +6,10 @@
 
 - Implemented preloading of character sets to reduce wait time. A set will start loading as soon as it's selected in the main menu, without waiting for the user to start a game
 
+### Miscellaneous Changes
+
+- The URL will now contain a search parameter which includes the selected character set. When this URL is loaded, that set will be initially selected. This allows linking to the game with a particular set initially loaded (e.g. when a new set is released, can link to the game with that set selected first)
+
 ## v1.2.0
 
 ### New Features
