@@ -10,6 +10,7 @@
 
 - The URL will now contain a search parameter which includes the selected character set. When this URL is loaded, that set will be initially selected. This allows linking to the game with a particular set initially loaded (e.g. when a new set is released, can link to the game with that set selected first)
 - Updated versions of packages the Tauri build depends on
+- Added issue templates to the GitHub repo
 
 ## v1.2.0
 
