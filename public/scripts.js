@@ -638,9 +638,11 @@ async function preloadImage(url) {
 }
 
 /** 
- * Preload the currently-selected character set
+ * Run tasks when the selected character set is changed:
+ * - Preload the currently-selected character set
+ * - Update the search params in the URL
  */
-async function preloadCharset() {
+async function onCharsetSelectChange() {
   const setDirName = MENU_CHARSET_SELECT.value;
   if (!setDirName) {
     // Quietly return if no character set is selected; this is just preloading, no need to raise an error if this fails
@@ -648,6 +650,10 @@ async function preloadCharset() {
   }
 
   loadCharacterSet(setDirName, true);
+
+  // Update the searchparams in the URL to reference the newly-selected character set
+  window.history.replaceState(null, document.title, window.location.pathname + "?charset=" + MENU_CHARSET_SELECT.value);
+
 }
 
 /**
@@ -913,7 +919,7 @@ async function loadCharacterSetList() {
   });
 
   // Preload the initially-selected character set
-  preloadCharset();
+  onCharsetSelectChange();
 }
 
 function fixMenuTabIndex() {
@@ -935,7 +941,7 @@ MENU_START_LINK.addEventListener("click", startGame);
 MENU_SETTINGS_LINK.addEventListener("click", () => switchScene(SETTINGS_SCENE));
 MENU_INSTRUCTIONS_LINK.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE));
 MENU_CREDITS_LINK.addEventListener("click", () => switchScene(CREDITS_SCENE));
-MENU_CHARSET_SELECT.addEventListener("change", preloadCharset);
+MENU_CHARSET_SELECT.addEventListener("change", onCharsetSelectChange);
 const menuSceneSwitchWatcher = new SceneSwitchWatcher(MENU_SCENE, initMenuScene, exitMenuScene);
 
 
