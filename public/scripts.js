@@ -918,6 +918,12 @@ async function loadCharacterSetList() {
     MENU_CHARSET_SELECT.appendChild(newCharsetOption);
   });
 
+  // If a character set is in the URL search params, initially select it
+  const searchParams = new URLSearchParams(window.location.search);
+  const initCharset = searchParams.get("charset");
+  if (initCharset)
+    setSelectByValue(MENU_CHARSET_SELECT, initCharset);
+
   // Preload the initially-selected character set
   onCharsetSelectChange();
 }
