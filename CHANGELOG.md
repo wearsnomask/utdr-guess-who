@@ -5,6 +5,7 @@
 ### New Features
 
 - Added "Deltarune Ch. 1-5" character set, contributed by TomatoRadio
+- Added option in the settings to control the background animation, allowing the user to slow it down, disable the animation, or hide the background design entirely
 
 ### Styling/UX Changes
 
