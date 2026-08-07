@@ -198,6 +198,8 @@ No substantial differences, just some minor necessary styling differences due to
 
 * [Undertale Yellow](https://gamejolt.com/games/UndertaleYellow/136925)
 
+**Deltarune Chapter 1-5 Character Set:** [TomatoRadio](https://github.com/TomatoRadio)
+
 **Font:** m6x11 by [Daniel Linssen](https://managore.itch.io/) (https://managore.itch.io/m6x11)
 
 **Special Thanks:**

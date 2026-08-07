@@ -1,6 +1,10 @@
 # Changelog
 
-## v1.2.1
+## v1.3.0
+
+### New Features
+
+- Added "Deltarune Ch. 1-5" character set, contributed by TomatoRadio
 
 ### Styling/UX Changes
 
