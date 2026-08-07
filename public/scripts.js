@@ -117,7 +117,8 @@ function setSelectByValue(el, val) {
   if (iTarget >= 0) {
     lOptions[iTarget].setAttribute("selected", "true");
   }
-  el.value = lOptions[iTarget].value;
+  if (lOptions[iTarget])
+    el.value = lOptions[iTarget].value;
 }
 
 /**

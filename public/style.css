@@ -48,7 +48,9 @@ body {
   background-size: 94px;
 }
 
-[bg-style='animated'],
+[bg-style='normal'],
+[bg-style='slow'],
+[bg-style='veryslow'],
 [bg-style='static'] {
   body {
     background-image:
@@ -57,9 +59,21 @@ body {
   }
 }
 
-[bg-style='animated'] {
+[bg-style='normal'] {
   body {
     animation: 2.67s linear infinite bg-slide;
+  }
+}
+
+[bg-style='slow'] {
+  body {
+    animation: 5.33s linear infinite bg-slide;
+  }
+}
+
+[bg-style='veryslow'] {
+  body {
+    animation: 10.67s linear infinite bg-slide;
   }
 }
 
