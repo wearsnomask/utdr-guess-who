@@ -443,11 +443,14 @@ function saveSettings() {
     sessionStorage["numGuesses"] = SETTINGS_GUESS_SELECT.value;
   if (!sessionStorage.getItem("cardScale"))
     sessionStorage["cardScale"] = SETTINGS_SCALE_SELECT.value;
+  if (!sessionStorage.getItem("bgStyle"))
+    sessionStorage["bgStyle"] = SETTINGS_BG_STYLE_SELECT.value;
 
   setCookie({
     name: sessionStorage["name"],
     numGuesses: sessionStorage["numGuesses"],
-    cardScale: sessionStorage["cardScale"]
+    cardScale: sessionStorage["cardScale"],
+    bgStyle: sessionStorage["bgStyle"]
   });
 }
 
@@ -992,6 +995,7 @@ const BODY_STYLE = window.getComputedStyle(document.body);
 const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14";
 const DEFAULT_NUM_GUESSES = document.querySelectorAll(".guess-icon").length;
 const DEFAULT_CARD_SCALE = +BODY_STYLE.getPropertyValue('--card-scale');
+const DEFAULT_BG_STYLE = document.getElementById("bg-style-select").value;
 const DEFAULT_CARD_WIDTH = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-width')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_HEIGHT = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-height')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_CSS_CLASS = "";
@@ -2013,14 +2017,16 @@ const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
 const SETTINGS_SCALE_LABEL = document.getElementById("card-scale-label");
 const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
 const SETTINGS_SCALE_IMG = document.getElementById("example-character-img");
+const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
+const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
 const SETTINGS_RESTORE_DEFAULT_BUTTON = document.getElementById("settings-restore-default");
 const SETTINGS_RESTORE_INIT_BUTTON = document.getElementById("settings-restore-init");
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
-const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_REMEMBER_BOX,
-  SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON, SETTINGS_BACK_BUTTON];
+const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_BG_STYLE_LABEL,
+  SETTINGS_REMEMBER_BOX, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON, SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 
@@ -2040,6 +2046,7 @@ function exitSettingsScene() {
   // Save settings on exiting the scene
   sessionStorage["numGuesses"] = SETTINGS_GUESS_SELECT.value;
   sessionStorage["cardScale"] = SETTINGS_SCALE_SELECT.value;
+  sessionStorage["bgStyle"] = SETTINGS_BG_STYLE_SELECT.value;
 
   // If the user desires, store the value in a cookie to remember it
   if (SETTINGS_REMEMBER_BOX.checked) {
@@ -2064,6 +2071,13 @@ function updateCardScale() {
 }
 
 /**
+ * Update the CSS background style property
+ */
+function updateBgStyle() {
+  document.documentElement.setAttribute("bg-style", SETTINGS_BG_STYLE_SELECT.value);
+}
+
+/**
  * Sync the Remember Name and Remember Settings checkboxes
  */
 function updateRememberSettings() {
@@ -2073,6 +2087,7 @@ function updateRememberSettings() {
 function restoreDefaultSettings() {
   setSelectByValue(SETTINGS_GUESS_SELECT, DEFAULT_NUM_GUESSES);
   setSelectByValue(SETTINGS_SCALE_SELECT, DEFAULT_CARD_SCALE);
+  setSelectByValue(SETTINGS_BG_STYLE_SELECT, DEFAULT_BG_STYLE);
   updateCardScale();
 }
 
@@ -2152,6 +2167,7 @@ function navigateSettings(e) {
 
 SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 SETTINGS_SCALE_SELECT.addEventListener("change", updateCardScale);
+SETTINGS_BG_STYLE_SELECT.addEventListener("change", updateBgStyle);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 
 SETTINGS_RESTORE_DEFAULT_BUTTON.addEventListener("click", restoreDefaultSettings);
@@ -2203,8 +2219,12 @@ window.onload = function () {
 
   // Get and apply other saved settings
   loadSetting("numGuesses", () => setSelectByValue(SETTINGS_GUESS_SELECT, initSettings.numGuesses));
+
   loadSetting("cardScale", () => setSelectByValue(SETTINGS_SCALE_SELECT, initSettings.cardScale));
   updateCardScale();
+
+  loadSetting("bgStyle", () => setSelectByValue(SETTINGS_BG_STYLE_SELECT, initSettings.bgStyle));
+  updateBgStyle();
 
   fixMenuTabIndex();
   loadCharacterSetList().then(() => {
