@@ -39,7 +39,18 @@ body {
 
   cursor: url('img/sCursor.png'), auto;
 
-  background-color     : #000000;
+  background-color: #000000;
+}
+
+
+body::before {
+  z-index              : -9999;
+  content              : "";
+  position             : absolute;
+  top                  : 0;
+  left                 : 0;
+  width                : 100%;
+  height               : 100%;
   background-attachment: fixed;
   background-image     : none;
   background-position  :
@@ -52,7 +63,7 @@ body {
 [bg-style='slow'],
 [bg-style='veryslow'],
 [bg-style='static'] {
-  body {
+  body::before {
     background-image:
       url('img/bg1.png'),
       url('img/bg2.png');
@@ -60,19 +71,19 @@ body {
 }
 
 [bg-style='normal'] {
-  body {
+  body::before {
     animation: 2.67s linear infinite bg-slide;
   }
 }
 
 [bg-style='slow'] {
-  body {
+  body::before {
     animation: 5.33s linear infinite bg-slide;
   }
 }
 
 [bg-style='veryslow'] {
-  body {
+  body::before {
     animation: 10.67s linear infinite bg-slide;
   }
 }
@@ -88,6 +99,42 @@ body {
     background-position:
       -186px -186px,
       165px 93px;
+  }
+}
+
+[bg-color='grape'] {
+  body::before {
+    filter: invert(8%) sepia(77%) saturate(2569%) hue-rotate(283deg) brightness(95%) contrast(114%);
+  }
+}
+
+[bg-color='lime'] {
+  body::before {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(78%) saturate(3838%) hue-rotate(81deg) brightness(95%) contrast(102%);
+  }
+}
+
+[bg-color='cherry'] {
+  body::before {
+    filter: brightness(0) saturate(100%) invert(11%) sepia(100%) saturate(7240%) hue-rotate(7deg) brightness(104%) contrast(115%);
+  }
+}
+
+[bg-color='blueberry'] {
+  body::before {
+    filter: brightness(0) saturate(100%) invert(10%) sepia(95%) saturate(7466%) hue-rotate(249deg) brightness(75%) contrast(135%);
+  }
+}
+
+[bg-color='banana'] {
+  body::before {
+    filter: brightness(0) saturate(100%) invert(86%) sepia(96%) saturate(6787%) hue-rotate(1deg) brightness(107%) contrast(100%);
+  }
+}
+
+[bg-color='sugar'] {
+  body::before {
+    filter: invert(100%);
   }
 }
 
