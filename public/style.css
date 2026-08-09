@@ -110,31 +110,31 @@ body::before {
 
 [bg-flavor='lime'] {
   body::before {
-    filter: brightness(0) saturate(100%) invert(18%) sepia(78%) saturate(3838%) hue-rotate(81deg) brightness(95%) contrast(102%);
+    filter: brightness(0) saturate(100%) invert(18%) sepia(78%) saturate(3838%) hue-rotate(81deg) brightness(95%) contrast(102%) brightness(50%);
   }
 }
 
 [bg-flavor='cherry'] {
   body::before {
-    filter: brightness(0) saturate(100%) invert(11%) sepia(100%) saturate(7240%) hue-rotate(7deg) brightness(104%) contrast(115%);
+    filter: brightness(0) saturate(100%) invert(11%) sepia(100%) saturate(7240%) hue-rotate(7deg) brightness(104%) contrast(115%) brightness(50%);
   }
 }
 
 [bg-flavor='blueberry'] {
   body::before {
-    filter: brightness(0) saturate(100%) invert(10%) sepia(95%) saturate(7466%) hue-rotate(249deg) brightness(75%) contrast(135%);
+    filter: brightness(0) saturate(100%) invert(10%) sepia(95%) saturate(7466%) hue-rotate(249deg) brightness(75%) contrast(135%) brightness(50%);
   }
 }
 
 [bg-flavor='banana'] {
   body::before {
-    filter: brightness(0) saturate(100%) invert(86%) sepia(96%) saturate(6787%) hue-rotate(1deg) brightness(107%) contrast(100%);
+    filter: brightness(0) saturate(100%) invert(86%) sepia(96%) saturate(6787%) hue-rotate(1deg) brightness(107%) contrast(100%) brightness(35%);
   }
 }
 
 [bg-flavor='snowberry'] {
   body::before {
-    filter: invert(100%);
+    filter: invert(25%);
   }
 }
 
