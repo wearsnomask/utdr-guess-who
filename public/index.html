@@ -366,13 +366,28 @@
         </div>
 
         <div class="left-column">
+          <div tabindex="1" id="bg-flavor-label" class="focusable">Background flavor:</div>
+        </div>
+        <div class="mid-column">
+          <select name="bg-flavor-select" id="bg-flavor-select" class="after-focusable" tabindex="-1">
+            <option value="grape" selected>Grape</option>
+            <option value="lime">Lime</option>
+            <option value="cherry">Cherry</option>
+            <option value="blueberry">Blueberry</option>
+            <option value="banana">Banana</option>
+            <option value="snowberry">Snowberry</option>
+          </select>
+        </div>
+        <div class="right-column empty"></div>
+
+        <div class="left-column">
           <div tabindex="1" id="bg-style-label" class="focusable">Background style:</div>
         </div>
         <div class="mid-column">
           <select name="bg-style-select" id="bg-style-select" class="after-focusable" tabindex="-1">
             <option value="normal" selected>Normal</option>
-            <option value="slow" selected>Slow</option>
-            <option value="veryslow" selected>Very Slow</option>
+            <option value="slow">Slow</option>
+            <option value="veryslow">Very Slow</option>
             <option value="static">Static</option>
             <option value="blank">Blank</option>
           </select>

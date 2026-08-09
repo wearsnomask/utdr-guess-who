@@ -102,37 +102,37 @@ body::before {
   }
 }
 
-[bg-color='grape'] {
+[bg-flavor='grape'] {
   body::before {
     filter: invert(8%) sepia(77%) saturate(2569%) hue-rotate(283deg) brightness(95%) contrast(114%);
   }
 }
 
-[bg-color='lime'] {
+[bg-flavor='lime'] {
   body::before {
     filter: brightness(0) saturate(100%) invert(18%) sepia(78%) saturate(3838%) hue-rotate(81deg) brightness(95%) contrast(102%);
   }
 }
 
-[bg-color='cherry'] {
+[bg-flavor='cherry'] {
   body::before {
     filter: brightness(0) saturate(100%) invert(11%) sepia(100%) saturate(7240%) hue-rotate(7deg) brightness(104%) contrast(115%);
   }
 }
 
-[bg-color='blueberry'] {
+[bg-flavor='blueberry'] {
   body::before {
     filter: brightness(0) saturate(100%) invert(10%) sepia(95%) saturate(7466%) hue-rotate(249deg) brightness(75%) contrast(135%);
   }
 }
 
-[bg-color='banana'] {
+[bg-flavor='banana'] {
   body::before {
     filter: brightness(0) saturate(100%) invert(86%) sepia(96%) saturate(6787%) hue-rotate(1deg) brightness(107%) contrast(100%);
   }
 }
 
-[bg-color='sugar'] {
+[bg-flavor='snowberry'] {
   body::before {
     filter: invert(100%);
   }
