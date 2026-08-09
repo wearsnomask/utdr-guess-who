@@ -6,14 +6,23 @@
 
 - Added "Deltarune Ch. 1-5" character set, contributed by TomatoRadio
 - Added option in the settings to control the background animation, allowing the user to slow it down, disable the animation, or hide the background design entirely
+- Added option in the settings to adjust the background flavor (color of lines in it) - can be used by streamers so each player has a different color for easy differentiation
 
 ### Styling/UX Changes
 
 - Added links on main menu to report bugs or request features, and to the game's page on GameJolt
 
+# Bugfixes
+
+- Fixed a bug on the Settings page where keyboard navigation couldn't get to the Remember Settings box
+
 ### Optimisation Changes
 
 - Implemented preloading of character sets to reduce wait time. A set will start loading as soon as it's selected in the main menu, without waiting for the user to start a game
+
+### Documentation Changes
+
+- Clarified some key instructions on how to set GitHub actions after forking the project
 
 ### Miscellaneous Changes
 
