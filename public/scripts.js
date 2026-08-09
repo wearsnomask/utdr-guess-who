@@ -2048,6 +2048,7 @@ const L_SETTING_NAMES = ["numGuesses", "cardScale", "bgFlavor", "bgStyle"];
 const L_SETTING_SOURCES = [SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BG_FLAVOR_SELECT,
   SETTINGS_BG_STYLE_SELECT];
 const L_SETTINGS_DEFAULTS = [DEFAULT_NUM_GUESSES, DEFAULT_CARD_SCALE, DEFAULT_BG_FLAVOR, DEFAULT_BG_STYLE];
+const L_SETTINGS_ON_UPDATE = [() => 0, () => 0, () => 0, () => 0,];
 
 
 // Functions
@@ -2088,6 +2089,7 @@ function updateCardScale() {
   const inspectImgScale = window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale');
   document.querySelectorAll(".inspect-img").forEach((el) => scaleImage(el, inspectImgScale));
 }
+L_SETTINGS_ON_UPDATE[L_SETTING_NAMES.indexOf("cardScale")] = updateCardScale;
 
 /**
  * Update the CSS background style property
@@ -2095,6 +2097,7 @@ function updateCardScale() {
 function updateBgStyle() {
   document.documentElement.setAttribute("bg-style", SETTINGS_BG_STYLE_SELECT.value);
 }
+L_SETTINGS_ON_UPDATE[L_SETTING_NAMES.indexOf("bgStyle")] = updateBgStyle;
 
 /**
  * Update the CSS background flavor property
@@ -2102,6 +2105,7 @@ function updateBgStyle() {
 function updateBgFlavor() {
   document.documentElement.setAttribute("bg-flavor", SETTINGS_BG_FLAVOR_SELECT.value);
 }
+L_SETTINGS_ON_UPDATE[L_SETTING_NAMES.indexOf("bgFlavor")] = updateBgFlavor;
 
 /**
  * Sync the Remember Name and Remember Settings checkboxes
@@ -2113,13 +2117,16 @@ function updateRememberSettings() {
 function restoreDefaultSettings() {
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
     setSelectByValue(L_SETTING_SOURCES[i], L_SETTINGS_DEFAULTS[i]);
+    L_SETTINGS_ON_UPDATE[i]();
   }
-  updateCardScale();
 }
 
 function restoreInitSettings() {
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
-    setSelectByValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]);
+    if (Object.keys(initSettings).includes(L_SETTING_NAMES[i])) {
+      setSelectByValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]);
+      L_SETTINGS_ON_UPDATE[i]();
+    }
   }
 }
 
@@ -2201,9 +2208,11 @@ function navigateSettings(e) {
 // -----
 
 SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
-SETTINGS_SCALE_SELECT.addEventListener("change", updateCardScale);
-SETTINGS_BG_STYLE_SELECT.addEventListener("change", updateBgStyle);
-SETTINGS_BG_FLAVOR_SELECT.addEventListener("change", updateBgFlavor);
+
+for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
+  L_SETTING_SOURCES[i].addEventListener("change", L_SETTINGS_ON_UPDATE[i]);
+}
+
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 
 SETTINGS_RESTORE_DEFAULT_BUTTON.addEventListener("click", restoreDefaultSettings);
@@ -2254,7 +2263,7 @@ window.onload = function () {
     () => { NAME_REMEMBER_BOX.checked = false; SETTINGS_REMEMBER_BOX.checked = false });
 
   // Get and apply other saved settings
-  for (let i = 0; i < L_SETTING_NAMES; ++i) {
+  for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
     loadSetting(L_SETTING_NAMES[i], () => setSelectByValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]));
   }
 
