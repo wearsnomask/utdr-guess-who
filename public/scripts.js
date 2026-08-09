@@ -365,6 +365,14 @@ function cycleSelect(selectEl) {
 }
 
 /**
+ * Toggles an input element between on and off
+ * @param {Element} inputEl 
+ */
+function toggleInput(inputEl) {
+  inputEl.checked = !inputEl.checked;
+}
+
+/**
  * Simple implementation of an ease-out interpolation to a target value
  * @param {Number} cur 
  * @param {Number} target 
@@ -2022,6 +2030,7 @@ const SETTINGS_BG_FLAVOR_LABEL = document.getElementById("bg-flavor-label");
 const SETTINGS_BG_FLAVOR_SELECT = document.getElementById("bg-flavor-select");
 const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
 const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
+const SETTINGS_REMEMBER_LABEL = document.getElementById("remember-settings-label");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
 const SETTINGS_RESTORE_DEFAULT_BUTTON = document.getElementById("settings-restore-default");
@@ -2029,7 +2038,7 @@ const SETTINGS_RESTORE_INIT_BUTTON = document.getElementById("settings-restore-i
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
 const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_BG_FLAVOR_LABEL,
-  SETTINGS_BG_STYLE_LABEL, SETTINGS_REMEMBER_BOX, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON,
+  SETTINGS_BG_STYLE_LABEL, SETTINGS_REMEMBER_LABEL, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON,
   SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
@@ -2158,6 +2167,9 @@ function navigateSettings(e) {
       } else if (el == SETTINGS_BG_STYLE_LABEL) {
         cycleSelect(SETTINGS_BG_STYLE_SELECT);
         updateBgStyle();
+      } else if (el == SETTINGS_REMEMBER_LABEL) {
+        toggleInput(SETTINGS_REMEMBER_BOX);
+        updateRememberSettings();
       } else {
         el.click();
       }
