@@ -2018,10 +2018,10 @@ const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
 const SETTINGS_SCALE_LABEL = document.getElementById("card-scale-label");
 const SETTINGS_SCALE_SELECT = document.getElementById("card-scale-select");
 const SETTINGS_SCALE_IMG = document.getElementById("example-character-img");
-const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
-const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
 const SETTINGS_BG_FLAVOR_LABEL = document.getElementById("bg-flavor-label");
 const SETTINGS_BG_FLAVOR_SELECT = document.getElementById("bg-flavor-select");
+const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
+const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
 const SETTINGS_RESTORE_DEFAULT_BUTTON = document.getElementById("settings-restore-default");
@@ -2152,6 +2152,12 @@ function navigateSettings(e) {
       } else if (el == SETTINGS_SCALE_LABEL) {
         cycleSelect(SETTINGS_SCALE_SELECT);
         updateCardScale();
+      } else if (el == SETTINGS_BG_FLAVOR_LABEL) {
+        cycleSelect(SETTINGS_BG_FLAVOR_SELECT);
+        updateBgFlavor();
+      } else if (el == SETTINGS_BG_STYLE_LABEL) {
+        cycleSelect(SETTINGS_BG_STYLE_SELECT);
+        updateBgStyle();
       } else {
         el.click();
       }
