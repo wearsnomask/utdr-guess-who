@@ -1,6 +1,8 @@
 // Globally relevant
 // =================
 
+import { setNewFunValue } from "./fun.js";
+
 // Class definitions
 // -----------------
 
@@ -2254,7 +2256,7 @@ const creditsSceneSwitchWatcher = new SceneSwitchWatcher(CREDITS_SCENE, initCred
 
 // Final setup
 // ===========
-window.onload = function () {
+document.addEventListener("DOMContentLoaded", () => {
   lSceneStack.push(MENU_SCENE);
 
   // Get the saved name, if any. If it's found in the cookie, set the "remember" boxes to be checked
@@ -2288,4 +2290,6 @@ window.onload = function () {
   }
 
   updateRememberName();
-}
+
+  setNewFunValue();
+});
