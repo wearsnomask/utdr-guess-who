@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.0
+
+### New Features
+
+- FUN
+
 ## v1.3.0
 
 ### New Features
