@@ -2111,6 +2111,10 @@ function updateBgFlavor() {
 }
 L_SETTINGS_ON_UPDATE[L_SETTING_NAMES.indexOf("bgFlavor")] = updateBgFlavor;
 
+function onFunButtonClick() {
+  setNewFunValue();
+}
+
 /**
  * Sync the Remember Name and Remember Settings checkboxes
  */
@@ -2216,6 +2220,7 @@ SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
   L_SETTING_SOURCES[i].addEventListener("change", L_SETTINGS_ON_UPDATE[i]);
 }
+SETTINGS_FUN_BUTTON.addEventListener("click", onFunButtonClick);
 
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 
