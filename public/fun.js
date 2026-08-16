@@ -54,6 +54,28 @@ class FunEventManager {
         this.#sActiveEvents.add(e);
       }
     });
+
+    this.#updateEventWeight();
+  }
+
+  /**
+   * Get the new total event weight and apply effects based on it
+   */
+  #updateEventWeight() {
+    const totalWeight = [...this.#sActiveEvents].reduce((a, b) => a + b.weight, 0);
+
+    // Edit the text of the FUN button appropriately for the weight
+    let funText;
+    if (totalWeight < 10) {
+      funText = "No";
+    } else {
+      funText = "Maybe";
+    }
+    if (totalWeight % 2 != 0) {
+      funText += "?"
+    }
+    document.getElementById("fun-adjust-button").textContent = funText;
+
   }
 }
 const manager = new FunEventManager();
@@ -64,10 +86,15 @@ const manager = new FunEventManager();
  */
 class FunEvent {
 
+  // The "weight" of the event, which determines if it's significant enough to update the FUN button indicator
+  weight;
+
   // Overridable methods
   // -------------------
 
-  constructor() { }
+  constructor() {
+    this.weight = 10;
+  }
 
   /**
    * Define whether or not this event is active for a given FUN (Fractal Universe Number) value. For instance, to make
@@ -93,9 +120,20 @@ class FunEvent {
 
   // Methods that generally won't need to be overridden
   // --------------------------------------------------
+
+  get weight() {
+    return this.weight;
+  }
 }
 
 class CharMaskEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Low weight for this event, since it's active half the time
+    this.weight = 1;
+  }
+
   isActiveForFun(i) {
     // Active for any even FUN value
     return i % 2 == 0;
@@ -103,14 +141,14 @@ class CharMaskEvent extends FunEvent {
 
   onActivate() {
     // Hide the halfmask image and show the fullmask image
-    document.getElementById("#char-img-halfmask").classList.add("hidden");
-    document.getElementById("#char-img-fullmask").classList.remove("hidden");
+    document.getElementById("char-img-halfmask").classList.add("hidden");
+    document.getElementById("char-img-fullmask").classList.remove("hidden");
   }
 
   onDeactivate() {
     // Hide the fullmask image and show the halfmask image
-    document.getElementById("#char-img-halfmask").classList.remove("hidden");
-    document.getElementById("#char-img-fullmask").classList.add("hidden");
+    document.getElementById("char-img-halfmask").classList.remove("hidden");
+    document.getElementById("char-img-fullmask").classList.add("hidden");
   }
 }
 

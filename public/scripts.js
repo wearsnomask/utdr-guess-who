@@ -2032,6 +2032,8 @@ const SETTINGS_BG_FLAVOR_LABEL = document.getElementById("bg-flavor-label");
 const SETTINGS_BG_FLAVOR_SELECT = document.getElementById("bg-flavor-select");
 const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
 const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
+const SETTINGS_FUN_LABEL = document.getElementById("fun-adjust-label");
+const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_REMEMBER_LABEL = document.getElementById("remember-settings-label");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
@@ -2040,7 +2042,7 @@ const SETTINGS_RESTORE_INIT_BUTTON = document.getElementById("settings-restore-i
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
 const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_BG_FLAVOR_LABEL,
-  SETTINGS_BG_STYLE_LABEL, SETTINGS_REMEMBER_LABEL, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON,
+  SETTINGS_BG_STYLE_LABEL, SETTINGS_FUN_BUTTON, SETTINGS_REMEMBER_LABEL, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON,
   SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
