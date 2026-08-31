@@ -80,6 +80,11 @@ class FunEventManager {
 }
 const manager = new FunEventManager();
 
+export function setNewFunValue() {
+  const newValue = Math.ceil(Math.random() * 100);
+  manager.updateFunValue(newValue);
+}
+
 
 /**
  * Base class for FUN events
@@ -154,7 +159,24 @@ class CharMaskEvent extends FunEvent {
 
 manager.registerEvent(new CharMaskEvent());
 
-export function setNewFunValue() {
-  const newValue = Math.ceil(Math.random() * 100);
-  manager.updateFunValue(newValue);
+class MiddleEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    // Active for FUN 26 only
+    return i == 26;
+  }
+
+  onActivate() {
+    // Hide the halfmask image and show the fullmask image
+    document.getElementById("char-img-halfmask").classList.add("hidden");
+    document.getElementById("char-img-fullmask").classList.remove("hidden");
+  }
+
+  onDeactivate() {
+    // Hide the fullmask image and show the halfmask image
+    document.getElementById("char-img-halfmask").classList.remove("hidden");
+    document.getElementById("char-img-fullmask").classList.add("hidden");
+  }
 }
+
+manager.registerEvent(new CharMaskEvent());
