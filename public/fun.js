@@ -4,8 +4,14 @@
 // Globals
 // -------
 
+// Constant DOM references
+const SETTINGS_FUN_LABEL = document.getElementById("fun-adjust-label");
+const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
+
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
+
+let buttonTextLock = false;
 
 class FunEventManager {
 
@@ -64,17 +70,19 @@ class FunEventManager {
   #updateEventWeight() {
     const totalWeight = [...this.#sActiveEvents].reduce((a, b) => a + b.weight, 0);
 
-    // Edit the text of the FUN button appropriately for the weight
-    let funText;
-    if (totalWeight < 10) {
-      funText = "No";
-    } else {
-      funText = "Maybe";
+    if (!buttonTextLock) {
+      // Edit the text of the FUN button appropriately for the weight
+      let funText;
+      if (totalWeight < 10) {
+        funText = "No";
+      } else {
+        funText = "Maybe";
+      }
+      if (totalWeight % 2 != 0) {
+        funText += "?"
+      }
+      SETTINGS_FUN_BUTTON.textContent = funText;
     }
-    if (totalWeight % 2 != 0) {
-      funText += "?"
-    }
-    document.getElementById("fun-adjust-button").textContent = funText;
 
   }
 }
@@ -131,6 +139,18 @@ class FunEvent {
   }
 }
 
+// Functions related to FUN events
+
+export function connectFunButton() {
+  SETTINGS_FUN_BUTTON.addEventListener("click", setNewFunValue);
+}
+
+export function disconnectFunButton() {
+  SETTINGS_FUN_BUTTON.removeEventListener("click", setNewFunValue);
+}
+
+// Classes implementing specific FUN events
+
 class CharMaskEvent extends FunEvent {
 
   constructor() {
@@ -167,16 +187,89 @@ class MiddleEvent extends FunEvent {
   }
 
   onActivate() {
-    // Hide the halfmask image and show the fullmask image
-    document.getElementById("char-img-halfmask").classList.add("hidden");
-    document.getElementById("char-img-fullmask").classList.remove("hidden");
+    // Store the current text of the FUN button and label
+    this.#initLabelText = SETTINGS_FUN_LABEL.textContent;
+    this.#initButtonText = SETTINGS_FUN_BUTTON.textContent;
+
+    // Disconnect the normal event from the FUN button and instead connect the event perform the chain of steps
+    disconnectFunButton();
+
+    // Start updating the button text, and lock it so the FUN manager won't change it
+    SETTINGS_FUN_BUTTON.textContent = "Yes";
+    buttonTextLock = true;
+
+    this.#currentStep = 0;
+    SETTINGS_FUN_BUTTON.addEventListener("click", this.runCurrentStep);
   }
 
   onDeactivate() {
-    // Hide the fullmask image and show the halfmask image
-    document.getElementById("char-img-halfmask").classList.remove("hidden");
-    document.getElementById("char-img-fullmask").classList.add("hidden");
+    this.endEvent();
   }
+
+  runCurrentStep() {
+    this.#lEventSteps[this.#currentStep]();
+    ++this.#currentStep;
+  }
+
+  endEvent() {
+    // Disconnect all events for parts of the chain from the FUN button, and connect the normal event
+    SETTINGS_FUN_BUTTON.removeEventListener("click", this.runCurrentStep);
+    connectFunButton();
+
+    // Release the lock on the button text so the FUN manager can change it once more
+    buttonTextLock = false;
+
+    // Restore the text for the FUN button and label
+    // Store the current text of the FUN button and label
+    SETTINGS_FUN_LABEL.textContent = this.#initLabelText;
+    SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
+    this.#currentStep = -1;
+    setNewFunValue();
+  }
+
+  #initLabelText = "";
+  #initButtonText = "";
+
+  #currentStep = -1;
+
+  #lEventSteps = [function () {
+    SETTINGS_FUN_BUTTON.textContent = "No";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "Maybe";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "I don't know";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "Can you repeat the question?";
+  },
+  function () {
+    SETTINGS_LABEL_BUTTON.textContent = "You're not the boss of me now!";
+    SETTINGS_FUN_BUTTON.textContent = "You're not the boss of me now!";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "And";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "You're";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "Not";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "So";
+  },
+  function () {
+    SETTINGS_FUN_BUTTON.textContent = "Big";
+  },
+  function () {
+    SETTINGS_LABEL_BUTTON.textContent = "Life is";
+    SETTINGS_FUN_BUTTON.textContent = "unfair...";
+  },
+  function () {
+    this.endEvent();
+  },];
 }
 
-manager.registerEvent(new CharMaskEvent());
+manager.registerEvent(new MiddleEvent());
