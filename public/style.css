@@ -1139,6 +1139,16 @@ input.focusable:hover {
   z-index : -1;
 }
 
+#fun-button-container {
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+}
+
+#fun-adjust-button {
+  margin: 0;
+}
+
 /* Credits scene */
 
 #credits-scene {

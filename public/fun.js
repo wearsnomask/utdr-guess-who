@@ -7,6 +7,7 @@
 // Constant DOM references
 const SETTINGS_FUN_LABEL = document.getElementById("fun-adjust-label");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
+const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
@@ -89,7 +90,10 @@ class FunEventManager {
 const manager = new FunEventManager();
 
 export function setNewFunValue() {
-  const newValue = Math.ceil(Math.random() * 100);
+  let newValue = parseInt(SETTINGS_FUN_FORCE_INPUT.value);
+  if (!(newValue > 0 && newValue <= 100)) {
+    newValue = Math.ceil(Math.random() * 100);
+  }
   manager.updateFunValue(newValue);
 }
 
@@ -181,6 +185,62 @@ manager.registerEvent(new CharMaskEvent());
 
 class MiddleEvent extends FunEvent {
 
+  #initLabelText;
+  #initButtonText;
+  currentStep;
+  lEventSteps;
+
+  constructor() {
+
+    super();
+
+    this.#initLabelText = "";
+    this.#initButtonText = "";
+
+    this.currentStep = -1;
+
+    this.lEventSteps = [function () {
+      SETTINGS_FUN_BUTTON.textContent = "No";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "Maybe";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "I don't know";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "Can you repeat the question?";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "You're not the boss of me now!";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "You're not the boss of me now!";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "You're not the boss of me now!";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "And";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "You're";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "Not";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "So";
+    },
+    function () {
+      SETTINGS_FUN_BUTTON.textContent = "Big";
+    },
+    function () {
+      alert("Life is unfair...");
+      endMiddleEvent();
+    },];
+  }
+
   isActiveForFun(i) {
     // Active for FUN 26 only
     return i == 26;
@@ -198,8 +258,8 @@ class MiddleEvent extends FunEvent {
     SETTINGS_FUN_BUTTON.textContent = "Yes";
     buttonTextLock = true;
 
-    this.#currentStep = 0;
-    SETTINGS_FUN_BUTTON.addEventListener("click", this.runCurrentStep);
+    this.currentStep = 0;
+    SETTINGS_FUN_BUTTON.addEventListener("click", runMiddleEventStep);
   }
 
   onDeactivate() {
@@ -207,13 +267,13 @@ class MiddleEvent extends FunEvent {
   }
 
   runCurrentStep() {
-    this.#lEventSteps[this.#currentStep]();
-    ++this.#currentStep;
+    this.lEventSteps[this.currentStep]();
+    ++this.currentStep;
   }
 
   endEvent() {
     // Disconnect all events for parts of the chain from the FUN button, and connect the normal event
-    SETTINGS_FUN_BUTTON.removeEventListener("click", this.runCurrentStep);
+    SETTINGS_FUN_BUTTON.removeEventListener("click", runMiddleEventStep);
     connectFunButton();
 
     // Release the lock on the button text so the FUN manager can change it once more
@@ -223,53 +283,16 @@ class MiddleEvent extends FunEvent {
     // Store the current text of the FUN button and label
     SETTINGS_FUN_LABEL.textContent = this.#initLabelText;
     SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
-    this.#currentStep = -1;
+    this.currentStep = -1;
     setNewFunValue();
   }
-
-  #initLabelText = "";
-  #initButtonText = "";
-
-  #currentStep = -1;
-
-  #lEventSteps = [function () {
-    SETTINGS_FUN_BUTTON.textContent = "No";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "Maybe";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "I don't know";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "Can you repeat the question?";
-  },
-  function () {
-    SETTINGS_LABEL_BUTTON.textContent = "You're not the boss of me now!";
-    SETTINGS_FUN_BUTTON.textContent = "You're not the boss of me now!";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "And";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "You're";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "Not";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "So";
-  },
-  function () {
-    SETTINGS_FUN_BUTTON.textContent = "Big";
-  },
-  function () {
-    SETTINGS_LABEL_BUTTON.textContent = "Life is";
-    SETTINGS_FUN_BUTTON.textContent = "unfair...";
-  },
-  function () {
-    this.endEvent();
-  },];
 }
 
-manager.registerEvent(new MiddleEvent());
+const middleEvent = new MiddleEvent();
+function runMiddleEventStep() {
+  middleEvent.runCurrentStep();
+}
+function endMiddleEvent() {
+  middleEvent.endEvent();
+}
+manager.registerEvent(middleEvent);
