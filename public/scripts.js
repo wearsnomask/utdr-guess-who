@@ -446,6 +446,20 @@ function exitNameScene() {
   window.removeEventListener("keydown", navigateName);
 }
 
+function getSettingValue(settingSource) {
+  if (settingSource.checked !== undefined)
+    return settingSource.checked;
+  return settingSource.value;
+}
+
+function setSettingValue(settingSource, val) {
+  if (settingSource.checked !== undefined) {
+    settingSource.checked = val;
+    return;
+  }
+  setSelectByValue(settingSource, val);
+}
+
 function saveSettings() {
   // If any values aren't loaded in sessionStorage, set them now based on inputs
 
@@ -456,8 +470,9 @@ function saveSettings() {
   cookieInfo["name"] = sessionStorage["name"];
 
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
-    if (!sessionStorage.getItem(L_SETTING_NAMES[i]))
-      sessionStorage[L_SETTING_NAMES[i]] = L_SETTING_SOURCES[i].value;
+    if (!sessionStorage.getItem(L_SETTING_NAMES[i])) {
+      sessionStorage[L_SETTING_NAMES[i]] = getSettingValue(L_SETTING_SOURCES[i]);
+    }
     cookieInfo[L_SETTING_NAMES[i]] = sessionStorage[L_SETTING_NAMES[i]];
   }
 
@@ -1007,6 +1022,7 @@ const DEFAULT_NUM_GUESSES = document.querySelectorAll(".guess-icon").length;
 const DEFAULT_CARD_SCALE = +BODY_STYLE.getPropertyValue('--card-scale');
 const DEFAULT_BG_STYLE = document.getElementById("bg-style-select").value;
 const DEFAULT_BG_FLAVOR = document.getElementById("bg-flavor-select").value;
+const DEFAULT_NO_FUN = document.getElementById("no-fun").checked;
 const DEFAULT_CARD_WIDTH = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-width')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_HEIGHT = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-height')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_CSS_CLASS = "";
@@ -2034,6 +2050,8 @@ const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
 const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
 const SETTINGS_FUN_LABEL = document.getElementById("fun-adjust-label");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
+const SETTINGS_NO_FUN_LABEL = document.getElementById("no-fun-label");
+const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
 const SETTINGS_REMEMBER_LABEL = document.getElementById("remember-settings-label");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
@@ -2042,17 +2060,18 @@ const SETTINGS_RESTORE_INIT_BUTTON = document.getElementById("settings-restore-i
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
 const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_BG_FLAVOR_LABEL,
-  SETTINGS_BG_STYLE_LABEL, SETTINGS_FUN_BUTTON, SETTINGS_REMEMBER_LABEL, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON,
-  SETTINGS_BACK_BUTTON];
+  SETTINGS_BG_STYLE_LABEL, SETTINGS_FUN_BUTTON, SETTINGS_NO_FUN_LABEL, SETTINGS_REMEMBER_LABEL,
+  SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON, SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 
 // Other constants
-const L_SETTING_NAMES = ["numGuesses", "cardScale", "bgFlavor", "bgStyle"];
+const L_SETTING_NAMES = ["numGuesses", "cardScale", "bgFlavor", "bgStyle", "noFun"];
 const L_SETTING_SOURCES = [SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BG_FLAVOR_SELECT,
-  SETTINGS_BG_STYLE_SELECT];
-const L_SETTINGS_DEFAULTS = [DEFAULT_NUM_GUESSES, DEFAULT_CARD_SCALE, DEFAULT_BG_FLAVOR, DEFAULT_BG_STYLE];
-const L_SETTINGS_ON_UPDATE = [() => 0, () => 0, () => 0, () => 0,];
+  SETTINGS_BG_STYLE_SELECT, SETTINGS_NO_FUN_BOX];
+const L_SETTINGS_DEFAULTS = [DEFAULT_NUM_GUESSES, DEFAULT_CARD_SCALE, DEFAULT_BG_FLAVOR, DEFAULT_BG_STYLE,
+  DEFAULT_NO_FUN];
+const L_SETTINGS_ON_UPDATE = [() => 0, () => 0, () => 0, () => 0, () => 0,];
 
 
 // Functions
@@ -2069,7 +2088,7 @@ function exitSettingsScene() {
 
   // Save settings on exiting the scene
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
-    sessionStorage[L_SETTING_NAMES[i]] = L_SETTING_SOURCES[i].value;
+    sessionStorage[L_SETTING_NAMES[i]] = getSettingValue(L_SETTING_SOURCES[i]);
   }
 
   // If the user desires, store the value in a cookie to remember it
@@ -2120,7 +2139,7 @@ function updateRememberSettings() {
 
 function restoreDefaultSettings() {
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
-    setSelectByValue(L_SETTING_SOURCES[i], L_SETTINGS_DEFAULTS[i]);
+    setSettingValue(L_SETTING_SOURCES[i], L_SETTINGS_DEFAULTS[i]);
     L_SETTINGS_ON_UPDATE[i]();
   }
 }
@@ -2128,7 +2147,7 @@ function restoreDefaultSettings() {
 function restoreInitSettings() {
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
     if (Object.keys(initSettings).includes(L_SETTING_NAMES[i])) {
-      setSelectByValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]);
+      setSettingValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]);
       L_SETTINGS_ON_UPDATE[i]();
     }
   }
@@ -2269,7 +2288,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Get and apply other saved settings
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
-    loadSetting(L_SETTING_NAMES[i], () => setSelectByValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]));
+    loadSetting(L_SETTING_NAMES[i], () => setSettingValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]));
   }
 
   updateCardScale();
