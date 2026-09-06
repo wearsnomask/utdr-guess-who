@@ -398,7 +398,8 @@
           <div tabindex="1" id="fun-adjust-label" class="before-focusable">Are you having fun yet?</div>
         </div>
         <div id="fun-button-container" class="mid-column">
-          <button tabindex="-1" id="fun-adjust-button" class="focusable small">No</button>
+          <button tabindex="-1" id="fun-adjust-button" class="focusable small"
+            title="Have a different type of fun">No</button>
         </div>
         <div class="right-column">
           <input tabindex="-1" id="fun-force-input" class="hidden" type="text">
@@ -408,7 +409,8 @@
           <label tabindex="1" for="no-fun" id="no-fun-label" class="focusable">No fun mode:</label>
         </div>
         <div class="mid-column">
-          <input type="checkbox" name="no-fun" id="no-fun" class="after-focusable" tabindex="-1">
+          <input type="checkbox" name="no-fun" id="no-fun" class="after-focusable" tabindex="-1"
+            title="More predictable, less fun">
         </div>
         <div class="right-column empty">
         </div>
@@ -418,19 +420,24 @@
             settings:</label>
         </div>
         <div class="mid-column">
-          <input type="checkbox" name="remember-settings" id="remember-settings" class="after-focusable" tabindex="-1">
+          <input type="checkbox" name="remember-settings" id="remember-settings" class="after-focusable" tabindex="-1"
+            title="Save name and settings in a cookie for next time you visit">
         </div>
         <div class="right-column empty"></div>
 
         <div class="left-column">
-          <button id="settings-restore-default" class="no-margin small">Restore<br>Defaults</button>
+          <button id="settings-restore-default" class="no-margin small"
+            title="Restore default values for all settings">Restore<br>Defaults</button>
         </div>
         <div class="mid-column">
-          <button id="settings-restore-init" class="no-margin small">Restore<br>Saved</button>
+          <button id="settings-restore-init" class="no-margin small"
+            title="Restore values for all settings as they were when you first began this session">
+            Restore<br>Saved</button>
         </div>
         <div class="right-column empty"></div>
       </div>
-      <button id="settings-back" class="no-bottom-margin">Save</button>
+      <button id="settings-back" class="no-bottom-margin"
+        title="Save settings and go back to the previous screen">Save</button>
     </div>
 
 
