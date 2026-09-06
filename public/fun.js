@@ -187,8 +187,8 @@ class MiddleEvent extends FunEvent {
 
   #initLabelText;
   #initButtonText;
-  currentStep;
-  lEventSteps;
+  #currentStep;
+  #lEventSteps;
 
   constructor() {
 
@@ -197,9 +197,9 @@ class MiddleEvent extends FunEvent {
     this.#initLabelText = "";
     this.#initButtonText = "";
 
-    this.currentStep = -1;
+    this.#currentStep = -1;
 
-    this.lEventSteps = [function () {
+    this.#lEventSteps = [function () {
       SETTINGS_FUN_BUTTON.textContent = "No";
     },
     function () {
@@ -258,7 +258,7 @@ class MiddleEvent extends FunEvent {
     SETTINGS_FUN_BUTTON.textContent = "Yes";
     buttonTextLock = true;
 
-    this.currentStep = 0;
+    this.#currentStep = 0;
     SETTINGS_FUN_BUTTON.addEventListener("click", runMiddleEventStep);
   }
 
@@ -267,8 +267,8 @@ class MiddleEvent extends FunEvent {
   }
 
   runCurrentStep() {
-    this.lEventSteps[this.currentStep]();
-    ++this.currentStep;
+    this.#lEventSteps[this.#currentStep]();
+    ++this.#currentStep;
   }
 
   endEvent() {
@@ -283,7 +283,7 @@ class MiddleEvent extends FunEvent {
     // Store the current text of the FUN button and label
     SETTINGS_FUN_LABEL.textContent = this.#initLabelText;
     SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
-    this.currentStep = -1;
+    this.#currentStep = -1;
     setNewFunValue();
   }
 }
