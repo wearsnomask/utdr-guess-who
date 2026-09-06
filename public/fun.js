@@ -5,9 +5,9 @@
 // -------
 
 // Constant DOM references
-const SETTINGS_FUN_LABEL = document.getElementById("fun-adjust-label");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
+const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
@@ -16,6 +16,9 @@ let buttonTextLock = false;
 
 class FunEventManager {
 
+  // Whether or not FUN events are enabled
+  #enabled;
+
   // The list of all known FUN events
   #lEvents;
 
@@ -23,6 +26,7 @@ class FunEventManager {
   #sActiveEvents;
 
   constructor() {
+    this.#enabled = true;
     this.#lEvents = [];
     this.#sActiveEvents = new Set();
   }
@@ -39,12 +43,17 @@ class FunEventManager {
    * Update to a new active FUN value
    * @param {Number} fun The new FUN value
    */
-  updateFunValue(fun) {
+  updateFun(fun = null) {
+    if (fun !== null) {
+      funValue = fun;
+    }
+
     // Check through all active events, and deactivate any that are no longer active with the new FUN value. We can't
-    // modify the set while iterating over it, hence the second loop
+    // modify the set while iterating over it, hence the second loop. If events are disabled in general, mark all to be
+    // disabled
     const lEventsToDeactivate = []
     this.#sActiveEvents.forEach((e) => {
-      if (!e.isActiveForFun(fun))
+      if (!this.#enabled || !e.isActiveForFun(funValue))
         lEventsToDeactivate.push(e);
     });
     lEventsToDeactivate.forEach((e) => {
@@ -56,7 +65,7 @@ class FunEventManager {
     this.#lEvents.forEach((e) => {
       if (this.#sActiveEvents.has(e))
         return;
-      if (e.isActiveForFun(fun)) {
+      if (this.#enabled && e.isActiveForFun(funValue)) {
         e.onActivate();
         this.#sActiveEvents.add(e);
       }
@@ -86,6 +95,22 @@ class FunEventManager {
     }
 
   }
+
+  /**
+   * Enable FUN events to be active in general
+   */
+  enableEvents() {
+    this.#enabled = true;
+    this.updateFun();
+  }
+
+  /**
+   * Disable FUN events from being active in general
+   */
+  disableEvents() {
+    this.#enabled = false;
+    this.updateFun();
+  }
 }
 const manager = new FunEventManager();
 
@@ -94,7 +119,7 @@ export function setNewFunValue() {
   if (!(newValue > 0 && newValue <= 100)) {
     newValue = Math.ceil(Math.random() * 100);
   }
-  manager.updateFunValue(newValue);
+  manager.updateFun(newValue);
 }
 
 
@@ -185,7 +210,6 @@ manager.registerEvent(new CharMaskEvent());
 
 class MiddleEvent extends FunEvent {
 
-  #initLabelText;
   #initButtonText;
   #currentStep;
   #lEventSteps;
@@ -194,7 +218,6 @@ class MiddleEvent extends FunEvent {
 
     super();
 
-    this.#initLabelText = "";
     this.#initButtonText = "";
 
     this.#currentStep = -1;
@@ -247,8 +270,7 @@ class MiddleEvent extends FunEvent {
   }
 
   onActivate() {
-    // Store the current text of the FUN button and label
-    this.#initLabelText = SETTINGS_FUN_LABEL.textContent;
+    // Store the current text of the FUN button
     this.#initButtonText = SETTINGS_FUN_BUTTON.textContent;
 
     // Disconnect the normal event from the FUN button and instead connect the event perform the chain of steps
@@ -279,9 +301,8 @@ class MiddleEvent extends FunEvent {
     // Release the lock on the button text so the FUN manager can change it once more
     buttonTextLock = false;
 
-    // Restore the text for the FUN button and label
-    // Store the current text of the FUN button and label
-    SETTINGS_FUN_LABEL.textContent = this.#initLabelText;
+    // Restore the text for the FUN button
+    // Store the current text of the FUN button
     SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
     this.#currentStep = -1;
     setNewFunValue();
@@ -296,3 +317,14 @@ function endMiddleEvent() {
   middleEvent.endEvent();
 }
 manager.registerEvent(middleEvent);
+
+// General FUN event management
+// ----------------------------
+
+export function updateNoFun() {
+  if (SETTINGS_NO_FUN_BOX.checked) {
+    manager.disableEvents();
+  } else {
+    manager.enableEvents();
+  }
+}

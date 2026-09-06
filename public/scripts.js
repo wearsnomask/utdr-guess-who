@@ -1,7 +1,7 @@
 // Globally relevant
 // =================
 
-import { connectFunButton, setNewFunValue } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -454,7 +454,7 @@ function getSettingValue(settingSource) {
 
 function setSettingValue(settingSource, val) {
   if (settingSource.checked !== undefined) {
-    settingSource.checked = val;
+    settingSource.checked = val == "true";
     return;
   }
   setSelectByValue(settingSource, val);
@@ -2048,7 +2048,6 @@ const SETTINGS_BG_FLAVOR_LABEL = document.getElementById("bg-flavor-label");
 const SETTINGS_BG_FLAVOR_SELECT = document.getElementById("bg-flavor-select");
 const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
 const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
-const SETTINGS_FUN_LABEL = document.getElementById("fun-adjust-label");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_NO_FUN_LABEL = document.getElementById("no-fun-label");
 const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
@@ -2197,6 +2196,9 @@ function navigateSettings(e) {
       } else if (el == SETTINGS_BG_STYLE_LABEL) {
         cycleSelect(SETTINGS_BG_STYLE_SELECT);
         updateBgStyle();
+      } else if (el == SETTINGS_NO_FUN_LABEL) {
+        toggleInput(SETTINGS_NO_FUN_BOX);
+        updateNoFun();
       } else if (el == SETTINGS_REMEMBER_LABEL) {
         toggleInput(SETTINGS_REMEMBER_BOX);
         updateRememberSettings();
@@ -2237,6 +2239,7 @@ for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
 }
 
 connectFunButton();
+SETTINGS_NO_FUN_BOX.addEventListener("change", updateNoFun);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 
 SETTINGS_RESTORE_DEFAULT_BUTTON.addEventListener("click", restoreDefaultSettings);
@@ -2294,6 +2297,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCardScale();
   updateBgStyle();
   updateBgFlavor();
+  updateNoFun();
 
   fixMenuTabIndex();
   loadCharacterSetList().then(() => {
