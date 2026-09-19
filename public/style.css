@@ -47,16 +47,17 @@ body::before {
   z-index              : -9999;
   content              : "";
   position             : fixed;
-  top                  : 0;
-  left                 : 0;
-  width                : 100%;
-  height               : 100%;
+  top                  : -200%;
+  left                 : -200%;
+  width                : 500%;
+  height               : 500%;
   background-attachment: fixed;
   background-image     : none;
   background-position  :
     0px 0px,
     108px 36px;
   background-size: 94px;
+  transform      : rotate(0deg);
 }
 
 [bg-style='normal'],
@@ -70,21 +71,27 @@ body::before {
   }
 }
 
+body::before {
+  --bg-slide-time: 2.67s;
+  --bg-twist-time: 60000s;
+  --bg-twist-max : 0deg;
+}
+
 [bg-style='normal'] {
   body::before {
-    animation: 2.67s linear infinite bg-slide;
+    --bg-slide-time: 2.67s
   }
 }
 
 [bg-style='slow'] {
   body::before {
-    animation: 5.33s linear infinite bg-slide;
+    --bg-slide-time: 5.33s
   }
 }
 
 [bg-style='veryslow'] {
   body::before {
-    animation: 10.67s linear infinite bg-slide;
+    --bg-slide-time: 10.67s
   }
 }
 
@@ -99,6 +106,32 @@ body::before {
     background-position:
       -186px -186px,
       165px 93px;
+  }
+}
+
+[bg-twist='true'] {
+  body::before {
+    --bg-twist-max: 360deg;
+  }
+}
+
+@keyframes bg-twist {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(var(--bg-twist-max));
+  }
+}
+
+body::before {
+  animation: var(--bg-slide-time) linear infinite bg-slide, var(--bg-twist-time) linear infinite bg-twist;
+}
+
+[bg-style='static'] {
+  body::before {
+    animation: var(--bg-twist-time) linear infinite bg-twist;
   }
 }
 
