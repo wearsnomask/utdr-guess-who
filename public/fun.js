@@ -318,6 +318,23 @@ function endMiddleEvent() {
 }
 manager.registerEvent(middleEvent);
 
+class TwistEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    return i >= 67 && i <= 70;
+  }
+
+  onActivate() {
+    document.documentElement.setAttribute("bg-twist", true);
+  }
+
+  onDeactivate() {
+    document.documentElement.removeAttribute("bg-twist");
+  }
+}
+
+manager.registerEvent(new TwistEvent());
+
 // General FUN event management
 // ----------------------------
 
