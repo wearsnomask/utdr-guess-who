@@ -9,6 +9,7 @@ const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
 const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
 const TROMBONE_GIF_TEMPLATE = document.getElementById("trombone-template");
+const EXPLOSION_GIF_TEMPLATE = document.getElementById("explosion-template");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
@@ -442,6 +443,46 @@ class TromboneEvent extends FunEvent {
 }
 
 manager.registerEvent(new TromboneEvent());
+
+/**
+ * Displays a explosion gif attached to the calling card
+ * @param {Event} e 
+ */
+export function displayExplosionGif(e) {
+  const card = e.target.closest(".character-card");
+
+  // Only run if the card is now inactive
+  if (card.classList.contains("active"))
+    return;
+
+  const newExplosionGif = document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion-gif");
+  card.appendChild(newExplosionGif);
+  setTimeout(() => { newExplosionGif.remove() }, 1700);
+}
+
+class ExplosionEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    return i >= 70 && i <= 79;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "explosion",
+      trigger: "click",
+      handler: displayExplosionGif
+    });
+
+    // Preload the image so it will appear quickly the first time it's triggered
+    document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion-gif");
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("explosion");
+  }
+}
+
+manager.registerEvent(new ExplosionEvent());
 
 // General FUN event management
 // ----------------------------
