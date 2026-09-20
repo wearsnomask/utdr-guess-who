@@ -20,16 +20,20 @@ class FunEventManager {
   // Whether or not FUN events are enabled
   #enabled;
 
-  // The list of all known FUN events
+  // List of all known FUN events
   #lEvents;
 
-  // The set of all currently-active FUN events
+  // Set of all currently-active FUN events
   #sActiveEvents;
+
+  // Object containing all active events triggered from guess icons
+  #oHeartEvents;
 
   constructor() {
     this.#enabled = true;
     this.#lEvents = [];
     this.#sActiveEvents = new Set();
+    this.#oHeartEvents = {};
   }
 
   /**
@@ -112,6 +116,64 @@ class FunEventManager {
     this.#enabled = false;
     this.updateFun();
   }
+
+  /**
+   * Adds an event which is triggered from some actions on guess icons
+   * @param {Object} oHeartEvent 
+   */
+  addHeartEvent(oHeartEvent) {
+    // Check if this event is already active, and do nothing if so
+    if (this.#oHeartEvents[oHeartEvent.name])
+      return;
+
+    this.#oHeartEvents[oHeartEvent.name] = oHeartEvent;
+    this.#attachHeartEvent(oHeartEvent);
+  }
+
+  #attachHeartEvent(oHeartEvent) {
+
+    let selector = ".guess-icon"
+    if (oHeartEvent.selector)
+      selector += oHeartEvent.selector
+
+    document.querySelectorAll(selector).forEach((el) => {
+      el.addEventListener(oHeartEvent.trigger, oHeartEvent.handler);
+    });
+  }
+
+  /**
+   * Remove an event triggered from some actions on guess icons
+   * @param {String} name
+   */
+  removeHeartEvent(name) {
+    if (!this.#oHeartEvents[name])
+      return;
+
+    this.#detachHeartEvent(name);
+    delete this.#oHeartEvents[name];
+  }
+
+  #detachHeartEvent(name) {
+
+    const oHeartEvent = this.#oHeartEvents[name];
+
+    let selector = ".guess-icon"
+    if (Object.hasOwn(oHeartEvent, selector))
+      selector += oHeartEvent.selector
+
+    document.querySelectorAll(selector).forEach((el) => {
+      el.removeEventListener(oHeartEvent.trigger, oHeartEvent.handler);
+    });
+  }
+
+  /**
+   * Attach all heart events to all currently-active guess icons
+   */
+  attachAllHeartEvents() {
+    Object.values(this.#oHeartEvents).forEach((oHeartEvent) => {
+      this.#attachHeartEvent(oHeartEvent);
+    });
+  }
 }
 const manager = new FunEventManager();
 
@@ -121,6 +183,10 @@ export function setNewFunValue() {
     newValue = Math.ceil(Math.random() * 100);
   }
   manager.updateFun(newValue);
+}
+
+export function attachAllHeartEvents() {
+  manager.attachAllHeartEvents();
 }
 
 
@@ -352,6 +418,30 @@ export function displayTromboneGif(e) {
   guessIcon.appendChild(newTromboneGif);
   setTimeout(() => { newTromboneGif.remove() }, 850);
 }
+
+class TromboneEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    return i >= 80 && i <= 89;
+  }
+
+  onActivate() {
+    manager.addHeartEvent({
+      name: "trombone",
+      trigger: "click",
+      handler: displayTromboneGif
+    });
+
+    // Preload the image so it will appear quickly the first time it's triggered
+    document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone-gif");
+  }
+
+  onDeactivate() {
+    manager.removeHeartEvent("trombone");
+  }
+}
+
+manager.registerEvent(new TromboneEvent());
 
 // General FUN event management
 // ----------------------------
