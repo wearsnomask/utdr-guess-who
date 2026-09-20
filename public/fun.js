@@ -8,6 +8,7 @@
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
 const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
+const TROMBONE_GIF_TEMPLATE = document.getElementById("trombone-template");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
@@ -334,6 +335,23 @@ class TwistEvent extends FunEvent {
 }
 
 manager.registerEvent(new TwistEvent());
+
+/**
+ * Displays a trombone gif attached to the calling heart icon
+ * @param {Event} e 
+ */
+export function displayTromboneGif(e) {
+  const guessImg = e.target;
+
+  // Only run if an active icon was clicked
+  if (!e.target.classList.contains("active-icon"))
+    return;
+
+  const newTromboneGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone-gif");
+  const guessIcon = guessImg.closest(".guess-icon");
+  guessIcon.appendChild(newTromboneGif);
+  setTimeout(() => { newTromboneGif.remove() }, 850);
+}
 
 // General FUN event management
 // ----------------------------

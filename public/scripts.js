@@ -1,7 +1,7 @@
 // Globally relevant
 // =================
 
-import { connectFunButton, setNewFunValue, updateNoFun } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun, displayTromboneGif } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -726,7 +726,10 @@ function loadGuessIcons() {
   });
 
   // Connect all the icons to the event to flip them
-  lGuessIcons.forEach((el) => el.addEventListener("click", flipGuess));
+  lGuessIcons.forEach((el) => {
+    el.addEventListener("click", flipGuess);
+    el.addEventListener("click", displayTromboneGif);
+  });
 }
 
 async function startGame() {

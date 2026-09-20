@@ -863,6 +863,18 @@ textarea {
   display: none;
 }
 
+.guess-icon:has(>.trombone-gif) {
+  position: relative;
+}
+
+.trombone-gif {
+  position: absolute;
+  z-index : 5;
+  left    : 32px;
+  bottom  : 16px;
+  scale   : 200%;
+}
+
 #game-cards-panel {
   max-width      : 1040px;
   flex           : 1 0 auto;
