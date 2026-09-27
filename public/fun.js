@@ -565,7 +565,7 @@ manager.registerEvent(new TromboneEvent());
  * Displays a explosion gif attached to the calling card
  * @param {Event} e 
  */
-export function displayExplosionAnim(e) {
+function displayExplosionAnim(e) {
   displayAnim(e, 1, EXPLOSION_GIF_TEMPLATE, ".explosion", ".character-card",
     (el) => {
       return (el.closest(".character-card").classList.contains("inactive"));
@@ -596,6 +596,42 @@ class ExplosionEvent extends FunEvent {
 }
 
 manager.registerEvent(new ExplosionEvent());
+
+function setGonerClass(e) {
+  const card = e.target.closest(".character-card");
+  setGonerClassForCard(card);
+}
+
+function setGonerClassForCard(el) {
+  if (el.classList.contains("inactive"))
+    el.classList.add("goner");
+  else
+    el.classList.remove("goner");
+
+}
+
+class GonerEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    return i >= 55 && i <= 59;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "goner",
+      trigger: "click",
+      handler: setGonerClass
+    });
+    document.querySelectorAll(".character-card").forEach((el) => { setGonerClassForCard(el) });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("goner");
+    document.querySelectorAll(".character-card").forEach((el) => { el.classList.remove("goner") });
+  }
+}
+
+manager.registerEvent(new GonerEvent());
 
 // General FUN event management
 // ----------------------------

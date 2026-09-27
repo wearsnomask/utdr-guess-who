@@ -1115,10 +1115,24 @@ textarea {
   filter: brightness(0.1) saturate(0);
 }
 
+.inactive.goner .character-img-frame {
+  filter: brightness(0.3) saturate(0);
+}
+
 .inactive .character-img-frame:hover,
 .inactive .character-img-frame:focus-visible,
 .inactive .character-name-popup {
   filter: brightness(0.3);
+}
+
+.inactive.goner .character-img-frame:hover,
+.inactive.goner .character-img-frame:focus-visible,
+.inactive.goner .character-name-popup {
+  filter: brightness(0.5) saturate(0);
+}
+
+.inactive.goner .character-name::before {
+  content: "Goner ";
 }
 
 .anim-spritesheet.explosion {
