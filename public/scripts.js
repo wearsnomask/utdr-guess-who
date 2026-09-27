@@ -637,7 +637,7 @@ const L_MENU_OPTIONS = [...L_MENU_MAIN_OPTIONS, ...L_MENU_CONFIG_OPTIONS];
 const CHARSET_OPTION_TEMPLATE = document.getElementById("charset-option-template");
 
 // Globals
-const S_PRELOADED_IMAGES = new Set();
+const s_preloaded_images = new Set();
 
 // Functions
 // ---------
@@ -660,9 +660,9 @@ function exitMenuScene() {
  */
 async function preloadImage(url) {
   // Check if the image has already been preloaded
-  if (S_PRELOADED_IMAGES.has(url))
+  if (s_preloaded_images.has(url))
     return;
-  S_PRELOADED_IMAGES.add(url);
+  s_preloaded_images.add(url);
 
   const img = new Image();
   img.src = url;
