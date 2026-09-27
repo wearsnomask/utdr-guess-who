@@ -480,10 +480,28 @@ export function displayTromboneGif(e) {
   if (!e.target.classList.contains("active-icon"))
     return;
 
-  const newTromboneGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone-gif");
   const guessIcon = guessImg.closest(".guess-icon");
+
+  // Don't run if the icon already has an active gif
+  if (guessIcon.querySelectorAll(".trombone-gif").length > 0)
+    return;
+
+  const newTromboneGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone-gif");
   guessIcon.appendChild(newTromboneGif);
-  setTimeout(() => { newTromboneGif.remove() }, 850);
+
+  const tromboneStyle = window.getComputedStyle(newTromboneGif);
+  const animFrames = parseInt(tromboneStyle.getPropertyValue("--anim-frames"));
+  const animFrameTime = 1000 * parseFloat(tromboneStyle.getPropertyValue("--anim-frame-time"));
+  const animIters = parseFloat(tromboneStyle.getPropertyValue("--anim-iters"));
+
+  newTromboneGif.style.animationPlayState = "running";
+
+  setTimeout(() => {
+    newTromboneGif.style.animation = "none";
+    newTromboneGif.offsetHeight;
+    newTromboneGif.style.animation = null;
+    newTromboneGif.remove();
+  }, animFrames * animFrameTime * animIters - 10);
 }
 
 class TromboneEvent extends FunEvent {
@@ -536,6 +554,7 @@ export function displayExplosionGif(e, chance = 0.1) {
   const explosionStyle = window.getComputedStyle(newExplosionGif);
   const animFrames = parseInt(explosionStyle.getPropertyValue("--anim-frames"));
   const animFrameTime = 1000 * parseFloat(explosionStyle.getPropertyValue("--anim-frame-time"));
+  const animIters = parseFloat(explosionStyle.getPropertyValue("--anim-iters"));
 
   newExplosionGif.style.animationPlayState = "running";
   setTimeout(() => {
@@ -543,7 +562,7 @@ export function displayExplosionGif(e, chance = 0.1) {
     newExplosionGif.offsetHeight;
     newExplosionGif.style.animation = null;
     newExplosionGif.remove();
-  }, (animFrames - 1) * animFrameTime);
+  }, animFrames * animFrameTime * animIters - 10);
 }
 
 class ExplosionEvent extends FunEvent {

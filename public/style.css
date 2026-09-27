@@ -868,11 +868,37 @@ textarea {
 }
 
 .trombone-gif {
-  position: absolute;
-  z-index : 5;
-  left    : 32px;
-  bottom  : 16px;
-  scale   : 200%;
+  --anim-frames    : 2;
+  --anim-frame-time: 0.25s;
+  --anim-iters     : 2.5;
+  --sprite-width   : 37px;
+  --sprite-height  : 30px;
+
+  position : absolute;
+  z-index  : 5;
+  transform: translate(0px, 0px);
+  width    : var(--sprite-width);
+  height   : var(--sprite-height);
+
+  left  : 64px;
+  bottom: 36px;
+  scale : 400%;
+
+  pointer-events: none;
+
+  background-image    : url('img/sans-trombone-spritesheet.png');
+  animation           : trombone-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
+  animation-play-state: paused;
+}
+
+@keyframes trombone-anim {
+  0% {
+    background-position: 0px;
+  }
+
+  100% {
+    background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
+  }
 }
 
 #game-cards-panel {
@@ -1088,6 +1114,7 @@ textarea {
 .explosion-gif {
   --anim-frames    : 17;
   --anim-frame-time: 0.05s;
+  --anim-iters     : 1;
   --sprite-width   : 65px;
   --sprite-height  : 100px;
 
@@ -1101,13 +1128,13 @@ textarea {
   pointer-events: none;
 
   background-image    : url('img/realistic-explosion-spritesheet.png');
-  animation           : explosion-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(calc(var(--anim-frames) - 1));
+  animation           : explosion-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames));
   animation-play-state: paused;
 }
 
 @keyframes explosion-anim {
   100% {
-    background-position: calc(-1 * var(--sprite-width) * (var(--anim-frames) - 1));
+    background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
   }
 }
 
