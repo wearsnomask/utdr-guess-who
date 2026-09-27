@@ -666,6 +666,7 @@ async function preloadImage(url) {
 
   const img = new Image();
   img.src = url;
+  s_preloaded_images.add(img);
 }
 
 /** 
