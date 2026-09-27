@@ -514,16 +514,36 @@ manager.registerEvent(new TromboneEvent());
  * Displays a explosion gif attached to the calling card
  * @param {Event} e 
  */
-export function displayExplosionGif(e) {
+export function displayExplosionGif(e, chance = 0.1) {
+
+  if (Math.random() > chance)
+    return;
+
   const card = e.target.closest(".character-card");
 
   // Only run if the card is now inactive
   if (card.classList.contains("active"))
     return;
 
+  // Don't run if the card already has an active explosion
+  if (card.querySelectorAll(".explosion-gif").length > 0)
+    return;
+
   const newExplosionGif = document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion-gif");
+
   card.appendChild(newExplosionGif);
-  setTimeout(() => { newExplosionGif.remove() }, 1700);
+
+  const explosionStyle = window.getComputedStyle(newExplosionGif);
+  const animFrames = parseInt(explosionStyle.getPropertyValue("--anim-frames"));
+  const animFrameTime = 1000 * parseFloat(explosionStyle.getPropertyValue("--anim-frame-time"));
+
+  newExplosionGif.style.animationPlayState = "running";
+  setTimeout(() => {
+    newExplosionGif.style.animation = "none";
+    newExplosionGif.offsetHeight;
+    newExplosionGif.style.animation = null;
+    newExplosionGif.remove();
+  }, (animFrames - 1) * animFrameTime);
 }
 
 class ExplosionEvent extends FunEvent {

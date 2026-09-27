@@ -1085,6 +1085,32 @@ textarea {
   filter: brightness(0.3);
 }
 
+.explosion-gif {
+  --anim-frames    : 17;
+  --anim-frame-time: 0.05s;
+  --sprite-width   : 65px;
+  --sprite-height  : 100px;
+
+  position : absolute;
+  z-index  : 5;
+  transform: translate(6px, 7px);
+  width    : var(--sprite-width);
+  height   : var(--sprite-height);
+  scale    : calc(100% * var(--card-scale));
+
+  pointer-events: none;
+
+  background-image    : url('img/realistic-explosion-spritesheet.png');
+  animation           : explosion-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(calc(var(--anim-frames) - 1));
+  animation-play-state: paused;
+}
+
+@keyframes explosion-anim {
+  100% {
+    background-position: calc(-1 * var(--sprite-width) * (var(--anim-frames) - 1));
+  }
+}
+
 #card-panel-buttons {
   display        : flex;
   justify-content: flex-end;
