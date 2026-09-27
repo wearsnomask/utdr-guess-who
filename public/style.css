@@ -863,16 +863,16 @@ textarea {
   display: none;
 }
 
-.guess-icon:has(>.trombone-gif) {
+.guess-icon:has(>.trombone) {
   position: relative;
 }
 
-.trombone-gif {
-  --anim-frames    : 2;
-  --anim-frame-time: 0.25s;
-  --anim-iters     : 2.5;
-  --sprite-width   : 37px;
-  --sprite-height  : 30px;
+.anim-spritesheet {
+  --anim-frames    : 1;
+  --anim-frame-time: 0.1s;
+  --anim-iters     : 1;
+  --sprite-width   : 1px;
+  --sprite-height  : 1px;
 
   position : absolute;
   z-index  : 5;
@@ -880,18 +880,14 @@ textarea {
   width    : var(--sprite-width);
   height   : var(--sprite-height);
 
-  left  : 64px;
-  bottom: 36px;
-  scale : 400%;
-
   pointer-events: none;
 
-  background-image    : url('img/sans-trombone-spritesheet.png');
-  animation           : trombone-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
+  background-image    : url('');
+  animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
   animation-play-state: paused;
 }
 
-@keyframes trombone-anim {
+@keyframes spritesheet-anim {
   0% {
     background-position: 0px;
   }
@@ -899,6 +895,20 @@ textarea {
   100% {
     background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
   }
+}
+
+.anim-spritesheet.trombone {
+  --anim-frames    : 2;
+  --anim-frame-time: 0.25s;
+  --anim-iters     : 2.5;
+  --sprite-width   : 37px;
+  --sprite-height  : 30px;
+
+  left  : 64px;
+  bottom: 36px;
+  scale : 400%;
+
+  background-image: url('img/sans-trombone-spritesheet.png');
 }
 
 #game-cards-panel {
@@ -1111,31 +1121,17 @@ textarea {
   filter: brightness(0.3);
 }
 
-.explosion-gif {
+.anim-spritesheet.explosion {
   --anim-frames    : 17;
   --anim-frame-time: 0.05s;
   --anim-iters     : 1;
   --sprite-width   : 65px;
   --sprite-height  : 100px;
 
-  position : absolute;
-  z-index  : 5;
   transform: translate(6px, 7px);
-  width    : var(--sprite-width);
-  height   : var(--sprite-height);
   scale    : calc(100% * var(--card-scale));
 
-  pointer-events: none;
-
-  background-image    : url('img/realistic-explosion-spritesheet.png');
-  animation           : explosion-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames));
-  animation-play-state: paused;
-}
-
-@keyframes explosion-anim {
-  100% {
-    background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
-  }
+  background-image: url('img/realistic-explosion-spritesheet.png');
 }
 
 #card-panel-buttons {

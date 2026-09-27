@@ -4,6 +4,9 @@
 // Globals
 // -------
 
+// Force a FUN value for debugging
+const FORCE_FUN = null;
+
 // Constant DOM references
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
@@ -243,7 +246,10 @@ const manager = new FunEventManager();
 export function setNewFunValue() {
   let newValue = parseInt(SETTINGS_FUN_FORCE_INPUT.value);
   if (!(newValue > 0 && newValue <= 100)) {
-    newValue = Math.ceil(Math.random() * 100);
+    if (FORCE_FUN > 0 && FORCE_FUN <= 100)
+      newValue = FORCE_FUN;
+    else
+      newValue = Math.ceil(Math.random() * 100);
   }
   manager.updateFun(newValue);
 }
@@ -473,35 +479,62 @@ manager.registerEvent(new TwistEvent());
  * Displays a trombone gif attached to the calling heart icon
  * @param {Event} e 
  */
-export function displayTromboneGif(e) {
-  const guessImg = e.target;
+
+/**
+ * Displays a spritesheet animation attached to the event
+ * @param {Event} e 
+ * @param {Number} chance 
+ * @param {HTMLElement} template 
+ * @param {String} selector 
+ * @param {String} parentSelector 
+ * @param {Function} condition 
+ * @returns 
+ */
+function displayAnim(e, chance, template, selector, parentSelector, condition) {
+
+  if (Math.random() > chance)
+    return;
+
+  const el = e.target;
 
   // Only run if an active icon was clicked
-  if (!e.target.classList.contains("active-icon"))
+  if (!condition(el))
     return;
 
-  const guessIcon = guessImg.closest(".guess-icon");
+  const guessIcon = el.closest(parentSelector);
 
   // Don't run if the icon already has an active gif
-  if (guessIcon.querySelectorAll(".trombone-gif").length > 0)
+  if (guessIcon.querySelectorAll(selector).length > 0)
     return;
 
-  const newTromboneGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone-gif");
-  guessIcon.appendChild(newTromboneGif);
+  const newGif = document.importNode(template.content, true).querySelector(selector);
+  guessIcon.appendChild(newGif);
 
-  const tromboneStyle = window.getComputedStyle(newTromboneGif);
-  const animFrames = parseInt(tromboneStyle.getPropertyValue("--anim-frames"));
-  const animFrameTime = 1000 * parseFloat(tromboneStyle.getPropertyValue("--anim-frame-time"));
-  const animIters = parseFloat(tromboneStyle.getPropertyValue("--anim-iters"));
+  const gifStyle = window.getComputedStyle(newGif);
+  const animFrames = parseInt(gifStyle.getPropertyValue("--anim-frames"));
+  const animFrameTime = 1000 * parseFloat(gifStyle.getPropertyValue("--anim-frame-time"));
+  const animIters = parseFloat(gifStyle.getPropertyValue("--anim-iters"));
 
-  newTromboneGif.style.animationPlayState = "running";
+  newGif.style.animationPlayState = "running";
 
   setTimeout(() => {
-    newTromboneGif.style.animation = "none";
-    newTromboneGif.offsetHeight;
-    newTromboneGif.style.animation = null;
-    newTromboneGif.remove();
+    newGif.style.animation = "none";
+    newGif.offsetHeight;
+    newGif.style.animation = null;
+    newGif.remove();
   }, animFrames * animFrameTime * animIters - 10);
+}
+
+/**
+ * Displays a trombone gif attached to the calling heart icon
+ * @param {Event} e 
+ */
+export function displayTromboneAnim(e) {
+  displayAnim(e, 1, TROMBONE_GIF_TEMPLATE, ".trombone", ".guess-icon",
+    (el) => {
+      return (el.closest(".guess-icon").classList.contains("active"));
+    }
+  )
 }
 
 class TromboneEvent extends FunEvent {
@@ -514,11 +547,11 @@ class TromboneEvent extends FunEvent {
     manager.addHeartEvent({
       name: "trombone",
       trigger: "click",
-      handler: displayTromboneGif
+      handler: displayTromboneAnim
     });
 
     // Preload the image so it will appear quickly the first time it's triggered
-    document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone-gif");
+    document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone");
   }
 
   onDeactivate() {
@@ -532,37 +565,12 @@ manager.registerEvent(new TromboneEvent());
  * Displays a explosion gif attached to the calling card
  * @param {Event} e 
  */
-export function displayExplosionGif(e, chance = 0.1) {
-
-  if (Math.random() > chance)
-    return;
-
-  const card = e.target.closest(".character-card");
-
-  // Only run if the card is now inactive
-  if (card.classList.contains("active"))
-    return;
-
-  // Don't run if the card already has an active explosion
-  if (card.querySelectorAll(".explosion-gif").length > 0)
-    return;
-
-  const newExplosionGif = document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion-gif");
-
-  card.appendChild(newExplosionGif);
-
-  const explosionStyle = window.getComputedStyle(newExplosionGif);
-  const animFrames = parseInt(explosionStyle.getPropertyValue("--anim-frames"));
-  const animFrameTime = 1000 * parseFloat(explosionStyle.getPropertyValue("--anim-frame-time"));
-  const animIters = parseFloat(explosionStyle.getPropertyValue("--anim-iters"));
-
-  newExplosionGif.style.animationPlayState = "running";
-  setTimeout(() => {
-    newExplosionGif.style.animation = "none";
-    newExplosionGif.offsetHeight;
-    newExplosionGif.style.animation = null;
-    newExplosionGif.remove();
-  }, animFrames * animFrameTime * animIters - 10);
+export function displayExplosionAnim(e) {
+  displayAnim(e, 1, EXPLOSION_GIF_TEMPLATE, ".explosion", ".character-card",
+    (el) => {
+      return (el.closest(".character-card").classList.contains("inactive"));
+    }
+  )
 }
 
 class ExplosionEvent extends FunEvent {
@@ -575,11 +583,11 @@ class ExplosionEvent extends FunEvent {
     manager.addCardEvent({
       name: "explosion",
       trigger: "click",
-      handler: displayExplosionGif
+      handler: displayExplosionAnim
     });
 
     // Preload the image so it will appear quickly the first time it's triggered
-    document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion-gif");
+    document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion");
   }
 
   onDeactivate() {
