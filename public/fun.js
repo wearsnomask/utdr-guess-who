@@ -314,7 +314,7 @@ export function disconnectFunButton() {
 
 // Classes implementing specific FUN events
 
-class CharMaskEvent extends FunEvent {
+class MaskEvent extends FunEvent {
 
   constructor() {
     super();
@@ -340,7 +340,7 @@ class CharMaskEvent extends FunEvent {
   }
 }
 
-manager.registerEvent(new CharMaskEvent());
+manager.registerEvent(new MaskEvent());
 
 class MiddleEvent extends FunEvent {
 
