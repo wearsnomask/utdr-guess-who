@@ -637,7 +637,7 @@ const L_MENU_OPTIONS = [...L_MENU_MAIN_OPTIONS, ...L_MENU_CONFIG_OPTIONS];
 const CHARSET_OPTION_TEMPLATE = document.getElementById("charset-option-template");
 
 // Globals
-const s_preloaded_images = new Set();
+const sPreloadedImages = new Set();
 
 // Functions
 // ---------
@@ -660,13 +660,13 @@ function exitMenuScene() {
  */
 async function preloadImage(url) {
   // Check if the image has already been preloaded
-  if (s_preloaded_images.has(url))
+  if (sPreloadedImages.has(url))
     return;
-  s_preloaded_images.add(url);
+  sPreloadedImages.add(url);
 
   const img = new Image();
   img.src = url;
-  s_preloaded_images.add(img);
+  sPreloadedImages.add(img);
 }
 
 /** 
