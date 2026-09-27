@@ -1,7 +1,7 @@
 // Globally relevant
 // =================
 
-import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -1516,6 +1516,9 @@ async function loadCharacterSet(setDirName, preload = false) {
 
     CARD_GRID.appendChild(newCard);
   });
+
+  // Attach any FUN events triggered from cards
+  attachAllCardEvents();
 
   // Mark this set as loaded
   loadedCharset = setDirName;

@@ -30,11 +30,15 @@ class FunEventManager {
   // Object containing all active events triggered from guess icons
   #oHeartEvents;
 
+  // Object containing all active events triggered from character cards
+  #oCardEvents;
+
   constructor() {
     this.#enabled = true;
     this.#lEvents = [];
     this.#sActiveEvents = new Set();
     this.#oHeartEvents = {};
+    this.#oCardEvents = {};
   }
 
   /**
@@ -175,6 +179,64 @@ class FunEventManager {
       this.#attachHeartEvent(oHeartEvent);
     });
   }
+
+  /**
+   * Adds an event which is triggered from some actions on character cards
+   * @param {Object} oCardEvent 
+   */
+  addCardEvent(oCardEvent) {
+    // Check if this event is already active, and do nothing if so
+    if (this.#oCardEvents[oCardEvent.name])
+      return;
+
+    this.#oCardEvents[oCardEvent.name] = oCardEvent;
+    this.#attachCardEvent(oCardEvent);
+  }
+
+  #attachCardEvent(oCardEvent) {
+
+    let selector = ".character-card";
+    if (oCardEvent.selector)
+      selector += oCardEvent.selector
+
+    document.querySelectorAll(selector).forEach((el) => {
+      el.addEventListener(oCardEvent.trigger, oCardEvent.handler);
+    });
+  }
+
+  /**
+   * Remove an event triggered from some actions on character cards
+   * @param {String} name
+   */
+  removeCardEvent(name) {
+    if (!this.#oCardEvents[name])
+      return;
+
+    this.#detachCardEvent(name);
+    delete this.#oCardEvents[name];
+  }
+
+  #detachCardEvent(name) {
+
+    const oCardEvent = this.#oCardEvents[name];
+
+    let selector = ".character-card";
+    if (Object.hasOwn(oCardEvent, selector))
+      selector += oCardEvent.selector
+
+    document.querySelectorAll(selector).forEach((el) => {
+      el.removeEventListener(oCardEvent.trigger, oCardEvent.handler);
+    });
+  }
+
+  /**
+   * Attach all card events to all currently-active character cards
+   */
+  attachAllCardEvents() {
+    Object.values(this.#oCardEvents).forEach((oCardEvent) => {
+      this.#attachCardEvent(oCardEvent);
+    });
+  }
 }
 const manager = new FunEventManager();
 
@@ -188,6 +250,10 @@ export function setNewFunValue() {
 
 export function attachAllHeartEvents() {
   manager.attachAllHeartEvents();
+}
+
+export function attachAllCardEvents() {
+  manager.attachAllCardEvents();
 }
 
 
