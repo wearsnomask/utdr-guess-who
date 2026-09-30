@@ -4,11 +4,11 @@
 // Constants
 
 const O_AUDIO_PATHS = {
-  damage: "snd/damage.wav",
-  explosion: "snd/explosion.mp3",
-  movemenu: "snd/movemenu.wav",
-  select: "snd/select.wav",
-  trombone: "snd/trombone.ogg", // TODO: Convert to a format compatible with Safari
+  damage: "snd/damage",
+  explosion: "snd/explosion",
+  movemenu: "snd/movemenu",
+  select: "snd/select",
+  trombone: "snd/trombone",
 };
 
 // Sounds which will normally always be active
@@ -18,9 +18,29 @@ const L_STANDARD_SOUNDS = ["damage", "movemenu", "select"];
 // Globals
 
 const oPreloadedAudio = {};
+let oggSupported = null;
 
 
 // General audio functions
+
+function isOggSupported() {
+  if (oggSupported === null) {
+    const audio = new Audio();
+    if (!!(audio.canPlayType && audio.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, '')))
+      oggSupported = true;
+    else
+      oggSupported = false;
+  }
+  return oggSupported;
+}
+
+function getAudioPath(key) {
+  const basePath = O_AUDIO_PATHS[key];
+  if (isOggSupported())
+    return basePath + ".ogg";
+  else
+    return basePath + ".wav"
+}
 
 /**
  * Checks whether or not the user has enabled audio
@@ -36,7 +56,7 @@ export function audioEnabled() {
  */
 export function preloadAudio(key) {
   if (!Object.hasOwn(oPreloadedAudio, key))
-    oPreloadedAudio[key] = new Audio(O_AUDIO_PATHS[key]);
+    oPreloadedAudio[key] = new Audio(getAudioPath(key));
 }
 
 /** 
@@ -55,7 +75,7 @@ export function unloadAudio(key) {
 export function playSound(key, vol = 1) {
   preloadAudio(key)
   if (audioEnabled()) {
-    const audio = new Audio(O_AUDIO_PATHS[key]);
+    const audio = new Audio(getAudioPath(key));
     audio.volume = vol;
     audio.play();
   }

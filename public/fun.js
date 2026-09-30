@@ -7,7 +7,7 @@ import { playExplosionSound, playTromboneSound, preloadAudio, unloadAudio } from
 // -------
 
 // Force a FUN value for debugging
-const FORCE_FUN = 78;
+const FORCE_FUN = null;
 
 // Constant DOM references
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
