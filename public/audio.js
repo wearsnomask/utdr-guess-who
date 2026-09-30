@@ -52,10 +52,13 @@ export function unloadAudio(key) {
  * Play a specific sound
  * @param {String} key 
  */
-export function playSound(key) {
+export function playSound(key, vol = 1) {
   preloadAudio(key)
-  if (audioEnabled())
-    (new Audio(O_AUDIO_PATHS[key])).play();
+  if (audioEnabled()) {
+    const audio = new Audio(O_AUDIO_PATHS[key]);
+    audio.volume = vol;
+    audio.play();
+  }
 }
 
 // Convenience functions
@@ -68,7 +71,7 @@ export function preloadStandardAudio() {
 }
 
 export function playDamageSound() {
-  playSound("damage");
+  playSound("damage", 0.5);
 }
 
 export function playExplosionSound() {

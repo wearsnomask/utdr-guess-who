@@ -7,7 +7,7 @@ import { playExplosionSound, playTromboneSound, preloadAudio, unloadAudio } from
 // -------
 
 // Force a FUN value for debugging
-const FORCE_FUN = null;
+const FORCE_FUN = 78;
 
 // Constant DOM references
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
@@ -490,27 +490,27 @@ manager.registerEvent(new TwistEvent());
  * @param {String} selector 
  * @param {String} parentSelector 
  * @param {Function} condition 
- * @returns 
+ * @returns {Boolean} Whether or not the animation ended up playing
  */
 function displayAnim(e, chance, template, selector, parentSelector, condition) {
 
   if (Math.random() > chance)
-    return;
+    return false;
 
   const el = e.target;
 
   // Only run if an active icon was clicked
   if (!condition(el))
-    return;
+    return false;
 
-  const guessIcon = el.closest(parentSelector);
+  const parentEl = el.closest(parentSelector);
 
-  // Don't run if the icon already has an active gif
-  if (guessIcon.querySelectorAll(selector).length > 0)
-    return;
+  // Don't run if the icon already has an active animation
+  if (parentEl.querySelectorAll(selector).length > 0)
+    return false;
 
   const newGif = document.importNode(template.content, true).querySelector(selector);
-  guessIcon.appendChild(newGif);
+  parentEl.appendChild(newGif);
 
   const gifStyle = window.getComputedStyle(newGif);
   const animFrames = parseInt(gifStyle.getPropertyValue("--anim-frames"));
@@ -525,18 +525,26 @@ function displayAnim(e, chance, template, selector, parentSelector, condition) {
     newGif.style.animation = null;
     newGif.remove();
   }, animFrames * animFrameTime * animIters - 10);
+
+  return true;
 }
 
 /**
  * Displays a trombone gif attached to the calling heart icon
  * @param {Event} e 
  */
-export function displayTromboneAnim(e) {
-  const condition = (el) => el.closest(".guess-icon").classList.contains("active");
-  displayAnim(e, 1, TROMBONE_GIF_TEMPLATE, ".trombone", ".guess-icon", condition)
-  if (condition(e.target))
+async function displayTromboneAnim(e) {
+
+  // Tiny delay before starting to ensure the event to toggle the heart state always goes first
+  await new Promise((resolve) => { setTimeout(resolve, 1) });
+
+  const condition = (el) => el.closest(".guess-icon").classList.contains("inactive");
+
+  if (displayAnim(e, 1, TROMBONE_GIF_TEMPLATE, ".trombone", ".guess-icon", condition))
     playTromboneSound();
 }
+
+export let suppressDamageSound = false;
 
 class TromboneEvent extends FunEvent {
 
@@ -556,12 +564,14 @@ class TromboneEvent extends FunEvent {
     // Preload the image and audio so they will appear quickly the first time it's triggered
     this.#preloadedGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone");
     preloadAudio("trombone");
+    suppressDamageSound = true;
   }
 
   onDeactivate() {
     manager.removeHeartEvent("trombone");
     this.#preloadedGif = null;
     unloadAudio("trombone");
+    suppressDamageSound = false;
   }
 }
 
@@ -571,13 +581,15 @@ manager.registerEvent(new TromboneEvent());
  * Displays a explosion gif attached to the calling card
  * @param {Event} e 
  */
-function displayExplosionAnim(e) {
-  displayAnim(e, 1, EXPLOSION_GIF_TEMPLATE, ".explosion", ".character-card",
-    (el) => {
-      return (el.closest(".character-card").classList.contains("inactive"));
-    }
-  )
-  playExplosionSound();
+async function displayExplosionAnim(e) {
+
+  // Tiny delay before starting to ensure the event to toggle the card state always goes first
+  await new Promise((resolve) => { setTimeout(resolve, 1) });
+
+  const condition = (el) => el.closest(".character-card").classList.contains("inactive");
+
+  if (displayAnim(e, 0.1, EXPLOSION_GIF_TEMPLATE, ".explosion", ".character-card", condition))
+    playExplosionSound();
 }
 
 class ExplosionEvent extends FunEvent {

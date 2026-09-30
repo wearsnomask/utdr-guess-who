@@ -2,7 +2,7 @@
 // =================
 
 import { audioEnabled, playDamageSound, playSelectSound, preloadStandardAudio } from "./audio.js";
-import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressDamageSound } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -1534,9 +1534,10 @@ function flipGuess(e) {
   const guessClassList = e.currentTarget.closest(".guess-icon").classList;
 
   if (guessClassList.contains("active")) {
+    if (!suppressDamageSound)
+      playDamageSound();
     guessClassList.remove("active");
     guessClassList.add("inactive");
-    playDamageSound();
   } else {
     guessClassList.add("active");
     guessClassList.remove("inactive");
