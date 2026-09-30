@@ -1,6 +1,7 @@
 // Globally relevant
 // =================
 
+import { audioEnabled, playDamageSound, playSelectSound, preloadStandardAudio } from "./audio.js";
 import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents } from "./fun.js";
 
 // Class definitions
@@ -1535,6 +1536,7 @@ function flipGuess(e) {
   if (guessClassList.contains("active")) {
     guessClassList.remove("active");
     guessClassList.add("inactive");
+    playDamageSound();
   } else {
     guessClassList.add("active");
     guessClassList.remove("inactive");
@@ -2325,6 +2327,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   updateRememberName();
+
+  if (audioEnabled())
+    preloadStandardAudio();
 
   setNewFunValue();
 });

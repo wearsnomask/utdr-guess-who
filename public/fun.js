@@ -1,6 +1,8 @@
 // Code for handling FUN events in the game
 // ========================================
 
+import { playExplosionSound, playTromboneSound, preloadAudio, unloadAudio } from "./audio.js";
+
 // Globals
 // -------
 
@@ -530,14 +532,15 @@ function displayAnim(e, chance, template, selector, parentSelector, condition) {
  * @param {Event} e 
  */
 export function displayTromboneAnim(e) {
-  displayAnim(e, 1, TROMBONE_GIF_TEMPLATE, ".trombone", ".guess-icon",
-    (el) => {
-      return (el.closest(".guess-icon").classList.contains("active"));
-    }
-  )
+  const condition = (el) => el.closest(".guess-icon").classList.contains("active");
+  displayAnim(e, 1, TROMBONE_GIF_TEMPLATE, ".trombone", ".guess-icon", condition)
+  if (condition(e.target))
+    playTromboneSound();
 }
 
 class TromboneEvent extends FunEvent {
+
+  #preloadedGif;
 
   isActiveForFun(i) {
     return i >= 80 && i <= 89;
@@ -550,12 +553,15 @@ class TromboneEvent extends FunEvent {
       handler: displayTromboneAnim
     });
 
-    // Preload the image so it will appear quickly the first time it's triggered
-    document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone");
+    // Preload the image and audio so they will appear quickly the first time it's triggered
+    this.#preloadedGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone");
+    preloadAudio("trombone");
   }
 
   onDeactivate() {
     manager.removeHeartEvent("trombone");
+    this.#preloadedGif = null;
+    unloadAudio("trombone");
   }
 }
 
@@ -571,9 +577,12 @@ function displayExplosionAnim(e) {
       return (el.closest(".character-card").classList.contains("inactive"));
     }
   )
+  playExplosionSound();
 }
 
 class ExplosionEvent extends FunEvent {
+
+  #preloadedGif;
 
   isActiveForFun(i) {
     return i >= 70 && i <= 79;
@@ -586,12 +595,15 @@ class ExplosionEvent extends FunEvent {
       handler: displayExplosionAnim
     });
 
-    // Preload the image so it will appear quickly the first time it's triggered
-    document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion");
+    // Preload the image and audio so they will appear quickly the first time it's triggered
+    this.#preloadedGif = document.importNode(EXPLOSION_GIF_TEMPLATE.content, true).querySelector(".explosion");
+    preloadAudio("explosion");
   }
 
   onDeactivate() {
     manager.removeCardEvent("explosion");
+    this.#preloadedGif = null;
+    unloadAudio("explosion");
   }
 }
 
