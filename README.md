@@ -157,20 +157,30 @@ This is a complete rewrite from scratch, made with Seek's permission. The Deltar
 Removed features:
 
 - The ability to press a button to reset all cards, which I judged wasn't worth the drawback of risking it being pressed accidentally and losing all progress
-- Sounds, since this functions as a website and people may not be expecting sounds from a website that doesn't obviously play music or audio (I may add this back in as an option at some point)
+- Seek may or may not have hidden secrets in his version, which aren't replicated here. I may or may not have implemented some different secrets of my own
 
 The following features have been added:
 
-- New character sets:
-  - Undertale
-  - Undertale Yellow
+- Support for multiple character sets (making it as easy as possible to mod and add more)
+- New character sets (Undertale, Undertale Yellow, and more)
 - Support for basically any device that can run a web browser
 - Flexible scaling and rearrangement of items to fit the size of your browser window
 - Keyboard controls (WASD/arrow keys to move, space/enter/Z to select)
-- Support for multiple character sets (making it as easy as possible to mod and add more)
 - Ability to remember the user's name and skip the name-entry screen
 - Ability to inspect character images to look more closely at them (by pressing the I key or middle-clicking, then +/- keys or mousewheel to scale the size). These controls may not work on mobile devices, but you can use pinch-to-zoom there to achieve the same effect
 - Ability to look up a character on the game's wiki by using the L button or clicking the "Look up character" button then the character you want to look up
+- Misc. settings to adjust the experience (e.g. changing the background color and style, which could help two people streaming it makes their views appear more distinct)
+- FUN
+
+### Wait, what do you mean by "FUN"?
+
+It stands for "Fractal Universe Number".
+
+### No, seriously, what do you mean by "FUN"?
+
+Random events to spice up the gameplay. They're desiged so that they won't affect the actual game (no modifying card images, for instance), and will hopefully provide an occasional laugh. You're welcome to turn them off in the Settings menu by ticking the "No fun mode" box if you'd like. The "Are you having fun yet?" button might also have something to do with them.
+
+If you really want to know what events there are, you'll have to dig around in the code, because I'm not spoiling you here.
 
 ### Can I further mod/extend this myself?
 
@@ -210,7 +220,7 @@ No substantial differences, just some minor necessary styling differences due to
 
 **Special Thanks:**
 
-* Mysteri Gii (Chief Encouragement Officer) - Testing, feedback, and support
+* Mysteri Gii (Chief Encouragement Officer) - Testing, feedback, ideas, and support
 
   * https://x.com/MysteryGii0
   * https://bsky.app/profile/mysterygii0.bsky.social
