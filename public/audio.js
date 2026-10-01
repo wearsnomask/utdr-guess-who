@@ -14,6 +14,9 @@ const O_AUDIO_BASE_PATHS = {
 // Sounds which will normally always be active
 const L_STANDARD_SOUNDS = ["damage", "movemenu", "select"];
 
+// Constant DOM references
+const SETTINGS_MUTE_SOUND_BOX = document.getElementById("mute-sound-box");
+
 
 // Globals
 
@@ -49,7 +52,7 @@ Object.entries(O_AUDIO_BASE_PATHS).forEach(([key, val]) => {
  * @returns {Boolean}
  */
 export function audioEnabled() {
-  return true;
+  return !SETTINGS_MUTE_SOUND_BOX.checked;
 }
 
 /** 

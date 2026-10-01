@@ -12,7 +12,7 @@ const FORCE_FUN = null;
 // Constant DOM references
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
-const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
+const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun-box");
 const TROMBONE_GIF_TEMPLATE = document.getElementById("trombone-template");
 const EXPLOSION_GIF_TEMPLATE = document.getElementById("explosion-template");
 

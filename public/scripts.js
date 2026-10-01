@@ -1064,11 +1064,12 @@ const CARD_GRID = document.getElementById("card-grid");
 // Default configuration values
 const BODY_STYLE = window.getComputedStyle(document.body);
 const DEFAULT_LOOKUP_URL = "https://www.google.com/search?q=Undertale%20Deltarune%20%s&udm=14";
+const DEFAULT_MUTE_SOUND = document.getElementById("mute-sound-box").checked;
 const DEFAULT_NUM_GUESSES = document.querySelectorAll(".guess-icon").length;
 const DEFAULT_CARD_SCALE = +BODY_STYLE.getPropertyValue('--card-scale');
 const DEFAULT_BG_STYLE = document.getElementById("bg-style-select").value;
 const DEFAULT_BG_FLAVOR = document.getElementById("bg-flavor-select").value;
-const DEFAULT_NO_FUN = document.getElementById("no-fun").checked;
+const DEFAULT_NO_FUN = document.getElementById("no-fun-box").checked;
 const DEFAULT_CARD_WIDTH = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-width')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_HEIGHT = parseInt(BODY_STYLE.getPropertyValue('--card-base-img-height')) * DEFAULT_CARD_SCALE;
 const DEFAULT_CARD_CSS_CLASS = "";
@@ -2103,6 +2104,8 @@ const controlsSceneSwitchWatcher = new SceneSwitchWatcher(CONTROLS_SCENE, initCo
 const SETTINGS_SCENE_HEADER = document.getElementById("settings-scene");
 
 const SETTINGS_NAME_LINK = document.getElementById("settings-edit-name");
+const SETTINGS_MUTE_SOUND_LABEL = document.getElementById("mute-sound-label");
+const SETTINGS_MUTE_SOUND_BOX = document.getElementById("mute-sound-box");
 const SETTINGS_GUESS_LABEL = document.getElementById("num-guesses-label");
 const SETTINGS_GUESS_SELECT = document.getElementById("num-guesses-select");
 const SETTINGS_SCALE_LABEL = document.getElementById("card-scale-label");
@@ -2114,7 +2117,7 @@ const SETTINGS_BG_STYLE_LABEL = document.getElementById("bg-style-label");
 const SETTINGS_BG_STYLE_SELECT = document.getElementById("bg-style-select");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_NO_FUN_LABEL = document.getElementById("no-fun-label");
-const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun");
+const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun-box");
 const SETTINGS_REMEMBER_LABEL = document.getElementById("remember-settings-label");
 const SETTINGS_REMEMBER_BOX = document.getElementById("remember-settings");
 
@@ -2122,19 +2125,19 @@ const SETTINGS_RESTORE_DEFAULT_BUTTON = document.getElementById("settings-restor
 const SETTINGS_RESTORE_INIT_BUTTON = document.getElementById("settings-restore-init");
 const SETTINGS_BACK_BUTTON = document.getElementById("settings-back");
 
-const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL, SETTINGS_BG_FLAVOR_LABEL,
-  SETTINGS_BG_STYLE_LABEL, SETTINGS_FUN_BUTTON, SETTINGS_NO_FUN_LABEL, SETTINGS_REMEMBER_LABEL,
-  SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON, SETTINGS_BACK_BUTTON];
+const L_SETTINGS_OPTIONS = [SETTINGS_NAME_LINK, SETTINGS_MUTE_SOUND_LABEL, SETTINGS_GUESS_LABEL, SETTINGS_SCALE_LABEL,
+  SETTINGS_BG_FLAVOR_LABEL, SETTINGS_BG_STYLE_LABEL, SETTINGS_FUN_BUTTON, SETTINGS_NO_FUN_LABEL,
+  SETTINGS_REMEMBER_LABEL, SETTINGS_RESTORE_DEFAULT_BUTTON, SETTINGS_RESTORE_INIT_BUTTON, SETTINGS_BACK_BUTTON];
 
 const SETTINGS_EXAMPLE_CARD = document.getElementById("example-character-card");
 
 // Other constants
-const L_SETTING_NAMES = ["numGuesses", "cardScale", "bgFlavor", "bgStyle", "noFun"];
-const L_SETTING_SOURCES = [SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT, SETTINGS_BG_FLAVOR_SELECT,
-  SETTINGS_BG_STYLE_SELECT, SETTINGS_NO_FUN_BOX];
-const L_SETTINGS_DEFAULTS = [DEFAULT_NUM_GUESSES, DEFAULT_CARD_SCALE, DEFAULT_BG_FLAVOR, DEFAULT_BG_STYLE,
-  DEFAULT_NO_FUN];
-const L_SETTINGS_ON_UPDATE = [() => 0, () => 0, () => 0, () => 0, () => 0,];
+const L_SETTING_NAMES = ["muteSound", "numGuesses", "cardScale", "bgFlavor", "bgStyle", "noFun"];
+const L_SETTING_SOURCES = [SETTINGS_MUTE_SOUND_BOX, SETTINGS_GUESS_SELECT, SETTINGS_SCALE_SELECT,
+  SETTINGS_BG_FLAVOR_SELECT, SETTINGS_BG_STYLE_SELECT, SETTINGS_NO_FUN_BOX];
+const L_SETTINGS_DEFAULTS = [DEFAULT_MUTE_SOUND, DEFAULT_NUM_GUESSES, DEFAULT_CARD_SCALE, DEFAULT_BG_FLAVOR,
+  DEFAULT_BG_STYLE, DEFAULT_NO_FUN];
+const L_SETTINGS_ON_UPDATE = [() => 0, () => 0, () => 0, () => 0, () => 0, () => 0,];
 
 
 // Functions
@@ -2261,7 +2264,10 @@ function navigateSettings(e) {
       e.stopPropagation();
       e.preventDefault();
       const el = document.activeElement;
-      if (el == SETTINGS_GUESS_LABEL) {
+      if (el == SETTINGS_MUTE_SOUND_LABEL) {
+        toggleInput(SETTINGS_MUTE_SOUND_BOX);
+        playSelectSound();
+      } else if (el == SETTINGS_GUESS_LABEL) {
         cycleSelect(SETTINGS_GUESS_SELECT);
       } else if (el == SETTINGS_SCALE_LABEL) {
         cycleSelect(SETTINGS_SCALE_SELECT);

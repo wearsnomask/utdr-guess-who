@@ -1195,7 +1195,7 @@ textarea {
 #settings-grid {
   display              : grid;
   grid-template-columns: 8rem 2.5rem 4rem;
-  row-gap              : 1rem;
+  row-gap              : 0.75rem;
   column-gap           : min(1rem, 2.5vw);
 }
 
