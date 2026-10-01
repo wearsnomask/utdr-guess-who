@@ -3,7 +3,7 @@
 
 // Constants
 
-const O_AUDIO_PATHS = {
+const O_AUDIO_BASE_PATHS = {
   damage: "snd/damage",
   explosion: "snd/explosion",
   movemenu: "snd/movemenu",
@@ -19,6 +19,7 @@ const L_STANDARD_SOUNDS = ["damage", "movemenu", "select"];
 
 const oPreloadedAudio = {};
 let oggSupported = null;
+let oAudioPaths = {};
 
 
 // General audio functions
@@ -34,13 +35,14 @@ function isOggSupported() {
   return oggSupported;
 }
 
-function getAudioPath(key) {
-  const basePath = O_AUDIO_PATHS[key];
-  if (isOggSupported())
-    return basePath + ".ogg";
-  else
-    return basePath + ".wav"
+// Set up audio paths based on if .ogg formats are supported or not
+let audioExt = ".wav";
+if (isOggSupported()) {
+  audioExt = ".ogg";
 }
+Object.entries(O_AUDIO_BASE_PATHS).forEach(([key, val]) => {
+  oAudioPaths[key] = val + audioExt;
+});
 
 /**
  * Checks whether or not the user has enabled audio
@@ -56,7 +58,7 @@ export function audioEnabled() {
  */
 export function preloadAudio(key) {
   if (!Object.hasOwn(oPreloadedAudio, key))
-    oPreloadedAudio[key] = new Audio(getAudioPath(key));
+    oPreloadedAudio[key] = new Audio(oAudioPaths[key]);
 }
 
 /** 
@@ -75,7 +77,7 @@ export function unloadAudio(key) {
 export function playSound(key, vol = 1) {
   preloadAudio(key)
   if (audioEnabled()) {
-    const audio = new Audio(getAudioPath(key));
+    const audio = new Audio(oAudioPaths[key]);
     audio.volume = vol;
     audio.play();
   }
