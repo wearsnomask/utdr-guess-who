@@ -1,7 +1,7 @@
 // Globally relevant
 // =================
 
-import { audioEnabled, playDamageSound, playSelectSound, preloadStandardAudio } from "./audio.js";
+import { audioEnabled, playDamageSound, playMoveMenuSound, playSelectSound, preloadStandardAudio } from "./audio.js";
 import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressDamageSound } from "./fun.js";
 
 // Class definitions
@@ -263,7 +263,7 @@ function cleanSceneStack() {
  * Switch to target scene
  * @param {Element | null} newScene The scene to switch to. If null, will switch to the previous scene
  */
-function switchScene(newScene = null) {
+function switchScene(newScene = null, sound = true) {
 
   // Check for scene switch lock so we don't overlap scene switches
   if (sceneSwitching)
@@ -287,6 +287,9 @@ function switchScene(newScene = null) {
     return;
   }
 
+  if (sound)
+    playSelectSound();
+
   // Adjust the scene stack as appropriate for this change
 
   if (!lSceneStack.includes(newScene)) {
@@ -305,6 +308,18 @@ function switchScene(newScene = null) {
   // Flag that a scene switch is in progress so user actions don't trigger an overlapping switch in the next bit of time
   sceneSwitching = true;
   setTimeout(() => sceneSwitching = false, 250);
+}
+
+/**
+ * Move the focused element in the scene (e.g. after a keyboard arrow key event)
+ * @param {HTMLElement} el 
+ * @param {Boolean} sound Whether or not the "movemenu" sound should be played
+ * @param {Boolean} focusVisible Whether or not the focus should be visible
+ */
+function moveFocusElement(el, sound = true, focusVisible = true) {
+  el.focus({ focusVisible: focusVisible });
+  if (sound)
+    playMoveMenuSound();
 }
 
 /**
@@ -436,7 +451,7 @@ let naughtyPlayer = false;
 function initNameScene() {
   if (!naughtyPlayer) {
     NAME_INPUT.removeAttribute("disabled");
-    setTimeout(() => NAME_INPUT.focus({ focusVisible: true }), 100);
+    setTimeout(() => moveFocusElement(NAME_INPUT, false), 100);
   }
   NAME_SCENE_HEADER.scrollIntoView();
   window.addEventListener("keydown", navigateName);
@@ -584,7 +599,7 @@ function navigateName(e) {
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first
-    L_NAME_OPTIONS[0].focus({ focusVisible: true });
+    moveFocusElement(L_NAME_OPTIONS[0]);
     return;
   }
 
@@ -596,7 +611,7 @@ function navigateName(e) {
   else if (currentIndex >= L_NAME_OPTIONS.length) {
     currentIndex = 0;
   }
-  L_NAME_OPTIONS[currentIndex].focus({ focusVisible: true });
+  moveFocusElement(L_NAME_OPTIONS[currentIndex]);
 
 }
 
@@ -647,7 +662,7 @@ function initMenuScene() {
   window.addEventListener("keydown", navigateMenu);
   window.addEventListener("resize", fixMenuTabIndex);
   fixMenuTabIndex();
-  MENU_START_LINK.focus({ focusVisible: true });
+  moveFocusElement(MENU_START_LINK, false);
 }
 
 function exitMenuScene() {
@@ -867,7 +882,7 @@ function navigateMenu(e) {
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first
-    L_MENU_OPTIONS[0].focus({ focusVisible: true });
+    moveFocusElement(L_MENU_OPTIONS[0]);
     return;
   }
 
@@ -904,7 +919,7 @@ function navigateMenu(e) {
     }
   }
 
-  L_MENU_OPTIONS[currentIndex].focus({ focusVisible: true });
+  moveFocusElement(L_MENU_OPTIONS[currentIndex]);
 }
 
 async function loadCharacterSetList() {
@@ -1137,7 +1152,7 @@ function startLookupMode(e) {
   else {
     setKeyLookupMode();
     // If starting in key mode, move focus to the first character card
-    lCharacterCardFrames[0].focus({ focusVisible: true });
+    moveFocusElement(lCharacterCardFrames[0], false);
   }
 
   // Prepare an event to look up the target
@@ -1896,7 +1911,7 @@ function navigateGame(e) {
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first character card
-    lCharacterCardFrames[0].focus({ focusVisible: true });
+    moveFocusElement(lCharacterCardFrames[0]);
     if (keyLookupModeEnabled())
       updateLookupCursorPosition();
     return;
@@ -1954,7 +1969,7 @@ function navigateGame(e) {
   else if (currentIndex >= numFocusable)
     currentIndex = numFocusable - 1;
 
-  lGameFocusableItems[currentIndex].focus({ focusVisible: true });
+  moveFocusElement(lGameFocusableItems[currentIndex]);
 
   if (keyLookupModeEnabled())
     updateLookupCursorPosition();
@@ -1994,7 +2009,7 @@ const INSTRUCTIONS_BACK_BUTTON = document.getElementById("instructions-back");
 // ---------
 
 function initInstructionsScene() {
-  INSTRUCTIONS_BACK_BUTTON.focus({ focusVisible: true });
+  moveFocusElement(INSTRUCTIONS_BACK_BUTTON, false);
   INSTRUCTIONS_SCENE_HEADER.scrollIntoView();
   window.addEventListener("keydown", navigateTextScenes);
 }
@@ -2025,7 +2040,7 @@ const CONTROLS_BACK_BUTTON = document.getElementById("controls-back");
 // ---------
 
 function initControlsScene() {
-  CONTROLS_BACK_BUTTON.focus({ focusVisible: true });
+  moveFocusElement(CONTROLS_BACK_BUTTON, false);
   CONTROLS_SCENE_HEADER.scrollIntoView();
   window.addEventListener("keydown", navigateTextScenes);
 }
@@ -2089,7 +2104,7 @@ const L_SETTINGS_ON_UPDATE = [() => 0, () => 0, () => 0, () => 0, () => 0,];
 // ---------
 
 function initSettingsScene() {
-  SETTINGS_NAME_LINK.focus({ focusVisible: true });
+  moveFocusElement(SETTINGS_NAME_LINK, false);
   SETTINGS_SCENE_HEADER.scrollIntoView();
   window.addEventListener("keydown", navigateSettings);
 }
@@ -2225,7 +2240,7 @@ function navigateSettings(e) {
 
   if (currentIndex == -1) {
     // Not in the options currently, so go to the first
-    L_SETTINGS_OPTIONS[0].focus({ focusVisible: true });
+    moveFocusElement(L_SETTINGS_OPTIONS[0]);
     return;
   }
 
@@ -2237,7 +2252,7 @@ function navigateSettings(e) {
   else if (currentIndex >= L_SETTINGS_OPTIONS.length) {
     currentIndex = L_SETTINGS_OPTIONS.length - 1;
   }
-  L_SETTINGS_OPTIONS[currentIndex].focus({ focusVisible: true });
+  moveFocusElement(L_SETTINGS_OPTIONS[currentIndex]);
 
 }
 
@@ -2275,7 +2290,7 @@ const CREDITS_BACK_BUTTON = document.getElementById("credits-back");
 // ---------
 
 function initCreditsScene() {
-  CREDITS_BACK_BUTTON.focus({ focusVisible: true });
+  moveFocusElement(CREDITS_BACK_BUTTON, false);
   CREDITS_SCENE_HEADER.scrollIntoView();
   window.addEventListener("keydown", navigateTextScenes);
 }
@@ -2316,7 +2331,7 @@ document.addEventListener("DOMContentLoaded", () => {
     MENU_START_LINK.classList.remove("hidden");
     document.querySelectorAll(".game-loading-message").forEach(el => el.classList.add("hidden"));
     if (!MENU_SCENE.classList.contains("hidden"))
-      MENU_START_LINK.focus({ focusVisible: true });
+      moveFocusElement(MENU_START_LINK, false);
   });
 
   if (initSettings.name) {
@@ -2324,7 +2339,7 @@ document.addEventListener("DOMContentLoaded", () => {
     MENU_SCENE.classList.remove("hidden");
   } else {
     switchScene(NAME_SCENE);
-    NAME_INPUT.focus({ focusVisible: true });
+    moveFocusElement(NAME_INPUT, false);
   }
 
   updateRememberName();
