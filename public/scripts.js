@@ -514,29 +514,36 @@ function getName() {
 }
 
 /**
- * Called when the user submits their name either through the button or enter/return
+ * Called on keydown in the name box - plays keyboard sound and checks if name should be submitted
  * @param {Event} e 
  */
 function submitName(e) {
   // If this is a keydown event, check if the key is Enter before triggering
-  if (e.type === "keydown" && e.key !== "Enter")
+  if (e && e.type === "keydown" && e.key != "Enter") {
+    playMoveMenuSound(0.25);
     return;
+  }
   setName(NAME_INPUT.value);
   switchScene();
   e.stopPropagation();
 }
 
 /**
- * Monitor the name for any naughty users
- * @param {Event} e 
+ * Punish the player for being naughty
  */
-function monitorName(e) {
+function jerrify() {
+  NAME_INPUT.value = "Jerry";
+  naughtyPlayer = true;
+  submitName();
+}
+
+/**
+ * Monitor the name for changes
+ */
+function monitorName() {
   const nameLower = NAME_INPUT.value.toLowerCase().replaceAll(/\W/g, "");
-  if (nameLower.includes("gaster") || nameLower.includes("wdg")) {
-    NAME_INPUT.value = "Jerry";
-    naughtyPlayer = true;
-    submitName(e);
-  }
+  if (nameLower.includes("gaster") || nameLower.includes("wdg"))
+    jerrify();
 }
 
 /**
@@ -552,7 +559,8 @@ function updateRememberName() {
  * @param {KeyboardEvent} e 
  */
 function navigateName(e) {
-  let currentIndex = L_NAME_OPTIONS.findIndex((el) => document.activeElement === el);
+  const initIndex = L_NAME_OPTIONS.findIndex((el) => document.activeElement === el);
+  let currentIndex = initIndex;
 
   // Check the direction of navigation
   let dir;
@@ -611,7 +619,8 @@ function navigateName(e) {
   else if (currentIndex >= L_NAME_OPTIONS.length) {
     currentIndex = 0;
   }
-  moveFocusElement(L_NAME_OPTIONS[currentIndex]);
+  // Move the focus, playing sound unless the position hasn't changed
+  moveFocusElement(L_NAME_OPTIONS[currentIndex], initIndex != currentIndex);
 
 }
 
@@ -751,6 +760,11 @@ function loadGuessIcons() {
   attachAllHeartEvents();
 }
 
+function restartGame() {
+  playSelectSound();
+  startGame();
+}
+
 async function startGame() {
   // If the game is already loading, exit to avoid doubling up
   if (gameLoading)
@@ -835,7 +849,8 @@ async function startGame() {
  * @param {KeyboardEvent} e 
  */
 function navigateMenu(e) {
-  let currentIndex = L_MENU_OPTIONS.findIndex((el) => document.activeElement === el);
+  const initIndex = L_MENU_OPTIONS.findIndex((el) => document.activeElement === el);
+  let currentIndex = initIndex;
 
   // Check the direction of navigation
   let dir;
@@ -919,7 +934,8 @@ function navigateMenu(e) {
     }
   }
 
-  moveFocusElement(L_MENU_OPTIONS[currentIndex]);
+  // Move the focus, playing sound unless the position hasn't changed
+  moveFocusElement(L_MENU_OPTIONS[currentIndex], initIndex != currentIndex);
 }
 
 async function loadCharacterSetList() {
@@ -1141,6 +1157,7 @@ function keyLookupModeEnabled() {
  * Start lookup mode
  */
 function startLookupMode(e) {
+  playSelectSound();
   // If this gets triggered when we're already in lookup mode, end it
   if (lookupModeEnabled()) {
     setOffLookupMode();
@@ -1222,6 +1239,7 @@ function updateLookupCursorPosition() {
  * Open the notes dialog
  */
 function openNotes() {
+  playSelectSound();
   GAME_NOTES_DIALOG.showModal();
 }
 
@@ -1229,6 +1247,7 @@ function openNotes() {
  * Close the notes dialog
  */
 function closeNotes() {
+  playSelectSound();
   GAME_NOTES_DIALOG.close();
 }
 
@@ -1567,6 +1586,8 @@ function flipGuess(e) {
  */
 function flipCard(e) {
 
+  playSelectSound();
+
   // Don't flip if we're in lookup mode
   if (lookupModeEnabled())
     return;
@@ -1593,6 +1614,10 @@ function flipCard(e) {
  */
 function markCard(e) {
   e.preventDefault();
+
+  // Play the select sound unless this was triggered by a double-click event (which would have already triggered it)
+  if (e.type != "dblclick")
+    playSelectSound();
 
   const cardClassList = e.currentTarget.closest(".character-card").classList;
 
@@ -1782,7 +1807,8 @@ function arrangeGameFocusableItems() {
  */
 function navigateGame(e) {
   // Get current position
-  let currentIndex = lGameFocusableItems.findIndex((el) => document.activeElement === el);
+  const initIndex = lGameFocusableItems.findIndex((el) => document.activeElement === el);
+  let currentIndex = initIndex;
 
   const numButtonsBeforePlayArea = lGameButtonsBeforePlayArea.length;
   const numGuessIcons = lGuessIcons.length;
@@ -1969,7 +1995,8 @@ function navigateGame(e) {
   else if (currentIndex >= numFocusable)
     currentIndex = numFocusable - 1;
 
-  moveFocusElement(lGameFocusableItems[currentIndex]);
+  // Move the focus, playing sound unless the position hasn't changed
+  moveFocusElement(lGameFocusableItems[currentIndex], initIndex != currentIndex);
 
   if (keyLookupModeEnabled())
     updateLookupCursorPosition();
@@ -1979,7 +2006,7 @@ function navigateGame(e) {
 // -----
 
 QUIT_GAME_BUTTON.addEventListener("click", () => switchScene(MENU_SCENE));
-RESTART_GAME_BUTTON.addEventListener("click", startGame);
+RESTART_GAME_BUTTON.addEventListener("click", restartGame);
 
 L_LOOKUP_BUTTONS.forEach((el) => el.addEventListener("click", startLookupMode, false));
 
@@ -2164,6 +2191,7 @@ function updateRememberSettings() {
 }
 
 function restoreDefaultSettings() {
+  playSelectSound();
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
     setSettingValue(L_SETTING_SOURCES[i], L_SETTINGS_DEFAULTS[i]);
     L_SETTINGS_ON_UPDATE[i]();
@@ -2171,6 +2199,7 @@ function restoreDefaultSettings() {
 }
 
 function restoreInitSettings() {
+  playSelectSound();
   for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
     if (Object.keys(initSettings).includes(L_SETTING_NAMES[i])) {
       setSettingValue(L_SETTING_SOURCES[i], initSettings[L_SETTING_NAMES[i]]);
@@ -2184,7 +2213,8 @@ function restoreInitSettings() {
  * @param {KeyboardEvent} e 
  */
 function navigateSettings(e) {
-  let currentIndex = L_SETTINGS_OPTIONS.findIndex((el) => document.activeElement === el);
+  const initIndex = L_SETTINGS_OPTIONS.findIndex((el) => document.activeElement === el);
+  let currentIndex = initIndex;
 
   // Check the direction of navigation
   let dir;
@@ -2214,6 +2244,7 @@ function navigateSettings(e) {
       const el = document.activeElement;
       if (el == SETTINGS_GUESS_LABEL) {
         cycleSelect(SETTINGS_GUESS_SELECT);
+        playSelectSound();
       } else if (el == SETTINGS_SCALE_LABEL) {
         cycleSelect(SETTINGS_SCALE_SELECT);
         updateCardScale();
@@ -2252,7 +2283,9 @@ function navigateSettings(e) {
   else if (currentIndex >= L_SETTINGS_OPTIONS.length) {
     currentIndex = L_SETTINGS_OPTIONS.length - 1;
   }
-  moveFocusElement(L_SETTINGS_OPTIONS[currentIndex]);
+
+  // Move the focus, playing sound unless the position hasn't changed
+  moveFocusElement(L_SETTINGS_OPTIONS[currentIndex], initIndex != currentIndex);
 
 }
 
@@ -2262,7 +2295,10 @@ function navigateSettings(e) {
 SETTINGS_NAME_LINK.addEventListener("click", () => switchScene(NAME_SCENE));
 
 for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
-  L_SETTING_SOURCES[i].addEventListener("change", L_SETTINGS_ON_UPDATE[i]);
+  L_SETTING_SOURCES[i].addEventListener("change", () => {
+    playSelectSound();
+    L_SETTINGS_ON_UPDATE[i]();
+  });
 }
 
 connectFunButton();

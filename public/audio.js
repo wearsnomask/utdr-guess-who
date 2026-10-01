@@ -90,22 +90,22 @@ export function preloadStandardAudio() {
   L_STANDARD_SOUNDS.forEach((key) => preloadAudio(key));
 }
 
-export function playDamageSound() {
-  playSound("damage", 0.5);
+export function playDamageSound(vol = 0.5) {
+  playSound("damage", vol);
 }
 
-export function playExplosionSound() {
-  playSound("explosion");
+export function playExplosionSound(vol = 1) {
+  playSound("explosion", vol);
 }
 
-export function playMoveMenuSound() {
-  playSound("movemenu");
+export function playMoveMenuSound(vol = 0.5) {
+  playSound("movemenu", vol);
 }
 
-export function playSelectSound() {
-  playSound("select");
+export function playSelectSound(vol = 1) {
+  playSound("select", vol);
 }
 
-export function playTromboneSound() {
-  playSound("trombone");
+export function playTromboneSound(vol = 1) {
+  playSound("trombone", vol);
 }
