@@ -353,12 +353,16 @@ async function loadJSON(url) {
  * Cycles through the selected option of a "select" element
  * @param {Element} selectEl 
  */
-function cycleSelect(selectEl) {
+function cycleSelect(selectEl, sound = true) {
+
   // Check this is indeed a select element
   if (selectEl.tagName !== "SELECT") {
     console.error("cycleSelect called on element not of 'select' type: " + selectEl);
     return;
   }
+
+  if (sound)
+    playSelectSound();
 
   // Find the selected option, then select the next one
   const lOptions = selectEl.querySelectorAll("option");
@@ -548,8 +552,12 @@ function monitorName() {
 
 /**
  * Sync the Remember Name and Remember Settings checkboxes
+ * @param {Event} e 
  */
-function updateRememberName() {
+function updateRememberName(e = null) {
+  // Play a sound if this was event-triggered, and not called directly
+  if (e)
+    playSelectSound();
   SETTINGS_REMEMBER_BOX.checked = NAME_REMEMBER_BOX.checked;
 }
 
@@ -1897,8 +1905,10 @@ function navigateGame(e) {
         return;
       }
 
-      if (GAME_NOTES_DIALOG.hasAttribute("open"))
+      if (GAME_NOTES_DIALOG.hasAttribute("open")) {
+        playSelectSound();
         return;
+      }
       e.stopPropagation();
       e.preventDefault();
       openNotes();
@@ -2183,10 +2193,16 @@ function updateBgFlavor() {
 }
 L_SETTINGS_ON_UPDATE[L_SETTING_NAMES.indexOf("bgFlavor")] = updateBgFlavor;
 
+function updateNoFunBox() {
+  updateNoFun();
+}
+L_SETTINGS_ON_UPDATE[L_SETTING_NAMES.indexOf("noFun")] = updateNoFunBox;
+
 /**
  * Sync the Remember Name and Remember Settings checkboxes
  */
 function updateRememberSettings() {
+  playSelectSound();
   NAME_REMEMBER_BOX.checked = SETTINGS_REMEMBER_BOX.checked;
 }
 
@@ -2234,6 +2250,9 @@ function navigateSettings(e) {
       dir = -1;
       break;
 
+    case "Escape":
+      SETTINGS_BACK_BUTTON.click();
+
     case " ":
     case "z":
     case "Enter":
@@ -2244,7 +2263,6 @@ function navigateSettings(e) {
       const el = document.activeElement;
       if (el == SETTINGS_GUESS_LABEL) {
         cycleSelect(SETTINGS_GUESS_SELECT);
-        playSelectSound();
       } else if (el == SETTINGS_SCALE_LABEL) {
         cycleSelect(SETTINGS_SCALE_SELECT);
         updateCardScale();
@@ -2256,7 +2274,8 @@ function navigateSettings(e) {
         updateBgStyle();
       } else if (el == SETTINGS_NO_FUN_LABEL) {
         toggleInput(SETTINGS_NO_FUN_BOX);
-        updateNoFun();
+        playSelectSound();
+        updateNoFunBox();
       } else if (el == SETTINGS_REMEMBER_LABEL) {
         toggleInput(SETTINGS_REMEMBER_BOX);
         updateRememberSettings();
@@ -2302,7 +2321,6 @@ for (let i = 0; i < L_SETTING_NAMES.length; ++i) {
 }
 
 connectFunButton();
-SETTINGS_NO_FUN_BOX.addEventListener("change", updateNoFun);
 SETTINGS_REMEMBER_BOX.addEventListener("change", updateRememberSettings);
 
 SETTINGS_RESTORE_DEFAULT_BUTTON.addEventListener("click", restoreDefaultSettings);
@@ -2374,7 +2392,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setName(initSettings.name);
     MENU_SCENE.classList.remove("hidden");
   } else {
-    switchScene(NAME_SCENE);
+    switchScene(NAME_SCENE, false);
     moveFocusElement(NAME_INPUT, false);
   }
 

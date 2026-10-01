@@ -1,7 +1,7 @@
 // Code for handling FUN events in the game
 // ========================================
 
-import { playExplosionSound, playTromboneSound, preloadAudio, unloadAudio } from "./audio.js";
+import { playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio } from "./audio.js";
 
 // Globals
 // -------
@@ -312,12 +312,17 @@ class FunEvent {
 
 // Functions related to FUN events
 
+function setNewFunFromButton() {
+  playSelectSound();
+  setNewFunValue();
+}
+
 export function connectFunButton() {
-  SETTINGS_FUN_BUTTON.addEventListener("click", setNewFunValue);
+  SETTINGS_FUN_BUTTON.addEventListener("click", setNewFunFromButton);
 }
 
 export function disconnectFunButton() {
-  SETTINGS_FUN_BUTTON.removeEventListener("click", setNewFunValue);
+  SETTINGS_FUN_BUTTON.removeEventListener("click", setNewFunFromButton);
 }
 
 // Classes implementing specific FUN events
