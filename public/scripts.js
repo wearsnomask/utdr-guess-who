@@ -1582,6 +1582,7 @@ function flipGuess(e) {
     guessClassList.remove("active");
     guessClassList.add("inactive");
   } else {
+    playSelectSound();
     guessClassList.add("active");
     guessClassList.remove("inactive");
   }
