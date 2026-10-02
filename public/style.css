@@ -623,9 +623,6 @@ textarea {
 /* Game scene */
 
 :root {
-  --heart-scale: 3;
-  --heart-width: calc(var(--heart-scale) * 20px);
-
   --card-scale     : 2;
   --your-char-scale: 2;
 
@@ -758,7 +755,7 @@ textarea {
   position : absolute;
   top      : calc(2 * var(--card-base-row-gap) - 0.5 * var(--card-row-height));
   z-index  : 4;
-  animation: 0.125s ease-out 1 grow;
+  animation: 0.125s ease-out 1 inspect-grow;
   cursor   : url('img/sCursorHand.png'), pointer;
   scale    : calc(0.5 * var(--inspect-scale));
 }
@@ -771,7 +768,7 @@ textarea {
   border-color: yellow;
 }
 
-@keyframes grow {
+@keyframes inspect-grow {
   from {
     scale: 0.5;
   }
@@ -783,10 +780,10 @@ textarea {
 
 .character-card.inspect-fading .inspect-img-frame {
   scale    : 50%;
-  animation: 0.125s ease-in 1 shrink;
+  animation: 0.125s ease-in 1 inspect-shrink;
 }
 
-@keyframes shrink {
+@keyframes inspect-shrink {
   from {
     scale: calc(var(--inspect-scale)*50%);
   }
@@ -835,16 +832,25 @@ textarea {
 }
 
 .guess-icon {
-  display: inline-block;
+  --heart-scale    : 3;
+  --heart-width    : calc(var(--heart-scale) * 20px);
+  --heart-border   : 2px;
+  --heart-fade-time: 0.25s;
+
+  position       : relative;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  width          : calc(2 * var(--heart-border) + var(--heart-width));
 }
 
 .guess-icon:not(:focus-visible) {
-  padding: 2px;
+  padding: var(--heart-border);
 }
 
 .guess-icon:focus-visible {
   outline: none;
-  border : 2px solid yellow;
+  border : var(--heart-border) solid yellow;
 }
 
 .guess-icon:hover {
@@ -855,16 +861,56 @@ textarea {
   width: var(--heart-width);
 }
 
-.guess-icon.active .inactive-icon {
+.guess-icon .inactive-icon {
+  position: absolute;
+  z-index : -1;
+}
+
+.guess-icon.inactive .active-icon,
+.guess-icon.fading .active-icon {
   display: none;
 }
 
-.guess-icon.inactive .active-icon {
+.guess-icon .fading-icon {
   display: none;
 }
 
-.guess-icon:has(>.trombone) {
-  position: relative;
+.guess-icon.fading .fading-icon {
+  display : block;
+  position: absolute;
+  opacity : 0%;
+}
+
+.guess-icon.fading .fading-icon.left {
+  animation: var(--heart-fade-time) ease-out 1 guess-fade-left;
+}
+
+.guess-icon.fading .fading-icon.right {
+  animation: var(--heart-fade-time) ease-out 1 guess-fade-right;
+}
+
+@keyframes guess-fade-left {
+  from {
+    opacity: 100%;
+    left   : 0px;
+  }
+
+  to {
+    opacity: 0%;
+    left   : calc(-0.125 * var(--heart-width));
+  }
+}
+
+@keyframes guess-fade-right {
+  from {
+    opacity: 100%;
+    left   : 0px;
+  }
+
+  to {
+    opacity: 0%;
+    left   : calc(0.125 * var(--heart-width));
+  }
 }
 
 .anim-spritesheet {

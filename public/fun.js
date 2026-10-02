@@ -543,13 +543,16 @@ async function displayTromboneAnim(e) {
   // Tiny delay before starting to ensure the event to toggle the heart state always goes first
   await new Promise((resolve) => { setTimeout(resolve, 1) });
 
-  const condition = (el) => el.closest(".guess-icon").classList.contains("inactive");
+  const condition = (el) => {
+    const cl = el.closest(".guess-icon").classList;
+    return cl.contains("inactive") || cl.contains("fading");
+  };
 
   if (displayAnim(e, 1, TROMBONE_GIF_TEMPLATE, ".trombone", ".guess-icon", condition))
     playTromboneSound();
 }
 
-export let suppressDamageSound = false;
+export let suppressGuessFade = false;
 
 class TromboneEvent extends FunEvent {
 
@@ -569,14 +572,14 @@ class TromboneEvent extends FunEvent {
     // Preload the image and audio so they will appear quickly the first time it's triggered
     this.#preloadedGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone");
     preloadAudio("trombone");
-    suppressDamageSound = true;
+    suppressGuessFade = true;
   }
 
   onDeactivate() {
     manager.removeHeartEvent("trombone");
     this.#preloadedGif = null;
     unloadAudio("trombone");
-    suppressDamageSound = false;
+    suppressGuessFade = false;
   }
 }
 

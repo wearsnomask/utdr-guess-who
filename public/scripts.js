@@ -2,7 +2,7 @@
 // =================
 
 import { audioEnabled, playDamageSound, playMoveMenuSound, playSelectSound, preloadStandardAudio } from "./audio.js";
-import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressDamageSound } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressGuessFade } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -1574,20 +1574,29 @@ async function loadCharacterSet(setDirName, preload = false) {
  * @param {Event} e 
  */
 function flipGuess(e) {
-  const guessClassList = e.currentTarget.closest(".guess-icon").classList;
+  const guessIcon = e.currentTarget.closest(".guess-icon");
+  const guessClassList = guessIcon.classList;
+
+  // Don't do anything while it's fading
+  if (guessClassList.contains("fading"))
+    return;
 
   if (guessClassList.contains("active")) {
-    if (!suppressDamageSound)
+    if (!suppressGuessFade) {
       playDamageSound();
-    guessClassList.remove("active");
-    guessClassList.add("inactive");
+    }
+    let fadeTime = 1000 * parseFloat(window.getComputedStyle(guessIcon).getPropertyValue("--heart-fade-time"));
+    guessClassList.add("fading");
+    setTimeout(() => {
+      guessClassList.add("inactive");
+      guessClassList.remove("active");
+      guessClassList.remove("fading");
+    }, fadeTime);
   } else {
     playSelectSound();
     guessClassList.add("active");
     guessClassList.remove("inactive");
   }
-
-  updateNumChars();
 }
 
 /**
