@@ -1525,7 +1525,7 @@ async function loadCharacterSet(setDirName, preload = false) {
     // Set up events for the card
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);
-    frameEl.addEventListener("dblclick", markCard);
+    newCard.addEventListener("dblclick", markCard);
     frameEl.addEventListener("mousedown", (e) => {
       if (e.button == 1 || e.buttons == 4)
         toggleInspectCard(e);
@@ -1605,8 +1605,6 @@ function flipGuess(e) {
  */
 function flipCard(e) {
 
-  playSelectSound();
-
   // Don't flip if we're in lookup mode
   if (lookupModeEnabled())
     return;
@@ -1614,14 +1612,30 @@ function flipCard(e) {
   let frameEl;
   if (!(frameEl = e.currentTarget || e.target))
     frameEl = e;
-  const cardClassList = frameEl.closest(".character-card").classList;
+  const card = frameEl.closest(".character-card");
+  const cardClassList = card.classList;
+
+  // Don't flip if the card is already in the middle of flipping
+  if (cardClassList.contains("flipping"))
+    return;
+
+  playSelectSound();
+  const flipTime = 1000 * parseFloat(window.getComputedStyle(card).getPropertyValue("--flip-time"));
 
   if (cardClassList.contains("active")) {
-    cardClassList.remove("active");
-    cardClassList.add("inactive");
+    cardClassList.add("flipping");
+    setTimeout(() => {
+      cardClassList.add("inactive");
+      cardClassList.remove("active");
+      cardClassList.remove("flipping");
+    }, flipTime);
   } else {
-    cardClassList.add("active");
-    cardClassList.remove("inactive");
+    cardClassList.add("flipping");
+    setTimeout(() => {
+      cardClassList.add("active");
+      cardClassList.remove("inactive");
+      cardClassList.remove("flipping");
+    }, flipTime);
   }
 
   updateNumChars();

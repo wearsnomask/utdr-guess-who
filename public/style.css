@@ -995,6 +995,18 @@ textarea {
 }
 
 .character-card {
+  --active-brightness: 1;
+  --active-saturate  : 1;
+
+  --inactive-brightness-base: 0.1;
+  --hover-brightness-shift  : 0.2;
+  --goner-brightness-shift  : 0.2;
+  --inactive-saturate       : 0;
+
+  --inactive-brightness: var(--inactive-brightness-base);
+
+  --flip-time: 0.25s;
+
   position       : relative;
   width          : var(--card-column-width);
   height         : var(--card-row-height);
@@ -1158,23 +1170,67 @@ textarea {
 }
 
 .inactive .character-img-frame {
-  filter: brightness(0.1) saturate(0);
+  filter: brightness(var(--inactive-brightness)) saturate(var(--inactive-saturate));
 }
 
 .inactive.goner .character-img-frame {
-  filter: brightness(0.3) saturate(0);
+  --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift));
 }
 
-.inactive .character-img-frame:hover,
-.inactive .character-img-frame:focus-visible,
-.inactive .character-name-popup {
-  filter: brightness(0.3);
+.active.flipping .character-img-frame {
+  animation: flip var(--flip-time) linear 1, flip-off var(--flip-time) steps(2, jump-none) 1;
 }
 
-.inactive.goner .character-img-frame:hover,
-.inactive.goner .character-img-frame:focus-visible,
-.inactive.goner .character-name-popup {
-  filter: brightness(0.5) saturate(0);
+.inactive.flipping .character-img-frame {
+  animation: flip var(--flip-time) linear 1, flip-on var(--flip-time) steps(2, jump-none) 1;
+}
+
+@keyframes flip {
+  0% {
+    scale: 1 1;
+  }
+
+  50% {
+    scale: 0 1;
+  }
+
+  100% {
+    scale: 1 1;
+  }
+}
+
+@keyframes flip-on {
+  0% {
+    filter: brightness(var(--inactive-brightness)) saturate(var(--inactive-saturate));
+  }
+
+  100% {
+    filter: brightness(var(--active-brightness)) saturate(var(--active-saturate));
+  }
+}
+
+@keyframes flip-off {
+  0% {
+    filter: brightness(var(--active-brightness)) saturate(var(--active-saturate));
+  }
+
+  100% {
+    filter: brightness(var(--inactive-brightness)) saturate(var(--inactive-saturate));
+  }
+}
+
+.character-card:hover .character-img-frame,
+.character-card .character-img-frame:focus-visible,
+.character-card .character-name-popup {
+  --inactive-brightness: calc(var(--inactive-brightness-base) + var(--hover-brightness-shift));
+  --inactive-saturate  : 1;
+}
+
+.character-card.goner:hover .character-img-frame,
+.character-card.goner .character-img-frame:focus-visible,
+.character-card.goner .character-name-popup {
+  --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift) + var(--hover-brightness-shift));
+  --inactive-saturate  : 0;
 }
 
 .inactive.goner .character-name::before {

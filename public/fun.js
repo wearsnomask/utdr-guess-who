@@ -594,7 +594,10 @@ async function displayExplosionAnim(e) {
   // Tiny delay before starting to ensure the event to toggle the card state always goes first
   await new Promise((resolve) => { setTimeout(resolve, 1) });
 
-  const condition = (el) => el.closest(".character-card").classList.contains("inactive");
+  const condition = (el) => {
+    const cl = el.closest(".character-card").classList;
+    return cl.contains("active") && cl.contains("flipping");
+  };
 
   if (displayAnim(e, 0.1, EXPLOSION_GIF_TEMPLATE, ".explosion", ".character-card", condition))
     playExplosionSound();
@@ -635,10 +638,12 @@ function setGonerClass(e) {
 }
 
 function setGonerClassForCard(el) {
-  if (el.classList.contains("inactive"))
-    el.classList.add("goner");
+  const cl = el.classList;
+  if ((cl.contains("active") && cl.contains("flipping")) ||
+    (cl.contains("inactive") && !cl.contains("flipping")))
+    cl.add("goner");
   else
-    el.classList.remove("goner");
+    cl.remove("goner");
 
 }
 
