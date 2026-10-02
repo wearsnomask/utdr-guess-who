@@ -552,7 +552,7 @@ async function displayTromboneAnim(e) {
     playTromboneSound();
 }
 
-export let suppressGuessFade = false;
+export let suppressGuessFadeSound = false;
 
 class TromboneEvent extends FunEvent {
 
@@ -572,14 +572,14 @@ class TromboneEvent extends FunEvent {
     // Preload the image and audio so they will appear quickly the first time it's triggered
     this.#preloadedGif = document.importNode(TROMBONE_GIF_TEMPLATE.content, true).querySelector(".trombone");
     preloadAudio("trombone");
-    suppressGuessFade = true;
+    suppressGuessFadeSound = true;
   }
 
   onDeactivate() {
     manager.removeHeartEvent("trombone");
     this.#preloadedGif = null;
     unloadAudio("trombone");
-    suppressGuessFade = false;
+    suppressGuessFadeSound = false;
   }
 }
 

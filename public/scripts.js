@@ -2,7 +2,7 @@
 // =================
 
 import { audioEnabled, playDamageSound, playMoveMenuSound, playSelectSound, preloadStandardAudio } from "./audio.js";
-import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressGuessFade } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressGuessFadeSound } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -1582,7 +1582,7 @@ function flipGuess(e) {
     return;
 
   if (guessClassList.contains("active")) {
-    if (!suppressGuessFade) {
+    if (!suppressGuessFadeSound) {
       playDamageSound();
     }
     let fadeTime = 1000 * parseFloat(window.getComputedStyle(guessIcon).getPropertyValue("--heart-fade-time"));
