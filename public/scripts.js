@@ -1196,6 +1196,8 @@ function startLookupMode(e) {
  */
 function lookupTarget(e) {
 
+  playSelectSound();
+
   // First, figure out what to look up. Check the Your Character frame, as well as all character cards. What feature we
   // check for depends on which lookup mode we're in
   let lookupFeature;
@@ -1628,6 +1630,7 @@ function flipCard(e) {
       cardClassList.add("inactive");
       cardClassList.remove("active");
       cardClassList.remove("flipping");
+      updateNumChars();
     }, flipTime);
   } else {
     cardClassList.add("flipping");
@@ -1635,10 +1638,9 @@ function flipCard(e) {
       cardClassList.add("active");
       cardClassList.remove("inactive");
       cardClassList.remove("flipping");
+      updateNumChars();
     }, flipTime);
   }
-
-  updateNumChars();
 }
 
 /**
