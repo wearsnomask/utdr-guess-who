@@ -198,13 +198,20 @@ class FunEventManager {
     this.#attachCardEvent(oCardEvent);
   }
 
-  #attachCardEvent(oCardEvent) {
-
+  #getSelector(oCardEvent) {
     let selector = ".character-card";
     if (oCardEvent.selector)
-      selector += oCardEvent.selector
+      selector += oCardEvent.selector;
 
-    document.querySelectorAll(selector).forEach((el) => {
+    // The "focus" and "blur" events need to specifically target the character-img-frame, which is the focusable element
+    if (oCardEvent.trigger == "focus" || oCardEvent.trigger == "blur")
+      selector += " .character-img-frame";
+
+    return selector;
+  }
+
+  #attachCardEvent(oCardEvent) {
+    document.querySelectorAll(this.#getSelector(oCardEvent)).forEach((el) => {
       el.addEventListener(oCardEvent.trigger, oCardEvent.handler);
     });
   }
@@ -222,14 +229,7 @@ class FunEventManager {
   }
 
   #detachCardEvent(name) {
-
-    const oCardEvent = this.#oCardEvents[name];
-
-    let selector = ".character-card";
-    if (Object.hasOwn(oCardEvent, selector))
-      selector += oCardEvent.selector
-
-    document.querySelectorAll(selector).forEach((el) => {
+    document.querySelectorAll(this.#getSelector(oCardEvent)).forEach((el) => {
       el.removeEventListener(oCardEvent.trigger, oCardEvent.handler);
     });
   }
@@ -698,15 +698,22 @@ class HotnameEvent extends FunEvent {
 
   onActivate() {
     manager.addCardEvent({
-      name: "hotname",
+      name: "hotname-mouseover",
       trigger: "mouseover",
+      selector: ".hotname",
+      handler: setHotName
+    });
+    manager.addCardEvent({
+      name: "hotname-focus",
+      trigger: "focus",
       selector: ".hotname",
       handler: setHotName
     });
   }
 
   onDeactivate() {
-    manager.removeCardEvent("hotname");
+    manager.removeCardEvent("hotname-mouseover");
+    manager.removeCardEvent("hotname-focus");
     document.querySelectorAll(".character-card.hotname").forEach((el) => {
       const charImgName = el.querySelector(".character-img").getAttribute("src").split("/").at(-1);
       let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("__", " ").replaceAll("%20", " ")
