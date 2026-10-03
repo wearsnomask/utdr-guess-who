@@ -7,6 +7,10 @@
 - FUN
 - Added sound effects for various interactions with the game, plus an option in the settings to mute all sound effects
 - Added animations for flipping cards and using up a guess
+- Added character sets from Seek's update:
+  - Deltarune Ch. 1-5 (Seek's ver.)
+  - Undertale (Seek's ver.)
+  - Truck Freak
 
 ## v1.3.0
 

@@ -44,7 +44,7 @@ If you aren't familiar with using GitHub Pages, a good tutorial on using it is p
 
 Then, edit the repo by adding in a folder with your character set in the "public/character-sets" folder. The name of the folder will be used exactly as it for the name of the character set. If you want (but you probably don't need to worry about this), you can add an index before the name of the character set in the folder to affect how it's sorted when the options are given to the player, e.g. folders named `1-Undertale` and `2-Deltarune` will put the Undertale character set first, whereas without the indices it would sort alphabetically with Deltarune first.
 
-Inside this folder, add the images for all the characters in your set, with the name format `#-Name.png`, e.g. `1-Kris.png`, `2-Susie.png`, `3-Annoying Dog.png`, etc. The number for each indicates the order they'll be displayed in-game, and the name will be shown as their name. If you're fine with alphabetical order, you can also just leave out the number (e.g. `Kris.png`).
+Inside this folder, add the images for all the characters in your set, with the name format `#-Name.png`, e.g. `1-Kris.png`, `2-Susie.png`, `3-Annoying Dog.png`, etc. The number for each indicates the order they'll be displayed in-game, and the name will be shown as their name. If you're fine with alphabetical order, you can also just leave out the number (e.g. `Kris.png`). Filenames don't support quotation marks, so on the off chance you want to include them in the character name, use double apostrophes instead, e.g. `32-''Mike''.png`.
 
 And... that's it! Commit the changes, push to the repository, and wait a minute for it to be deployed. Your version of the game will be deployed at an address that looks like "https://your-github-username.github.io/utdr-guess-who/", and you can share this with your friends so you can all play with the character set you added.
 
@@ -150,7 +150,13 @@ npm run tauri build
 
 ### How does this relate to the original game by Seek?
 
-This is a complete rewrite from scratch, made with Seek's permission. The Deltarune Ch. 1-4 character set is identical to the set in the original game, so crossplay between the versions is possible. The Deltarune Ch. 1-5 and Undertale character sets in the respective games were developed separately though, so don't try to cross-play with them. (I plan to add updated matching sets to allow this, but it's not implemented yet.)
+This is a complete rewrite from scratch, made with Seek's permission. The following character sets match the rosters of the same name in Seek's version, so crossplay is possible with them:
+- Deltarune Ch. 1-4
+- Deltarune Ch. 1-5 (Seek's ver.)
+- Undertale (Seek's ver.)
+- Truck Freak Mode
+
+The remaining character sets are all original to this game, and can't be crossplayed with Seek's version since they don't exist there.
 
 ### What features were added/removed compared to the original game?
 
@@ -172,6 +178,8 @@ The following features have been added:
 - Misc. settings to adjust the experience (e.g. changing the background color and style, which could help two people streaming it makes their views appear more distinct)
 - FUN
 
+Plus various minor aesthetic differences.
+
 ### Wait, what do you mean by "FUN"?
 
 It stands for "Fractal Universe Number".
@@ -188,7 +196,7 @@ Yes, please do! This project has a permissive license, so you don't even need to
 
 ### Are there any differences between the online and downloadable versions of the game?
 
-No substantial differences, just some minor necessary styling differences due to the limitations of the packager ([Tauri](https://github.com/tauri-apps/tauri)) for the downloadable version. You can also play older versions of the game with the downloadable version, and it of course lets you play offline and will load a bit faster. But this of course comes with the drawback of needing to install it and trusting it.
+No substantial differences, just some minor necessary styling differences due to the limitations of the packager ([Tauri](https://github.com/tauri-apps/tauri)) for the downloadable version. You can also play older versions of the game with the downloadable version, and it lets you play offline and will load a bit faster. But this of course comes with the drawback of needing to install it and trusting it.
 
 
 ## Contact/Socials
