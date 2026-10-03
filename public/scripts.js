@@ -1525,14 +1525,17 @@ async function loadCharacterSet(setDirName, preload = false) {
     inspectImgEl.setAttribute("src", loadingCharsetPath + "/" + charInfo.imgName);
 
     // Set up events for the card
-    const frameEl = newCard.querySelector(".character-img-frame");
-    frameEl.addEventListener("click", flipCard);
+    newCard.addEventListener("click", flipCard);
     newCard.addEventListener("dblclick", markCard);
-    frameEl.addEventListener("mousedown", (e) => {
+    newCard.addEventListener("mousedown", (e) => {
       if (e.button == 1 || e.buttons == 4)
         toggleInspectCard(e);
     });
-    frameEl.addEventListener("contextmenu", markCard, false);
+    newCard.addEventListener("contextmenu", markCard, false);
+
+    // Set the wheel event specifically off of the card frame so it doesn't interfere with the
+    // wheel event on the inspect frame
+    const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("wheel", (e) => {
       if (e.deltaY < 0) {
         e.preventDefault();
@@ -1617,28 +1620,40 @@ function flipCard(e) {
   const card = frameEl.closest(".character-card");
   const cardClassList = card.classList;
 
-  // Don't flip if the card is already in the middle of flipping
-  if (cardClassList.contains("flipping"))
+  // If the card is already in the middle of flipping, queue a flip
+  if (cardClassList.contains("flipping")) {
+    cardClassList.add("flip-queued");
     return;
+  }
 
   playSelectSound();
   const flipTime = 1000 * parseFloat(window.getComputedStyle(card).getPropertyValue("--flip-time"));
+
+  // Define a function of tasks to run when a flip ends in either direction
+  const endFlip = () => {
+    cardClassList.remove("flipping");
+    // If a flip was queued while this card was flipping, flip it again
+    if (cardClassList.contains("flip-queued")) {
+      cardClassList.remove("flip-queued");
+      flipCard(e);
+    } else {
+      updateNumChars();
+    }
+  }
 
   if (cardClassList.contains("active")) {
     cardClassList.add("flipping");
     setTimeout(() => {
       cardClassList.add("inactive");
       cardClassList.remove("active");
-      cardClassList.remove("flipping");
-      updateNumChars();
+      endFlip();
     }, flipTime);
   } else {
     cardClassList.add("flipping");
     setTimeout(() => {
       cardClassList.add("active");
       cardClassList.remove("inactive");
-      cardClassList.remove("flipping");
-      updateNumChars();
+      endFlip();
     }, flipTime);
   }
 }
