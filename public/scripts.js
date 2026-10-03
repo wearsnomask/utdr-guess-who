@@ -1411,7 +1411,6 @@ async function loadCharacterSet(setDirName, preload = false) {
   }
 
   lCharImageNames = lLoadingCharImageNames;
-  const dCharInfo = {};
 
   // Set any classes that apply to the whole character set
   CARD_CLASSES.className = charsetConfig.cssClass;
@@ -1428,11 +1427,11 @@ async function loadCharacterSet(setDirName, preload = false) {
 
     let escapedCharImgName = charImgName;
     if (tauriMode)
-      escapedCharImgName = charImgName.replace(" ", "_");
+      escapedCharImgName = charImgName.replace(" ", "__");
     else
       escapedCharImgName = charImgName.replace(" ", "%20");
 
-    let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("_", " ").replaceAll("%20", " ");
+    let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("__", " ").replaceAll("%20", " ").replaceAll("''", "\"");
 
     // Check for any classes specific to this character in the image name
     let charClassStr = "";

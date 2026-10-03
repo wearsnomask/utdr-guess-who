@@ -27,8 +27,8 @@ if [ ! -z $TAURI ]; then
       continue
     fi
 
-    # Rename all directories, replacing spaces with _
-    PERCENT_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /_/g')
+    # Rename all directories, replacing spaces with double underscores
+    PERCENT_ESCAPED_DIRNAME=$(echo -n $DIRNAME | sed -e 's/ /__/g')
     if [[ ! $DIRNAME == $PERCENT_ESCAPED_DIRNAME ]]; then
       CMD="mv \"$DIRNAME\" \"$PERCENT_ESCAPED_DIRNAME\""
       eval $CMD
@@ -39,7 +39,7 @@ if [ ! -z $TAURI ]; then
 
     for FILENAME in *.png; do
 
-      PERCENT_ESCAPED_FILENAME=$(echo -n $FILENAME | sed -e 's/ /_/g')
+      PERCENT_ESCAPED_FILENAME=$(echo -n $FILENAME | sed -e 's/ /__/g')
 
       if [[ ! $FILENAME == $PERCENT_ESCAPED_FILENAME ]]; then
         CMD="mv \"$FILENAME\" \"$PERCENT_ESCAPED_FILENAME\""
