@@ -6,6 +6,7 @@
 
 - FUN
 - Added sound effects for various interactions with the game, plus an option in the settings to mute all sound effects
+- Added animations for flipping cards and using up a guess
 
 ## v1.3.0
 
