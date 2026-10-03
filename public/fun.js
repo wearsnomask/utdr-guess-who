@@ -670,6 +670,61 @@ class GonerEvent extends FunEvent {
 
 manager.registerEvent(new GonerEvent());
 
+const L_HOTNAME_1 = ["Heats", "Hots", "Scorchings", "Swelterings", "Toasties", "Blisterings", "Boilings",
+  "Burnings", "Hellishes", "Incandescents", "Roastings", "Steamings", "Scaldings", "Searings"];
+const L_HOTNAME_2 = ["Flames", "Fire", "Blaze", "Inferno", "Conflagration", "Embers", "Flare", "Hearth", "Pyre",
+  "Sparks", "Tinder"];
+const L_HOTNAME_3 = ["man", "dude", "fellow", "guy", "boy", "lad", "bloke", "bro", "chap", "gent"];
+
+/**
+ * Pick a random item from an array
+ * @param {Array} a 
+ */
+function randomItem(a) {
+  return a[Math.floor(Math.random() * a.length)];
+}
+
+function setHotName(e) {
+  const nameEl = e.target.closest(".character-card").querySelector(".character-name");
+  const newName = `${randomItem(L_HOTNAME_1)} ${randomItem(L_HOTNAME_2)}${randomItem(L_HOTNAME_3)}?`;
+  nameEl.textContent = newName;
+}
+
+class HotnameEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    return i >= 46 && i <= 65;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "hotname",
+      trigger: "mouseover",
+      selector: ".hotname",
+      handler: setHotName
+    });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("hotname");
+    document.querySelectorAll(".character-card.hotname").forEach((el) => {
+      const charImgName = el.querySelector(".character-img").getAttribute("src").split("/").at(-1);
+      let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("__", " ").replaceAll("%20", " ")
+        .replaceAll("''", "\"");
+      prettyCharName = prettyCharName.split("+.")[0];
+
+      // Check if this name starts with an index
+      const i = parseInt(prettyCharName.split("-")[0]);
+      if ((i !== NaN) && prettyCharName.startsWith(i.toString()))
+        prettyCharName = prettyCharName.replace(i + "-", "");
+
+      el.querySelector(".character-name").textContent = prettyCharName;
+    });
+  }
+}
+
+manager.registerEvent(new HotnameEvent());
+
 // General FUN event management
 // ----------------------------
 

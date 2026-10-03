@@ -1425,7 +1425,7 @@ async function loadCharacterSet(setDirName, preload = false) {
 
   lLoadingCharImageNames.forEach((charImgName) => {
 
-    let escapedCharImgName = charImgName;
+    let escapedCharImgName;
     if (tauriMode)
       escapedCharImgName = charImgName.replace(" ", "__");
     else
