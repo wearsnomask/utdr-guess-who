@@ -229,6 +229,7 @@ class FunEventManager {
   }
 
   #detachCardEvent(name) {
+    const oCardEvent = this.#oCardEvents[name];
     document.querySelectorAll(this.#getSelector(oCardEvent)).forEach((el) => {
       el.removeEventListener(oCardEvent.trigger, oCardEvent.handler);
     });
@@ -670,11 +671,17 @@ class GonerEvent extends FunEvent {
 
 manager.registerEvent(new GonerEvent());
 
+const L_HOTNAME_0 = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "Lord ", "Dr. ", "Prof. ", "His Majesty ", "The ", "The Final "];
 const L_HOTNAME_1 = ["Heats", "Hots", "Scorchings", "Swelterings", "Toasties", "Blisterings", "Boilings",
-  "Burnings", "Hellishes", "Incandescents", "Roastings", "Steamings", "Scaldings", "Searings"];
+  "Burnings", "Hellishes", "Incandescents", "Roastings", "Steamings", "Scaldings", "Searings", "Moltens", "Blazings"];
 const L_HOTNAME_2 = ["Flames", "Fire", "Blaze", "Inferno", "Conflagration", "Embers", "Flare", "Hearth", "Pyre",
-  "Sparks", "Tinder"];
-const L_HOTNAME_3 = ["man", "dude", "fellow", "guy", "boy", "lad", "bloke", "bro", "chap", "gent"];
+  "Sparks", "Tinder", "Plasmas", "Magma", "Lava"];
+const L_HOTNAME_3 = ["man", "-Man", "dude", "fellow", "guy", "boy", "lad", "bloke", "bro", "chap", "gent", "son"];
+const L_HOTNAME_4 = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  " Jr.", " Sr.", ", Esq.", ", PhD.", ", M.D.", " the third", ", first of his name", " (not that one)"];
 
 /**
  * Pick a random item from an array
@@ -686,7 +693,8 @@ function randomItem(a) {
 
 function setHotName(e) {
   const nameEl = e.target.closest(".character-card").querySelector(".character-name");
-  const newName = `${randomItem(L_HOTNAME_1)} ${randomItem(L_HOTNAME_2)}${randomItem(L_HOTNAME_3)}?`;
+  const newName = `${randomItem(L_HOTNAME_0)}${randomItem(L_HOTNAME_1)} ` +
+    `${randomItem(L_HOTNAME_2)}${randomItem(L_HOTNAME_3)}${randomItem(L_HOTNAME_4)}?`;
   nameEl.textContent = newName;
 }
 
