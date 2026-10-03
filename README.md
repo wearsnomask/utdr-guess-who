@@ -150,7 +150,7 @@ npm run tauri build
 
 ### How does this relate to the original game by Seek?
 
-This is a complete rewrite from scratch, made with Seek's permission. The Deltarune Ch. 1-4 character set is identical to the set in the original game, so crossplay between the versions is possible.
+This is a complete rewrite from scratch, made with Seek's permission. The Deltarune Ch. 1-4 character set is identical to the set in the original game, so crossplay between the versions is possible. The Deltarune Ch. 1-5 and Undertale character sets in the respective games were developed separately though, so don't try to cross-play with them. (I plan to add updated matching sets to allow this, but it's not implemented yet.)
 
 ### What features were added/removed compared to the original game?
 
