@@ -691,6 +691,24 @@ function randomItem(a) {
   return a[Math.floor(Math.random() * a.length)];
 }
 
+/**
+ * Restore a character card's name to what it originally was
+ * @param {HTMLElement} el 
+ */
+function restoreName(el) {
+  const charImgName = el.querySelector(".character-img").getAttribute("src").split("/").at(-1);
+  let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("__", " ").replaceAll("%20", " ")
+    .replaceAll("''", "\"");
+  prettyCharName = prettyCharName.split("+.")[0];
+
+  // Check if this name starts with an index
+  const i = parseInt(prettyCharName.split("-")[0]);
+  if ((i !== NaN) && prettyCharName.startsWith(i.toString()))
+    prettyCharName = prettyCharName.replace(i + "-", "");
+
+  el.querySelector(".character-name").textContent = prettyCharName;
+}
+
 function setHotName(e) {
   const nameEl = e.target.closest(".character-card").querySelector(".character-name");
   const newName = `${randomItem(L_HOTNAME_0)}${randomItem(L_HOTNAME_1)} ` +
@@ -722,23 +740,46 @@ class HotnameEvent extends FunEvent {
   onDeactivate() {
     manager.removeCardEvent("hotname-mouseover");
     manager.removeCardEvent("hotname-focus");
-    document.querySelectorAll(".character-card.hotname").forEach((el) => {
-      const charImgName = el.querySelector(".character-img").getAttribute("src").split("/").at(-1);
-      let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("__", " ").replaceAll("%20", " ")
-        .replaceAll("''", "\"");
-      prettyCharName = prettyCharName.split("+.")[0];
-
-      // Check if this name starts with an index
-      const i = parseInt(prettyCharName.split("-")[0]);
-      if ((i !== NaN) && prettyCharName.startsWith(i.toString()))
-        prettyCharName = prettyCharName.replace(i + "-", "");
-
-      el.querySelector(".character-name").textContent = prettyCharName;
-    });
+    document.querySelectorAll(".character-card.hotname").forEach((el) => restoreName(el));
   }
 }
 
 manager.registerEvent(new HotnameEvent());
+
+function setSansName(e) {
+  const nameEl = e.target.closest(".character-card").querySelector(".character-name");
+  nameEl.textContent = "Ness";
+}
+
+class SansnameEvent extends FunEvent {
+
+  isActiveForFun(i) {
+    return i >= 36 && i <= 45;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "sansname-mouseover",
+      trigger: "mouseover",
+      selector: ".sans",
+      handler: setSansName
+    });
+    manager.addCardEvent({
+      name: "sansname-focus",
+      trigger: "focus",
+      selector: ".sans",
+      handler: setSansName
+    });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("sansname-mouseover");
+    manager.removeCardEvent("sansname-focus");
+    document.querySelectorAll(".character-card.sans").forEach((el) => restoreName(el));
+  }
+}
+
+manager.registerEvent(new SansnameEvent());
 
 // General FUN event management
 // ----------------------------
