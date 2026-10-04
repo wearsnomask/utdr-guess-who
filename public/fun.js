@@ -673,15 +673,15 @@ manager.registerEvent(new GonerEvent());
 
 const L_HOTNAME_0 = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  "Lord ", "Dr. ", "Prof. ", "His Majesty ", "The ", "The Final "];
+  "Lord ", "Dr. ", "Prof. ", "His Majesty, ", "The ", "The Final ", "Sir ", "Super "];
 const L_HOTNAME_1 = ["Heats", "Hots", "Scorchings", "Swelterings", "Toasties", "Blisterings", "Boilings",
   "Burnings", "Hellishes", "Incandescents", "Roastings", "Steamings", "Scaldings", "Searings", "Moltens", "Blazings"];
 const L_HOTNAME_2 = ["Flames", "Fire", "Blaze", "Inferno", "Conflagration", "Embers", "Flare", "Hearth", "Pyre",
-  "Sparks", "Tinder", "Plasmas", "Magma", "Lava"];
+  "Sparks", "Tinder", "Plasmas", "Magma", "Lava", "Vulcan", "Volcano"];
 const L_HOTNAME_3 = ["man", "-Man", "dude", "fellow", "guy", "boy", "lad", "bloke", "bro", "chap", "gent", "son"];
 const L_HOTNAME_4 = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-  " Jr.", " Sr.", ", Esq.", ", PhD.", ", M.D.", " the third", ", first of his name", " (not that one)"];
+  " Jr.", " Sr.", ", Esq.", ", PhD.", ", M.D.", " the third", ", first of his name", " (not that one)", " 64"];
 
 /**
  * Pick a random item from an array
