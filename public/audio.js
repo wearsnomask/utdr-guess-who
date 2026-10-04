@@ -12,6 +12,18 @@ const O_AUDIO_BASE_PATHS = {
   movemenu: "snd/movemenu",
   select: "snd/select",
   trombone: "snd/trombone.mp3",
+  flowery: "snd/flowery.mp3",
+  flowery_eating: "snd/flowery_eating.mp3",
+  flowery_falling: "snd/flowery_falling.mp3",
+  flowery_forgetit: "snd/flowery_forgetit.mp3",
+  flowery_gohome: "snd/flowery_gohome.mp3",
+  flowery_goodbye: "snd/flowery_goodbye.mp3",
+  flowery_great: "snd/flowery_great.mp3",
+  flowery_itsme: "snd/flowery_itsme.mp3",
+  flowery_jarona: "snd/flowery_jarona.mp3",
+  flowery_leafittome: "snd/flowery_leafittome.mp3",
+  flowery_sanfrandisco: "snd/flowery_sanfrandisco.mp3",
+  flowery_stingus: "snd/flowery_stingus.mp3"
 };
 
 // Sounds which will normally always be active
@@ -86,6 +98,7 @@ export function unloadAudio(key) {
 /**
  * Play a specific sound
  * @param {String} key 
+ * @returns {HTMLAudioElement}
  */
 export function playSound(key, vol = 1) {
   preloadAudio(key)
@@ -93,7 +106,9 @@ export function playSound(key, vol = 1) {
     const audio = new Audio(oAudioPaths[key]);
     audio.volume = vol;
     audio.play();
+    return audio;
   }
+  return null;
 }
 
 // Convenience functions
@@ -135,4 +150,35 @@ export function playSelectSound(vol = 1) {
 
 export function playTromboneSound(vol = 1) {
   playSound("trombone", vol);
+}
+
+export function playFlowerySound(vol = 1) {
+  playSound("flowery", vol);
+}
+
+/**
+ * Pick a random item from an array
+ * @param {Array} a 
+ */
+function randomItem(a) {
+  return a[Math.floor(Math.random() * a.length)];
+}
+
+const L_FLOWERY_POSITIVE = ["flowery_great", "flowery_itsme", "flowery_jarona", "flowery_leafittome",
+  "flowery_sanfrandisco", "flowery_stingus"];
+const L_FLOWERY_NEGATIVE = ["flowery_eating", "flowery_falling", "flowery_forgetit", "flowery_gohome",
+  "flowery_goodbye"];
+
+let floweryAudio = null;
+
+export function playFloweryPositiveSound(vol = 1) {
+  if (floweryAudio)
+    floweryAudio.pause()
+  floweryAudio = playSound(randomItem(L_FLOWERY_POSITIVE), vol);
+}
+
+export function playFloweryNegativeSound(vol = 1) {
+  if (floweryAudio)
+    floweryAudio.pause()
+  floweryAudio = playSound(randomItem(L_FLOWERY_NEGATIVE), vol);
 }

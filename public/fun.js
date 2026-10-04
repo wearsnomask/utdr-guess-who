@@ -2,7 +2,7 @@
 // ========================================
 
 import {
-  playBarkSound, playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio
+  playBarkSound, playExplosionSound, playFloweryNegativeSound, playFloweryPositiveSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio
 } from "./audio.js";
 
 // Globals
@@ -759,7 +759,6 @@ function setGonerClassForCard(el) {
     cl.add("goner");
   else
     cl.remove("goner");
-
 }
 
 class GonerEvent extends FunEvent {
@@ -943,6 +942,43 @@ class FlavorEvent extends FunEvent {
 }
 
 manager.registerEvent(new FlavorEvent());
+
+function playFloweryVoice(e) {
+  const cl = e.target.closest(".character-card").classList;
+  if ((cl.contains("active") && cl.contains("flipping")) ||
+    (cl.contains("inactive") && !cl.contains("flipping")))
+    playFloweryNegativeSound();
+  else
+    playFloweryPositiveSound();
+}
+
+class FloweryVoiceEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Not active for all character sets
+    this.weight = 16;
+  }
+
+  isActiveForFun(i) {
+    return (i >= 10 && i <= 19) || (i >= 85 && i <= 94);
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "floweryvoice",
+      trigger: "click",
+      selector: ".flowery",
+      handler: playFloweryVoice
+    });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("floweryvoice");
+  }
+}
+
+manager.registerEvent(new FloweryVoiceEvent());
 
 // General FUN event management
 // ----------------------------
