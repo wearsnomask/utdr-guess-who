@@ -98,13 +98,19 @@ class FunEventManager {
     if (!buttonTextLock) {
       // Edit the text of the FUN button appropriately for the weight
       let funText;
-      if (totalWeight < 10) {
-        funText = "No";
+      if (totalWeight >= 64) {
+        funText = "maybe";
       } else {
-        funText = "Maybe";
+        funText = "no";
       }
-      if (totalWeight % 2 != 0) {
-        funText += "?"
+      if (totalWeight % 64 >= 16) {
+        funText += "...";
+      }
+      if (totalWeight % 16 >= 4) {
+        funText += "?";
+      }
+      if (totalWeight % 5 >= 1) {
+        funText = funText.at(0).toUpperCase() + funText.slice(1);
       }
       SETTINGS_FUN_BUTTON.textContent = funText;
     }
@@ -271,14 +277,18 @@ export function attachAllCardEvents() {
  */
 class FunEvent {
 
-  // The "weight" of the event, which determines if it's significant enough to update the FUN button indicator
+  // The "weight" of the event, which determines how it affects the FUN event button
+  // 1 - Trivial
+  // 4 - Menu only
+  // 16 - Only some character sets
+  // 64 - All character sets
   weight;
 
   // Overridable methods
   // -------------------
 
   constructor() {
-    this.weight = 10;
+    this.weight = 64;
   }
 
   /**
@@ -332,7 +342,7 @@ class MaskEvent extends FunEvent {
 
   constructor() {
     super();
-    // Low weight for this event, since it's active half the time
+    // Trivial weight
     this.weight = 1;
   }
 
@@ -361,14 +371,17 @@ class MiddleEvent extends FunEvent {
   #initButtonText;
   #currentStep;
   #lEventSteps;
+  #ending;
 
   constructor() {
-
     super();
+    // Menu-only weight
+    this.weight = 4;
 
     this.#initButtonText = "";
 
     this.#currentStep = -1;
+    this.#ending = false;
 
     this.#lEventSteps = [function () {
       SETTINGS_FUN_BUTTON.textContent = "No";
@@ -433,7 +446,12 @@ class MiddleEvent extends FunEvent {
   }
 
   onDeactivate() {
-    this.endEvent();
+    if (!this.#ending) {
+      // Mark the event as ending so we don't get into an infinite recursion here
+      this.#ending = true;
+      this.endEvent();
+      this.#ending = false;
+    }
   }
 
   runCurrentStep() {
@@ -718,6 +736,12 @@ function setHotName(e) {
 
 class HotnameEvent extends FunEvent {
 
+  constructor() {
+    super();
+    // Only some character sets
+    this.weight = 16;
+  }
+
   isActiveForFun(i) {
     return i >= 46 && i <= 65;
   }
@@ -752,6 +776,12 @@ function setSansName(e) {
 }
 
 class SansnameEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Only some character sets
+    this.weight = 16;
+  }
 
   isActiveForFun(i) {
     return i >= 36 && i <= 45;
