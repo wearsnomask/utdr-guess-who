@@ -1,7 +1,7 @@
 // Globally relevant
 // =================
 
-import { audioEnabled, playDamageSound, playMoveMenuSound, playSelectSound, preloadStandardAudio } from "./audio.js";
+import { audioEnabled, playDamageSound, playFlipSound, playHealSound, playMoveMenuSound, playSelectSound, preloadStandardAudio } from "./audio.js";
 import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressGuessFadeSound, jerrify, playerIsNaughty } from "./fun.js";
 
 // Class definitions
@@ -1587,7 +1587,7 @@ function flipGuess(e) {
       guessClassList.remove("fading");
     }, fadeTime);
   } else {
-    playSelectSound();
+    playHealSound();
     guessClassList.add("active");
     guessClassList.remove("inactive");
   }
@@ -1615,7 +1615,7 @@ function flipCard(e) {
     return;
   }
 
-  playSelectSound();
+  playFlipSound();
   const flipTime = 1000 * parseFloat(window.getComputedStyle(card).getPropertyValue("--flip-time"));
 
   // Define a function of tasks to run when a flip ends in either direction

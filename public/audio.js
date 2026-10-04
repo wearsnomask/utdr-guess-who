@@ -6,10 +6,12 @@
 const O_AUDIO_BASE_PATHS = {
   bark: "snd/bark",
   damage: "snd/damage",
-  explosion: "snd/explosion",
+  explosion: "snd/explosion.mp3",
+  flip: "snd/flip",
+  heal: "snd/heal",
   movemenu: "snd/movemenu",
   select: "snd/select",
-  trombone: "snd/trombone",
+  trombone: "snd/trombone.mp3",
 };
 
 // Sounds which will normally always be active
@@ -45,7 +47,14 @@ if (isOggSupported()) {
   audioExt = ".ogg";
 }
 Object.entries(O_AUDIO_BASE_PATHS).forEach(([key, val]) => {
-  oAudioPaths[key] = val + audioExt;
+  if (val.slice(-4) == ".mp3") {
+    if (isOggSupported())
+      oAudioPaths[key] = val.slice(0, -4) + audioExt;
+    else
+      oAudioPaths[key] = val;
+  } else {
+    oAudioPaths[key] = val + audioExt;
+  }
 });
 
 /**
@@ -106,6 +115,14 @@ export function playDamageSound(vol = 0.5) {
 
 export function playExplosionSound(vol = 1) {
   playSound("explosion", vol);
+}
+
+export function playFlipSound(vol = 0.4) {
+  playSound("flip", vol);
+}
+
+export function playHealSound(vol = 1) {
+  playSound("heal", vol);
 }
 
 export function playMoveMenuSound(vol = 0.5) {

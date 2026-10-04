@@ -1005,7 +1005,7 @@ textarea {
 
   --inactive-brightness: var(--inactive-brightness-base);
 
-  --flip-time: 0.25s;
+  --flip-time: 0.125s;
 
   position       : relative;
   width          : var(--card-column-width);
