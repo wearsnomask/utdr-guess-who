@@ -907,6 +907,43 @@ class SansnameEvent extends FunEvent {
 
 manager.registerEvent(new SansnameEvent());
 
+const L_FLAVORS = ["SWEET", "SOFT", "SOUR", "SALTY", "PAIN", "COLD"];
+
+class FlavorEvent extends FunEvent {
+
+  #lInitFlavors;
+  #lFlavorOptions;
+
+  constructor() {
+    super();
+    // Menu only
+    this.weight = 4;
+
+    // Save the initial flavors
+    this.#lFlavorOptions = document.querySelectorAll("#bg-flavor-select option");
+    this.#lInitFlavors = [];
+    this.#lInitFlavors.length = this.#lFlavorOptions.length;
+    this.#lFlavorOptions.forEach((val, i) => this.#lInitFlavors[i] = val.textContent);
+  }
+
+  isActiveForFun(i) {
+    return i >= 55 && i <= 75;
+  }
+
+  onActivate() {
+    this.#lFlavorOptions.forEach((val, i) => {
+      if (i < L_FLAVORS.length)
+        val.textContent = L_FLAVORS[i];
+    });
+  }
+
+  onDeactivate() {
+    this.#lFlavorOptions.forEach((val, i) => val.textContent = this.#lInitFlavors[i]);
+  }
+}
+
+manager.registerEvent(new FlavorEvent());
+
 // General FUN event management
 // ----------------------------
 
