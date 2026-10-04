@@ -4,6 +4,7 @@
 // Constants
 
 const O_AUDIO_BASE_PATHS = {
+  bark: "snd/bark",
   damage: "snd/damage",
   explosion: "snd/explosion",
   movemenu: "snd/movemenu",
@@ -12,7 +13,7 @@ const O_AUDIO_BASE_PATHS = {
 };
 
 // Sounds which will normally always be active
-const L_STANDARD_SOUNDS = ["damage", "movemenu", "select"];
+const L_STANDARD_SOUNDS = ["bark", "damage", "movemenu", "select"];
 
 // Constant DOM references
 const SETTINGS_MUTE_SOUND_BOX = document.getElementById("mute-sound-box");
@@ -93,6 +94,10 @@ export function playSound(key, vol = 1) {
  */
 export function preloadStandardAudio() {
   L_STANDARD_SOUNDS.forEach((key) => preloadAudio(key));
+}
+
+export function playBarkSound(vol = 1) {
+  playSound("bark", vol);
 }
 
 export function playDamageSound(vol = 0.5) {

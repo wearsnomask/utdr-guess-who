@@ -1,7 +1,9 @@
 // Code for handling FUN events in the game
 // ========================================
 
-import { playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio } from "./audio.js";
+import {
+  playBarkSound, playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio
+} from "./audio.js";
 
 // Globals
 // -------
@@ -10,6 +12,7 @@ import { playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, u
 const FORCE_FUN = null;
 
 // Constant DOM references
+const NAME_INPUT = document.getElementById("name-input");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
 const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun-box");
@@ -20,6 +23,7 @@ const EXPLOSION_GIF_TEMPLATE = document.getElementById("explosion-template");
 let funValue = -1;
 
 let buttonTextLock = false;
+let naughtyPlayer = false;
 
 class FunEventManager {
 
@@ -468,7 +472,6 @@ class MiddleEvent extends FunEvent {
     buttonTextLock = false;
 
     // Restore the text for the FUN button
-    // Store the current text of the FUN button
     SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
     this.#currentStep = -1;
     setNewFunValue();
@@ -483,6 +486,99 @@ function endMiddleEvent() {
   middleEvent.endEvent();
 }
 manager.registerEvent(middleEvent);
+
+/**
+ * Punish the player
+ */
+export function jerrify() {
+  playBarkSound();
+  const name = "Jerry";
+  NAME_INPUT.value = name;
+  naughtyPlayer = true;
+  sessionStorage["name"] = name;
+  NAME_INPUT.value = name;
+  document.querySelectorAll(".player-name").forEach((el) => el.textContent = name);
+}
+
+class TrapEvent extends FunEvent {
+
+  #initButtonText;
+  #triggered;
+  #ending;
+
+  constructor() {
+    super();
+    // Menu-only weight
+    this.weight = 4;
+
+    this.#initButtonText = "";
+    this.#triggered = false;
+    this.#ending = false;
+  }
+
+  isActiveForFun(i) {
+    // Active for FUN 27 through 30
+    return i >= 27 && i <= 30;
+  }
+
+  onActivate() {
+    // Store the current text of the FUN button
+    this.#initButtonText = SETTINGS_FUN_BUTTON.textContent;
+
+    // Disconnect the normal event from the FUN button and instead connect the event perform the chain of steps
+    disconnectFunButton();
+
+    // Start updating the button text, and lock it so the FUN manager won't change it
+    SETTINGS_FUN_BUTTON.textContent = "DON'T CLICK THIS BUTTON";
+    buttonTextLock = true;
+
+    SETTINGS_FUN_BUTTON.addEventListener("click", triggerTrap);
+
+    // Defuse after 3 seconds
+    setTimeout(() => {
+      if (!this.#triggered)
+        endTrapEvent();
+      else
+        this.#triggered = false;
+    }, 3000);
+  }
+
+  onDeactivate() {
+    if (!this.#ending) {
+      // Mark the event as ending so we don't get into an infinite recursion here
+      this.#ending = true;
+      this.endEvent();
+      this.#ending = false;
+    }
+  }
+
+  triggerTrap() {
+    this.#triggered = true;
+    jerrify();
+    this.endEvent();
+  }
+
+  endEvent() {
+    // Disconnect all events for parts of the chain from the FUN button, and connect the normal event
+    SETTINGS_FUN_BUTTON.removeEventListener("click", triggerTrap);
+    connectFunButton();
+
+    // Release the lock on the button text so the FUN manager can change it once more
+    buttonTextLock = false;
+
+    // Restore the text for the FUN button
+    SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
+  }
+}
+
+const trapEvent = new TrapEvent();
+function triggerTrap() {
+  trapEvent.triggerTrap();
+}
+function endTrapEvent() {
+  trapEvent.endEvent();
+}
+manager.registerEvent(trapEvent);
 
 class TwistEvent extends FunEvent {
 
@@ -820,4 +916,8 @@ export function updateNoFun() {
   } else {
     manager.enableEvents();
   }
+}
+
+export function playerIsNaughty() {
+  return naughtyPlayer;
 }

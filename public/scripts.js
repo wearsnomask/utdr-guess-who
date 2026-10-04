@@ -2,7 +2,7 @@
 // =================
 
 import { audioEnabled, playDamageSound, playMoveMenuSound, playSelectSound, preloadStandardAudio } from "./audio.js";
-import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressGuessFadeSound } from "./fun.js";
+import { connectFunButton, setNewFunValue, updateNoFun, attachAllHeartEvents, attachAllCardEvents, suppressGuessFadeSound, jerrify, playerIsNaughty } from "./fun.js";
 
 // Class definitions
 // -----------------
@@ -446,14 +446,14 @@ const NAME_SUBMIT = document.getElementById("name-submit");
 
 const L_NAME_OPTIONS = [NAME_INPUT, NAME_REMEMBER_BOX, NAME_SUBMIT];
 
-// Globals
-let naughtyPlayer = false;
-
 // Functions
 // ---------
 
 function initNameScene() {
-  if (!naughtyPlayer) {
+
+  if (playerIsNaughty()) {
+    NAME_INPUT.setAttribute("disabled", "disabled");
+  } else {
     NAME_INPUT.removeAttribute("disabled");
     setTimeout(() => moveFocusElement(NAME_INPUT, false), 100);
   }
@@ -513,10 +513,6 @@ function setName(name) {
   }
 }
 
-function getName() {
-  return sessionStorage["name"];
-}
-
 /**
  * Called on keydown in the name box - plays keyboard sound and checks if name should be submitted
  * @param {Event} e 
@@ -529,16 +525,8 @@ function submitName(e) {
   }
   setName(NAME_INPUT.value);
   switchScene();
-  e.stopPropagation();
-}
-
-/**
- * Punish the player for being naughty
- */
-function jerrify() {
-  NAME_INPUT.value = "Jerry";
-  naughtyPlayer = true;
-  submitName();
+  if (e)
+    e.stopPropagation();
 }
 
 /**
@@ -546,8 +534,10 @@ function jerrify() {
  */
 function monitorName() {
   const nameLower = NAME_INPUT.value.toLowerCase().replaceAll(/\W/g, "");
-  if (nameLower.includes("gaster") || nameLower.includes("wdg"))
+  if (nameLower.includes("gaster") || nameLower.includes("wdg")) {
     jerrify();
+    switchScene();
+  }
 }
 
 /**
