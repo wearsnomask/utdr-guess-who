@@ -12,7 +12,7 @@ const O_AUDIO_BASE_PATHS = {
   movemenu: "snd/movemenu",
   select: "snd/select",
   trombone: "snd/trombone.mp3",
-  flowery: "snd/flowery.mp3",
+  flower_grow: "snd/flowery.mp3",
   flowery_eating: "snd/flowery_eating.mp3",
   flowery_falling: "snd/flowery_falling.mp3",
   flowery_forgetit: "snd/flowery_forgetit.mp3",
@@ -152,8 +152,8 @@ export function playTromboneSound(vol = 1) {
   playSound("trombone", vol);
 }
 
-export function playFlowerySound(vol = 1) {
-  playSound("flowery", vol);
+export function playFlowerGrowSound(vol = 1) {
+  playSound("flower_grow", vol);
 }
 
 /**

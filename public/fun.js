@@ -2,7 +2,8 @@
 // ========================================
 
 import {
-  playBarkSound, playExplosionSound, playFloweryNegativeSound, playFloweryPositiveSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio
+  playBarkSound, playExplosionSound, playFloweryNegativeSound, playFloweryPositiveSound, playFlowerGrowSound,
+  playSelectSound, playTromboneSound, preloadAudio, unloadAudio
 } from "./audio.js";
 
 // Globals
@@ -18,6 +19,7 @@ const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
 const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun-box");
 const TROMBONE_GIF_TEMPLATE = document.getElementById("trombone-template");
 const EXPLOSION_GIF_TEMPLATE = document.getElementById("explosion-template");
+const FLOWER_GROW_GIF_TEMPLATE = document.getElementById("flower-grow-template");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
@@ -612,7 +614,7 @@ manager.registerEvent(new TwistEvent());
  * @param {Function} condition 
  * @returns {Boolean} Whether or not the animation ended up playing
  */
-function displayAnim(e, chance, template, selector, parentSelector, condition) {
+function displayAnim(e, chance, template, selector, parentSelector, condition, removeAfter = true) {
 
   if (Math.random() > chance)
     return false;
@@ -639,12 +641,14 @@ function displayAnim(e, chance, template, selector, parentSelector, condition) {
 
   newGif.style.animationPlayState = "running";
 
-  setTimeout(() => {
-    newGif.style.animation = "none";
-    newGif.offsetHeight;
-    newGif.style.animation = null;
-    newGif.remove();
-  }, animFrames * animFrameTime * animIters - 10);
+  if (removeAfter) {
+    setTimeout(() => {
+      newGif.style.animation = "none";
+      newGif.offsetHeight;
+      newGif.style.animation = null;
+      newGif.remove();
+    }, animFrames * animFrameTime * animIters - 10);
+  }
 
   return true;
 }
@@ -746,6 +750,58 @@ class ExplosionEvent extends FunEvent {
 }
 
 manager.registerEvent(new ExplosionEvent());
+
+/**
+ * Displays a explosion gif attached to the calling card
+ * @param {Event} e 
+ */
+async function displayFlowerGrowAnim(e) {
+
+  // Tiny delay before starting to ensure the event to toggle the card state always goes first
+  await new Promise((resolve) => { setTimeout(resolve, 1) });
+
+  const cl = e.target.closest(".character-card").classList;
+  if (cl.contains("flowered"))
+    return;
+  cl.add("flowered");
+
+  const condition = (el) => {
+    const cl = el.closest(".character-card").classList;
+    return cl.contains("darkner") && cl.contains("inactive") && cl.contains("flipping");
+  };
+
+  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", condition))
+    playFlowerGrowSound();
+}
+
+class FlowerGrowEvent extends FunEvent {
+
+  #preloadedGif;
+
+  isActiveForFun(i) {
+    return i >= 40 && i <= 49;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "flower-grow",
+      trigger: "click",
+      handler: displayFlowerGrowAnim
+    });
+
+    // Preload the image and audio so they will appear quickly the first time it's triggered
+    this.#preloadedGif = document.importNode(FLOWER_GROW_GIF_TEMPLATE.content, true).querySelector(".flower-grow");
+    preloadAudio("flower_grow");
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("flower-grow");
+    this.#preloadedGif = null;
+    unloadAudio("flower_grow");
+  }
+}
+
+manager.registerEvent(new FlowerGrowEvent());
 
 function setGonerClass(e) {
   const card = e.target.closest(".character-card");

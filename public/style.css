@@ -1259,10 +1259,10 @@ textarea {
   --sprite-width   : 11px;
   --sprite-height  : 12px;
 
-  transform: translate(0, calc(0.5 * var(--card-frame-height)));
-  scale    : calc(100% * var(--card-scale));
+  top  : calc(-0.5 * var(--card-frame-height));
+  scale: calc(100% * var(--card-scale));
 
-  background-image: url('img/realistic-explosion-spritesheet.png');
+  background-image: url('img/flower-grow-spritesheet.png');
 }
 
 #card-panel-buttons {
