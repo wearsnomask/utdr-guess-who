@@ -614,15 +614,15 @@ manager.registerEvent(new TwistEvent());
  * @param {Function} condition 
  * @returns {Boolean} Whether or not the animation ended up playing
  */
-function displayAnim(e, chance, template, selector, parentSelector, condition, removeAfter = true) {
+function displayAnim(e, chance, template, selector, parentSelector, condition = null, removeAfter = true) {
 
   if (Math.random() > chance)
     return false;
 
   const el = e.target;
 
-  // Only run if an active icon was clicked
-  if (!condition(el))
+  // Apply the condition if one was specified
+  if (condition && !condition(el))
     return false;
 
   const parentEl = el.closest(parentSelector);
@@ -760,17 +760,14 @@ async function displayFlowerGrowAnim(e) {
   // Tiny delay before starting to ensure the event to toggle the card state always goes first
   await new Promise((resolve) => { setTimeout(resolve, 1) });
 
+  // Only apply to darkner cards when flipping back to active, if they aren't already flowered
   const cl = e.target.closest(".character-card").classList;
-  if (cl.contains("flowered"))
+  if (!(cl.contains("darkner") && cl.contains("inactive") && cl.contains("flipping") && !cl.contains("flowered")))
     return;
+
   cl.add("flowered");
 
-  const condition = (el) => {
-    const cl = el.closest(".character-card").classList;
-    return cl.contains("darkner") && cl.contains("inactive") && cl.contains("flipping");
-  };
-
-  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", condition))
+  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", null, true))
     playFlowerGrowSound();
 }
 
