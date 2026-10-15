@@ -1150,33 +1150,33 @@ textarea {
   top     : 0;
   right   : 0;
 
-  width : 0.625rem;
-  height: 0.625rem;
+  width : calc(var(--card-scale) * 0.3125rem);
+  height: calc(var(--card-scale) * 0.3125rem);
 
   background-color: purple;
 }
 
 .inspect-img-frame .character-question-marker {
   /* Overhang a bit to prevent it separating slightly while zooming in/out */
-  top  : -2px;
-  right: -2px;
+  top  : calc(var(--card-scale) * -2px);
+  right: calc(var(--card-scale) * -2px);
 
-  width : calc(1.25rem + 2px);
-  height: calc(1.25rem + 2px);
+  width : calc(var(--card-scale) * 0.625rem);
+  height: calc(var(--card-scale) * 0.625rem);
 
   z-index: 5;
 }
 
 .character-question-icon {
-  padding-top: 2px;
+  padding-top: calc(var(--card-scale) * 1.5px);
   color      : white;
-  font-size  : 0.5rem;
+  font-size  : calc(var(--card-scale) * 0.25rem);
   text-align : center;
 }
 
 .inspect-img-frame .character-question-icon {
-  padding-top: 6px;
-  font-size  : 1rem;
+  padding-top: calc(var(--card-scale) * 3px);
+  font-size  : calc(var(--card-scale) * 0.5rem);
 }
 
 .inactive :is(.character-img-frame, .flower-stay) {
