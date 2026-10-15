@@ -929,7 +929,7 @@ textarea {
   pointer-events: none;
 
   background-image    : url('');
-  animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
+  animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames), jump-none) var(--anim-iters);
   animation-play-state: paused;
 }
 
@@ -1259,8 +1259,8 @@ textarea {
   --sprite-width   : 11px;
   --sprite-height  : 12px;
 
-  top  : calc(-0.5 * var(--card-frame-height));
-  scale: calc(100% * var(--card-scale));
+  bottom: calc(-1 * var(--card-frame-height));
+  scale : calc(100% * var(--card-scale));
 
   background-image: url('img/flower-grow-spritesheet.png');
 }
