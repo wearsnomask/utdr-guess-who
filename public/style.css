@@ -1187,6 +1187,14 @@ textarea {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift));
 }
 
+.flipping {
+  --flip-scale: 1;
+}
+
+.flipping .flower-stay {
+  --flip-scale: var(--card-scale);
+}
+
 .active.flipping :is(.character-img-frame, .flower-stay) {
   animation: flip var(--flip-time) linear 1, flip-off var(--flip-time) steps(2, jump-none) 1;
 }
@@ -1197,15 +1205,15 @@ textarea {
 
 @keyframes flip {
   0% {
-    scale: 1 1;
+    scale: var(--flip-scale) var(--flip-scale);
   }
 
   50% {
-    scale: 0 1;
+    scale: 0 var(--flip-scale);
   }
 
   100% {
-    scale: 1 1;
+    scale: var(--flip-scale) var(--flip-scale);
   }
 }
 
