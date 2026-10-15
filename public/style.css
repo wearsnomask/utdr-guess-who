@@ -913,21 +913,25 @@ textarea {
   }
 }
 
+.anim-spritesheet,
+.static-spritesheet {
+  --sprite-width  : 1px;
+  --sprite-height : 1px;
+  width           : var(--sprite-width);
+  height          : var(--sprite-height);
+  background-image: url('');
+}
+
 .anim-spritesheet {
   --anim-frames    : 1;
   --anim-frame-time: 0.1s;
   --anim-iters     : 1;
-  --sprite-width   : 1px;
-  --sprite-height  : 1px;
 
   position: absolute;
   z-index : 5;
-  width   : var(--sprite-width);
-  height  : var(--sprite-height);
 
   pointer-events: none;
 
-  background-image    : url('');
   animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
   animation-play-state: paused;
 }
@@ -940,6 +944,11 @@ textarea {
   100% {
     background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
   }
+}
+
+.static-spritesheet {
+  --sprite-frame     : 0;
+  background-position: calc(-1 * var(--sprite-width) * var(--sprite-frame));
 }
 
 .anim-spritesheet.trombone {
@@ -1170,19 +1179,19 @@ textarea {
   font-size  : 1rem;
 }
 
-.inactive .character-img-frame {
+.inactive :is(.character-img-frame, .flower-stay) {
   filter: brightness(var(--inactive-brightness)) saturate(var(--inactive-saturate));
 }
 
-.inactive.goner .character-img-frame {
+.inactive.goner :is(.character-img-frame, .flower-stay) {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift));
 }
 
-.active.flipping .character-img-frame {
+.active.flipping :is(.character-img-frame, .flower-stay) {
   animation: flip var(--flip-time) linear 1, flip-off var(--flip-time) steps(2, jump-none) 1;
 }
 
-.inactive.flipping .character-img-frame {
+.inactive.flipping :is(.character-img-frame, .flower-stay) {
   animation: flip var(--flip-time) linear 1, flip-on var(--flip-time) steps(2, jump-none) 1;
 }
 
@@ -1220,14 +1229,14 @@ textarea {
   }
 }
 
-.character-card:hover .character-img-frame,
+.character-card:hover :is(.character-img-frame, .flower-stay),
 .character-card .character-img-frame:focus-visible,
 .character-card .character-name-popup {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--hover-brightness-shift));
   --inactive-saturate  : 1;
 }
 
-.character-card.goner:hover .character-img-frame,
+.character-card.goner:hover :is(.character-img-frame, .flower-stay),
 .character-card.goner .character-img-frame:focus-visible,
 .character-card.goner .character-name-popup {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift) + var(--hover-brightness-shift));
@@ -1251,20 +1260,29 @@ textarea {
   background-image: url('img/realistic-explosion-spritesheet.png');
 }
 
+.anim-spritesheet.flower-grow,
+.static-spritesheet.flower-stay {
+  --sprite-width  : 11px;
+  --sprite-height : 12px;
+  z-index         : 2;
+  background-image: url('img/flower-grow-spritesheet.png');
+
+  top  : calc(-1 * var(--sprite-height) + 1.5 * var(--card-base-row-gap) - 0.5 * var(--card-row-gap));
+  scale: calc(100% * var(--card-scale));
+}
+
 .anim-spritesheet.flower-grow {
   --anim-frames    : 6;
   --anim-frame-time: 0.1s;
   --anim-iters     : 1;
-  --sprite-width   : 11px;
-  --sprite-height  : 12px;
 
-  bottom: calc(var(--card-frame-height) + 0.5 * var(--card-row-gap));
-  scale : calc(100% * var(--card-scale));
-
-  z-index: 1;
-
-  background-image   : url('img/flower-grow-spritesheet.png');
   background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
+}
+
+.static-spritesheet.flower-stay {
+  position      : absolute;
+  pointer-events: none;
+  --sprite-frame: 5;
 }
 
 #card-panel-buttons {

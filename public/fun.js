@@ -614,7 +614,8 @@ manager.registerEvent(new TwistEvent());
  * @param {Function} condition 
  * @returns {Boolean} Whether or not the animation ended up playing
  */
-function displayAnim(e, chance, template, selector, parentSelector, condition = null, removeAfter = true) {
+function displayAnim(e, chance, template, selector, parentSelector, condition = null, removeAfter = true,
+  callback = null) {
 
   if (Math.random() > chance)
     return false;
@@ -641,14 +642,16 @@ function displayAnim(e, chance, template, selector, parentSelector, condition = 
 
   newGif.style.animationPlayState = "running";
 
-  if (removeAfter) {
-    setTimeout(() => {
+  setTimeout(() => {
+    if (removeAfter) {
       newGif.style.animation = "none";
       newGif.offsetHeight;
       newGif.style.animation = null;
       newGif.remove();
-    }, animFrames * animFrameTime * animIters - 10);
-  }
+    }
+    if (callback)
+      callback(e);
+  }, animFrames * animFrameTime * animIters - 10);
 
   return true;
 }
@@ -767,7 +770,15 @@ async function displayFlowerGrowAnim(e) {
 
   cl.add("flowered");
 
-  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", null, false))
+  const callback = (e) => {
+    const el = e.target.closest(".character-card").querySelector(".flower-grow");
+    const cl = el.classList;
+    cl.remove("anim-spritesheet", "flower-grow");
+    cl.add("static-spritesheet", "flower-stay");
+    el.style.animationPlayState = null;
+  };
+
+  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", null, false, callback))
     playFlowerGrowSound();
 }
 
