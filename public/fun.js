@@ -10,7 +10,7 @@ import {
 // -------
 
 // Force a FUN value for debugging
-const FORCE_FUN = null;
+const FORCE_FUN = 44;
 
 // Constant DOM references
 const NAME_INPUT = document.getElementById("name-input");
@@ -767,7 +767,7 @@ async function displayFlowerGrowAnim(e) {
 
   cl.add("flowered");
 
-  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", null, true))
+  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", null, false))
     playFlowerGrowSound();
 }
 
@@ -776,7 +776,7 @@ class FlowerGrowEvent extends FunEvent {
   #preloadedGif;
 
   isActiveForFun(i) {
-    return i >= 40 && i <= 49;
+    return i >= 30 && i <= 49;
   }
 
   onActivate() {

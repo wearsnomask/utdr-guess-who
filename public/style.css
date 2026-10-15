@@ -920,16 +920,15 @@ textarea {
   --sprite-width   : 1px;
   --sprite-height  : 1px;
 
-  position : absolute;
-  z-index  : 5;
-  transform: translate(0px, 0px);
-  width    : var(--sprite-width);
-  height   : var(--sprite-height);
+  position: absolute;
+  z-index : 5;
+  width   : var(--sprite-width);
+  height  : var(--sprite-height);
 
   pointer-events: none;
 
   background-image    : url('');
-  animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames), jump-none) var(--anim-iters);
+  animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
   animation-play-state: paused;
 }
 
@@ -1254,15 +1253,18 @@ textarea {
 
 .anim-spritesheet.flower-grow {
   --anim-frames    : 6;
-  --anim-frame-time: 0.2s;
+  --anim-frame-time: 0.1s;
   --anim-iters     : 1;
   --sprite-width   : 11px;
   --sprite-height  : 12px;
 
-  bottom: calc(-1 * var(--card-frame-height));
+  bottom: calc(var(--card-frame-height) + 0.5 * var(--card-row-gap));
   scale : calc(100% * var(--card-scale));
 
-  background-image: url('img/flower-grow-spritesheet.png');
+  z-index: 1;
+
+  background-image   : url('img/flower-grow-spritesheet.png');
+  background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
 }
 
 #card-panel-buttons {
