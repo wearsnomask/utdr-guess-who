@@ -11,7 +11,7 @@ import {
 // -------
 
 // Force a FUN value for debugging
-const FORCE_FUN = 66;
+const FORCE_FUN = null;
 
 // Constant DOM references
 const NAME_INPUT = document.getElementById("name-input");
