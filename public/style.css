@@ -73,8 +73,8 @@ body::before {
 
 body::before {
   --bg-slide-time: 2.67s;
-  --bg-twist-time: 60000s;
-  --bg-twist-max : 0deg;
+  --bg-twist-time: 6000s;
+  --bg-twist-max : 360deg;
 }
 
 [bg-style='normal'] {
@@ -109,7 +109,7 @@ body::before {
   }
 }
 
-[bg-twist='true'] {
+[world-revolving='true'] {
   body::before {
     --bg-twist-max: 360deg;
   }
@@ -126,12 +126,18 @@ body::before {
 }
 
 body::before {
-  animation: var(--bg-slide-time) linear infinite bg-slide, var(--bg-twist-time) linear infinite bg-twist;
+  animation: var(--bg-slide-time) linear infinite bg-slide;
+}
+
+[world-revolving='true'] {
+  body::before {
+    animation: var(--bg-slide-time) linear infinite bg-slide, var(--bg-twist-time) linear infinite bg-twist;
+  }
 }
 
 [bg-style='static'] {
   body::before {
-    animation: var(--bg-twist-time) linear infinite bg-twist;
+    animation: none;
   }
 }
 

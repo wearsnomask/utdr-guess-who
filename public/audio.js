@@ -23,7 +23,8 @@ const O_AUDIO_BASE_PATHS = {
   flowery_jarona: "snd/flowery_jarona.mp3",
   flowery_leafittome: "snd/flowery_leafittome.mp3",
   flowery_sanfrandisco: "snd/flowery_sanfrandisco.mp3",
-  flowery_stingus: "snd/flowery_stingus.mp3"
+  flowery_stingus: "snd/flowery_stingus.mp3",
+  jevil_anything: "snd/jevil_anything.mp3"
 };
 
 // Sounds which will normally always be active
@@ -154,6 +155,10 @@ export function playTromboneSound(vol = 1) {
 
 export function playFlowerGrowSound(vol = 1) {
   playSound("flower_grow", vol);
+}
+
+export function playJevilAnythingSound(vol = 1) {
+  playSound("jevil_anything", vol);
 }
 
 /**

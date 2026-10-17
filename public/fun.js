@@ -3,14 +3,15 @@
 
 import {
   playBarkSound, playExplosionSound, playFloweryNegativeSound, playFloweryPositiveSound, playFlowerGrowSound,
-  playSelectSound, playTromboneSound, preloadAudio, unloadAudio
+  playSelectSound, playTromboneSound, preloadAudio, unloadAudio,
+  playJevilAnythingSound
 } from "./audio.js";
 
 // Globals
 // -------
 
 // Force a FUN value for debugging
-const FORCE_FUN = null;
+const FORCE_FUN = 66;
 
 // Constant DOM references
 const NAME_INPUT = document.getElementById("name-input");
@@ -585,22 +586,54 @@ function endTrapEvent() {
 }
 manager.registerEvent(trapEvent);
 
-class TwistEvent extends FunEvent {
+function startRevolving(e) {
+
+  const cl = e.target.closest(".character-card").classList;
+  if (cl.contains("revolving-started"))
+    return;
+  cl.add("revolving-started");
+  playJevilAnythingSound();
+  document.documentElement.setAttribute("world-revolving", true);
+}
+
+class RevolvingEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Only some character sets
+    this.weight = 16;
+  }
 
   isActiveForFun(i) {
-    return i >= 67 && i <= 70;
+    return i >= 60 && i <= 70;
   }
 
   onActivate() {
-    document.documentElement.setAttribute("bg-twist", true);
+    preloadAudio("jevil-anything");
+    manager.addCardEvent({
+      name: "anything-mouseover",
+      trigger: "mouseover",
+      selector: ".jevil",
+      handler: startRevolving
+    });
+    manager.addCardEvent({
+      name: "anything-focus",
+      trigger: "focus",
+      selector: ".jevil",
+      handler: startRevolving
+    });
   }
 
   onDeactivate() {
-    document.documentElement.removeAttribute("bg-twist");
+    document.documentElement.removeAttribute("world-revolving");
+    unloadAudio("jevil-anything");
+    manager.removeCardEvent("anything-mouseover");
+    manager.removeCardEvent("anything-focus");
+    document.querySelectorAll(".jevil").forEach((el) => el.classList.remove("revolving-started"));
   }
 }
 
-manager.registerEvent(new TwistEvent());
+manager.registerEvent(new RevolvingEvent());
 
 /**
  * Displays a trombone gif attached to the calling heart icon
@@ -993,7 +1026,7 @@ class FlavorEvent extends FunEvent {
   }
 
   isActiveForFun(i) {
-    return i >= 55 && i <= 75;
+    return i >= 45 && i <= 65;
   }
 
   onActivate() {
