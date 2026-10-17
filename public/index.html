@@ -46,6 +46,23 @@
   <div class="anim-spritesheet explosion smooth-scaling"></div>
 </template>
 
+<template id="flower-grow-template">
+  <div class="anim-spritesheet flower-grow"></div>
+</template>
+
+<template id="wolf-credit-template">
+  <div id="wolf-credit" class="credits-item no-clip selectable">
+    <img src="img/fell-annoying-dog-icon.png" alt="Sebastian Wolff icon">
+    <div class="credits-text">
+      <h4>Sebastian Wolff</h4>
+      Stole all the music from this game
+      <ul>
+        <li>Camping Toby Fox's Bandcamp page with a sniper rifle</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
 <!-- Main page content -->
 
 <body>
@@ -459,7 +476,7 @@
         <h3>CREDITS</h3>
       </div>
 
-      <div class="credits-item selectable">
+      <div id="toby-credit" class="credits-item selectable">
         <img src="img/annoying-dog-icon.png" alt="Toby Fox icon">
         <div class="credits-text">
           <h4>Toby Fox, Temmie Chang, and team</h4>

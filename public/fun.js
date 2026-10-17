@@ -1,7 +1,11 @@
 // Code for handling FUN events in the game
 // ========================================
 
-import { playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, unloadAudio } from "./audio.js";
+import {
+  playBarkSound, playExplosionSound, playFloweryNegativeSound, playFloweryPositiveSound, playFlowerGrowSound,
+  playSelectSound, playTromboneSound, preloadAudio, unloadAudio,
+  playJevilAnythingSound
+} from "./audio.js";
 
 // Globals
 // -------
@@ -10,16 +14,22 @@ import { playExplosionSound, playSelectSound, playTromboneSound, preloadAudio, u
 const FORCE_FUN = null;
 
 // Constant DOM references
+const NAME_INPUT = document.getElementById("name-input");
 const SETTINGS_FUN_BUTTON = document.getElementById("fun-adjust-button");
 const SETTINGS_FUN_FORCE_INPUT = document.getElementById("fun-force-input");
 const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun-box");
 const TROMBONE_GIF_TEMPLATE = document.getElementById("trombone-template");
 const EXPLOSION_GIF_TEMPLATE = document.getElementById("explosion-template");
+const FLOWER_GROW_GIF_TEMPLATE = document.getElementById("flower-grow-template");
+const WOLF_CREDIT_TEMPLATE = document.getElementById("wolf-credit-template");
+const CREDITS_SCENE = document.getElementById("credits-scene");
+const TOBY_CREDIT = document.getElementById("toby-credit");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
 
 let buttonTextLock = false;
+let naughtyPlayer = false;
 
 class FunEventManager {
 
@@ -98,13 +108,19 @@ class FunEventManager {
     if (!buttonTextLock) {
       // Edit the text of the FUN button appropriately for the weight
       let funText;
-      if (totalWeight < 10) {
-        funText = "No";
+      if (totalWeight >= 64) {
+        funText = "maybe";
       } else {
-        funText = "Maybe";
+        funText = "no";
       }
-      if (totalWeight % 2 != 0) {
-        funText += "?"
+      if (totalWeight % 64 >= 16) {
+        funText += "...";
+      }
+      if (totalWeight % 16 >= 4) {
+        funText += "?";
+      }
+      if (totalWeight % 5 >= 1) {
+        funText = funText.at(0).toUpperCase() + funText.slice(1);
       }
       SETTINGS_FUN_BUTTON.textContent = funText;
     }
@@ -198,13 +214,20 @@ class FunEventManager {
     this.#attachCardEvent(oCardEvent);
   }
 
-  #attachCardEvent(oCardEvent) {
-
+  #getSelector(oCardEvent) {
     let selector = ".character-card";
     if (oCardEvent.selector)
-      selector += oCardEvent.selector
+      selector += oCardEvent.selector;
 
-    document.querySelectorAll(selector).forEach((el) => {
+    // The "focus" and "blur" events need to specifically target the character-img-frame, which is the focusable element
+    if (oCardEvent.trigger == "focus" || oCardEvent.trigger == "blur")
+      selector += " .character-img-frame";
+
+    return selector;
+  }
+
+  #attachCardEvent(oCardEvent) {
+    document.querySelectorAll(this.#getSelector(oCardEvent)).forEach((el) => {
       el.addEventListener(oCardEvent.trigger, oCardEvent.handler);
     });
   }
@@ -222,14 +245,8 @@ class FunEventManager {
   }
 
   #detachCardEvent(name) {
-
     const oCardEvent = this.#oCardEvents[name];
-
-    let selector = ".character-card";
-    if (Object.hasOwn(oCardEvent, selector))
-      selector += oCardEvent.selector
-
-    document.querySelectorAll(selector).forEach((el) => {
+    document.querySelectorAll(this.#getSelector(oCardEvent)).forEach((el) => {
       el.removeEventListener(oCardEvent.trigger, oCardEvent.handler);
     });
   }
@@ -270,14 +287,18 @@ export function attachAllCardEvents() {
  */
 class FunEvent {
 
-  // The "weight" of the event, which determines if it's significant enough to update the FUN button indicator
+  // The "weight" of the event, which determines how it affects the FUN event button
+  // 1 - Trivial
+  // 4 - Menu only
+  // 16 - Only some character sets
+  // 64 - All character sets
   weight;
 
   // Overridable methods
   // -------------------
 
   constructor() {
-    this.weight = 10;
+    this.weight = 64;
   }
 
   /**
@@ -331,7 +352,7 @@ class MaskEvent extends FunEvent {
 
   constructor() {
     super();
-    // Low weight for this event, since it's active half the time
+    // Trivial weight
     this.weight = 1;
   }
 
@@ -360,14 +381,17 @@ class MiddleEvent extends FunEvent {
   #initButtonText;
   #currentStep;
   #lEventSteps;
+  #ending;
 
   constructor() {
-
     super();
+    // Menu-only weight
+    this.weight = 4;
 
     this.#initButtonText = "";
 
     this.#currentStep = -1;
+    this.#ending = false;
 
     this.#lEventSteps = [function () {
       SETTINGS_FUN_BUTTON.textContent = "No";
@@ -432,7 +456,12 @@ class MiddleEvent extends FunEvent {
   }
 
   onDeactivate() {
-    this.endEvent();
+    if (!this.#ending) {
+      // Mark the event as ending so we don't get into an infinite recursion here
+      this.#ending = true;
+      this.endEvent();
+      this.#ending = false;
+    }
   }
 
   runCurrentStep() {
@@ -449,7 +478,6 @@ class MiddleEvent extends FunEvent {
     buttonTextLock = false;
 
     // Restore the text for the FUN button
-    // Store the current text of the FUN button
     SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
     this.#currentStep = -1;
     setNewFunValue();
@@ -465,22 +493,147 @@ function endMiddleEvent() {
 }
 manager.registerEvent(middleEvent);
 
-class TwistEvent extends FunEvent {
+/**
+ * Punish the player
+ */
+export function jerrify() {
+  playBarkSound();
+  const name = "Jerry";
+  NAME_INPUT.value = name;
+  naughtyPlayer = true;
+  sessionStorage["name"] = name;
+  NAME_INPUT.value = name;
+  document.querySelectorAll(".player-name").forEach((el) => el.textContent = name);
+}
+
+class TrapEvent extends FunEvent {
+
+  #initButtonText;
+  #triggered;
+  #ending;
+
+  constructor() {
+    super();
+    // Menu-only weight
+    this.weight = 4;
+
+    this.#initButtonText = "";
+    this.#triggered = false;
+    this.#ending = false;
+  }
 
   isActiveForFun(i) {
-    return i >= 67 && i <= 70;
+    // Active for FUN 27 through 30
+    return i >= 27 && i <= 30;
   }
 
   onActivate() {
-    document.documentElement.setAttribute("bg-twist", true);
+    // Store the current text of the FUN button
+    this.#initButtonText = SETTINGS_FUN_BUTTON.textContent;
+
+    // Disconnect the normal event from the FUN button and instead connect the event perform the chain of steps
+    disconnectFunButton();
+
+    // Start updating the button text, and lock it so the FUN manager won't change it
+    SETTINGS_FUN_BUTTON.textContent = "DON'T CLICK THIS BUTTON";
+    buttonTextLock = true;
+
+    SETTINGS_FUN_BUTTON.addEventListener("click", triggerTrap);
+
+    // Defuse after 3 seconds
+    setTimeout(() => {
+      if (!this.#triggered)
+        endTrapEvent();
+      else
+        this.#triggered = false;
+    }, 3000);
   }
 
   onDeactivate() {
-    document.documentElement.removeAttribute("bg-twist");
+    if (!this.#ending) {
+      // Mark the event as ending so we don't get into an infinite recursion here
+      this.#ending = true;
+      this.endEvent();
+      this.#ending = false;
+    }
+  }
+
+  triggerTrap() {
+    this.#triggered = true;
+    jerrify();
+    this.endEvent();
+  }
+
+  endEvent() {
+    // Disconnect all events for parts of the chain from the FUN button, and connect the normal event
+    SETTINGS_FUN_BUTTON.removeEventListener("click", triggerTrap);
+    connectFunButton();
+
+    // Release the lock on the button text so the FUN manager can change it once more
+    buttonTextLock = false;
+
+    // Restore the text for the FUN button
+    SETTINGS_FUN_BUTTON.textContent = this.#initButtonText;
   }
 }
 
-manager.registerEvent(new TwistEvent());
+const trapEvent = new TrapEvent();
+function triggerTrap() {
+  trapEvent.triggerTrap();
+}
+function endTrapEvent() {
+  trapEvent.endEvent();
+}
+manager.registerEvent(trapEvent);
+
+function startRevolving(e) {
+
+  const cl = e.target.closest(".character-card").classList;
+  if (cl.contains("revolving-started"))
+    return;
+  cl.add("revolving-started");
+  playJevilAnythingSound();
+  document.documentElement.setAttribute("world-revolving", true);
+}
+
+class RevolvingEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Only some character sets
+    this.weight = 16;
+  }
+
+  isActiveForFun(i) {
+    return i >= 60 && i <= 70;
+  }
+
+  onActivate() {
+    preloadAudio("jevil-anything");
+    manager.addCardEvent({
+      name: "anything-mouseover",
+      trigger: "mouseover",
+      selector: ".jevil",
+      handler: startRevolving
+    });
+    manager.addCardEvent({
+      name: "anything-focus",
+      trigger: "focus",
+      selector: ".jevil",
+      handler: startRevolving
+    });
+  }
+
+  onDeactivate() {
+    document.documentElement.removeAttribute("world-revolving");
+    unloadAudio("jevil-anything");
+    manager.removeCardEvent("anything-mouseover");
+    manager.removeCardEvent("anything-focus");
+    document.querySelectorAll(".jevil").forEach((el) => el.classList.remove("revolving-started"));
+  }
+}
+
+manager.registerEvent(new RevolvingEvent());
 
 /**
  * Displays a trombone gif attached to the calling heart icon
@@ -497,15 +650,16 @@ manager.registerEvent(new TwistEvent());
  * @param {Function} condition 
  * @returns {Boolean} Whether or not the animation ended up playing
  */
-function displayAnim(e, chance, template, selector, parentSelector, condition) {
+function displayAnim(e, chance, template, selector, parentSelector, condition = null, removeAfter = true,
+  callback = null) {
 
   if (Math.random() > chance)
     return false;
 
   const el = e.target;
 
-  // Only run if an active icon was clicked
-  if (!condition(el))
+  // Apply the condition if one was specified
+  if (condition && !condition(el))
     return false;
 
   const parentEl = el.closest(parentSelector);
@@ -525,10 +679,14 @@ function displayAnim(e, chance, template, selector, parentSelector, condition) {
   newGif.style.animationPlayState = "running";
 
   setTimeout(() => {
-    newGif.style.animation = "none";
-    newGif.offsetHeight;
-    newGif.style.animation = null;
-    newGif.remove();
+    if (removeAfter) {
+      newGif.style.animation = "none";
+      newGif.offsetHeight;
+      newGif.style.animation = null;
+      newGif.remove();
+    }
+    if (callback)
+      callback(e);
   }, animFrames * animFrameTime * animIters - 10);
 
   return true;
@@ -632,6 +790,63 @@ class ExplosionEvent extends FunEvent {
 
 manager.registerEvent(new ExplosionEvent());
 
+/**
+ * Displays a explosion gif attached to the calling card
+ * @param {Event} e 
+ */
+async function displayFlowerGrowAnim(e) {
+
+  // Tiny delay before starting to ensure the event to toggle the card state always goes first
+  await new Promise((resolve) => { setTimeout(resolve, 1) });
+
+  // Only apply to darkner cards when flipping back to active, if they aren't already flowered
+  const cl = e.target.closest(".character-card").classList;
+  if (!(cl.contains("darkner") && cl.contains("inactive") && cl.contains("flipping") && !cl.contains("flowered")))
+    return;
+
+  cl.add("flowered");
+
+  const callback = (e) => {
+    const el = e.target.closest(".character-card").querySelector(".flower-grow");
+    const cl = el.classList;
+    cl.remove("anim-spritesheet", "flower-grow");
+    cl.add("static-spritesheet", "flower-stay");
+    el.style.animationPlayState = null;
+  };
+
+  if (displayAnim(e, 1, FLOWER_GROW_GIF_TEMPLATE, ".flower-grow", ".character-card", null, false, callback))
+    playFlowerGrowSound();
+}
+
+class FlowerGrowEvent extends FunEvent {
+
+  #preloadedGif;
+
+  isActiveForFun(i) {
+    return i >= 30 && i <= 49;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "flower-grow",
+      trigger: "click",
+      handler: displayFlowerGrowAnim
+    });
+
+    // Preload the image and audio so they will appear quickly the first time it's triggered
+    this.#preloadedGif = document.importNode(FLOWER_GROW_GIF_TEMPLATE.content, true).querySelector(".flower-grow");
+    preloadAudio("flower_grow");
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("flower-grow");
+    this.#preloadedGif = null;
+    unloadAudio("flower_grow");
+  }
+}
+
+manager.registerEvent(new FlowerGrowEvent());
+
 function setGonerClass(e) {
   const card = e.target.closest(".character-card");
   setGonerClassForCard(card);
@@ -644,7 +859,6 @@ function setGonerClassForCard(el) {
     cl.add("goner");
   else
     cl.remove("goner");
-
 }
 
 class GonerEvent extends FunEvent {
@@ -670,6 +884,228 @@ class GonerEvent extends FunEvent {
 
 manager.registerEvent(new GonerEvent());
 
+const L_HOTNAME_0 = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "Lord ", "Dr. ", "Prof. ", "His Majesty, ", "The ", "The Final ", "Sir ", "Super "];
+const L_HOTNAME_1 = ["Heats", "Hots", "Scorchings", "Swelterings", "Toasties", "Blisterings", "Boilings",
+  "Burnings", "Hellishes", "Incandescents", "Roastings", "Steamings", "Scaldings", "Searings", "Moltens", "Blazings"];
+const L_HOTNAME_2 = ["Flames", "Fire", "Blaze", "Inferno", "Conflagration", "Embers", "Flare", "Hearth", "Pyre",
+  "Sparks", "Tinder", "Plasmas", "Magma", "Lava", "Vulcan", "Volcano"];
+const L_HOTNAME_3 = ["man", "-Man", "dude", "fellow", "guy", "boy", "lad", "bloke", "bro", "chap", "gent", "son"];
+const L_HOTNAME_4 = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+  " Jr.", " Sr.", ", Esq.", ", PhD.", ", M.D.", " the third", ", first of his name", " (not that one)", " 64"];
+
+/**
+ * Pick a random item from an array
+ * @param {Array} a 
+ */
+function randomItem(a) {
+  return a[Math.floor(Math.random() * a.length)];
+}
+
+/**
+ * Restore a character card's name to what it originally was
+ * @param {HTMLElement} el 
+ */
+function restoreName(el) {
+  const charImgName = el.querySelector(".character-img").getAttribute("src").split("/").at(-1);
+  let prettyCharName = charImgName.replace(/.png$/, "").replaceAll("__", " ").replaceAll("%20", " ")
+    .replaceAll("''", "\"");
+  prettyCharName = prettyCharName.split("+.")[0];
+
+  // Check if this name starts with an index
+  const i = parseInt(prettyCharName.split("-")[0]);
+  if ((i !== NaN) && prettyCharName.startsWith(i.toString()))
+    prettyCharName = prettyCharName.replace(i + "-", "");
+
+  el.querySelector(".character-name").textContent = prettyCharName;
+}
+
+function setHotName(e) {
+  const nameEl = e.target.closest(".character-card").querySelector(".character-name");
+  const newName = `${randomItem(L_HOTNAME_0)}${randomItem(L_HOTNAME_1)} ` +
+    `${randomItem(L_HOTNAME_2)}${randomItem(L_HOTNAME_3)}${randomItem(L_HOTNAME_4)}?`;
+  nameEl.textContent = newName;
+}
+
+class HotnameEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Only some character sets
+    this.weight = 16;
+  }
+
+  isActiveForFun(i) {
+    return i >= 46 && i <= 65;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "hotname-mouseover",
+      trigger: "mouseover",
+      selector: ".hotname",
+      handler: setHotName
+    });
+    manager.addCardEvent({
+      name: "hotname-focus",
+      trigger: "focus",
+      selector: ".hotname",
+      handler: setHotName
+    });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("hotname-mouseover");
+    manager.removeCardEvent("hotname-focus");
+    document.querySelectorAll(".character-card.hotname").forEach((el) => restoreName(el));
+  }
+}
+
+manager.registerEvent(new HotnameEvent());
+
+function setSansName(e) {
+  const nameEl = e.target.closest(".character-card").querySelector(".character-name");
+  nameEl.textContent = "Ness";
+}
+
+class SansnameEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Only some character sets
+    this.weight = 16;
+  }
+
+  isActiveForFun(i) {
+    return i >= 36 && i <= 45;
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "sansname-mouseover",
+      trigger: "mouseover",
+      selector: ".sans",
+      handler: setSansName
+    });
+    manager.addCardEvent({
+      name: "sansname-focus",
+      trigger: "focus",
+      selector: ".sans",
+      handler: setSansName
+    });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("sansname-mouseover");
+    manager.removeCardEvent("sansname-focus");
+    document.querySelectorAll(".character-card.sans").forEach((el) => restoreName(el));
+  }
+}
+
+manager.registerEvent(new SansnameEvent());
+
+const L_FLAVORS = ["SWEET", "SOFT", "SOUR", "SALTY", "PAIN", "COLD"];
+
+class FlavorEvent extends FunEvent {
+
+  #lInitFlavors;
+  #lFlavorOptions;
+
+  constructor() {
+    super();
+    // Menu only
+    this.weight = 4;
+
+    // Save the initial flavors
+    this.#lFlavorOptions = document.querySelectorAll("#bg-flavor-select option");
+    this.#lInitFlavors = [];
+    this.#lInitFlavors.length = this.#lFlavorOptions.length;
+    this.#lFlavorOptions.forEach((val, i) => this.#lInitFlavors[i] = val.textContent);
+  }
+
+  isActiveForFun(i) {
+    return i >= 45 && i <= 65;
+  }
+
+  onActivate() {
+    this.#lFlavorOptions.forEach((val, i) => {
+      if (i < L_FLAVORS.length)
+        val.textContent = L_FLAVORS[i];
+    });
+  }
+
+  onDeactivate() {
+    this.#lFlavorOptions.forEach((val, i) => val.textContent = this.#lInitFlavors[i]);
+  }
+}
+
+manager.registerEvent(new FlavorEvent());
+
+function playFloweryVoice(e) {
+  const cl = e.target.closest(".character-card").classList;
+  if ((cl.contains("active") && cl.contains("flipping")) ||
+    (cl.contains("inactive") && !cl.contains("flipping")))
+    playFloweryNegativeSound();
+  else
+    playFloweryPositiveSound();
+}
+
+class FloweryVoiceEvent extends FunEvent {
+
+  constructor() {
+    super();
+    // Not active for all character sets
+    this.weight = 16;
+  }
+
+  isActiveForFun(i) {
+    return (i >= 10 && i <= 19) || (i >= 85 && i <= 94);
+  }
+
+  onActivate() {
+    manager.addCardEvent({
+      name: "floweryvoice",
+      trigger: "click",
+      selector: ".flowery",
+      handler: playFloweryVoice
+    });
+  }
+
+  onDeactivate() {
+    manager.removeCardEvent("floweryvoice");
+  }
+}
+
+manager.registerEvent(new FloweryVoiceEvent());
+
+class WolfEvent extends FunEvent {
+
+  #wolfCredit;
+
+  constructor() {
+    super();
+    // Menu only
+    this.weight = 4;
+  }
+
+  isActiveForFun(i) {
+    return (i % 6 == 0);
+  }
+
+  onActivate() {
+    this.#wolfCredit = document.importNode(WOLF_CREDIT_TEMPLATE.content, true).getElementById("wolf-credit");
+    CREDITS_SCENE.insertBefore(this.#wolfCredit, TOBY_CREDIT.nextSibling);
+  }
+
+  onDeactivate() {
+    this.#wolfCredit.remove();
+  }
+}
+
+manager.registerEvent(new WolfEvent());
+
 // General FUN event management
 // ----------------------------
 
@@ -679,4 +1115,8 @@ export function updateNoFun() {
   } else {
     manager.enableEvents();
   }
+}
+
+export function playerIsNaughty() {
+  return naughtyPlayer;
 }

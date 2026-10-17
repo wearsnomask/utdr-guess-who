@@ -73,8 +73,8 @@ body::before {
 
 body::before {
   --bg-slide-time: 2.67s;
-  --bg-twist-time: 60000s;
-  --bg-twist-max : 0deg;
+  --bg-twist-time: 6000s;
+  --bg-twist-max : 360deg;
 }
 
 [bg-style='normal'] {
@@ -109,7 +109,7 @@ body::before {
   }
 }
 
-[bg-twist='true'] {
+[world-revolving='true'] {
   body::before {
     --bg-twist-max: 360deg;
   }
@@ -126,12 +126,18 @@ body::before {
 }
 
 body::before {
-  animation: var(--bg-slide-time) linear infinite bg-slide, var(--bg-twist-time) linear infinite bg-twist;
+  animation: var(--bg-slide-time) linear infinite bg-slide;
+}
+
+[world-revolving='true'] {
+  body::before {
+    animation: var(--bg-slide-time) linear infinite bg-slide, var(--bg-twist-time) linear infinite bg-twist;
+  }
 }
 
 [bg-style='static'] {
   body::before {
-    animation: var(--bg-twist-time) linear infinite bg-twist;
+    animation: none;
   }
 }
 
@@ -913,22 +919,25 @@ textarea {
   }
 }
 
+.anim-spritesheet,
+.static-spritesheet {
+  --sprite-width  : 1px;
+  --sprite-height : 1px;
+  width           : var(--sprite-width);
+  height          : var(--sprite-height);
+  background-image: url('');
+}
+
 .anim-spritesheet {
   --anim-frames    : 1;
   --anim-frame-time: 0.1s;
   --anim-iters     : 1;
-  --sprite-width   : 1px;
-  --sprite-height  : 1px;
 
-  position : absolute;
-  z-index  : 5;
-  transform: translate(0px, 0px);
-  width    : var(--sprite-width);
-  height   : var(--sprite-height);
+  position: absolute;
+  z-index : 5;
 
   pointer-events: none;
 
-  background-image    : url('');
   animation           : spritesheet-anim calc(var(--anim-frames) * var(--anim-frame-time)) steps(var(--anim-frames)) var(--anim-iters);
   animation-play-state: paused;
 }
@@ -941,6 +950,11 @@ textarea {
   100% {
     background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
   }
+}
+
+.static-spritesheet {
+  --sprite-frame     : 0;
+  background-position: calc(-1 * var(--sprite-width) * var(--sprite-frame));
 }
 
 .anim-spritesheet.trombone {
@@ -1005,7 +1019,7 @@ textarea {
 
   --inactive-brightness: var(--inactive-brightness-base);
 
-  --flip-time: 0.25s;
+  --flip-time: 0.125s;
 
   position       : relative;
   width          : var(--card-column-width);
@@ -1142,62 +1156,70 @@ textarea {
   top     : 0;
   right   : 0;
 
-  width : 0.625rem;
-  height: 0.625rem;
+  width : calc(var(--card-scale) * 0.3125rem);
+  height: calc(var(--card-scale) * 0.3125rem);
 
   background-color: purple;
 }
 
 .inspect-img-frame .character-question-marker {
   /* Overhang a bit to prevent it separating slightly while zooming in/out */
-  top  : -2px;
-  right: -2px;
+  top  : calc(var(--card-scale) * -2px);
+  right: calc(var(--card-scale) * -2px);
 
-  width : calc(1.25rem + 2px);
-  height: calc(1.25rem + 2px);
+  width : calc(var(--card-scale) * 0.625rem);
+  height: calc(var(--card-scale) * 0.625rem);
 
   z-index: 5;
 }
 
 .character-question-icon {
-  padding-top: 2px;
+  padding-top: calc(var(--card-scale) * 1.5px);
   color      : white;
-  font-size  : 0.5rem;
+  font-size  : calc(var(--card-scale) * 0.25rem);
   text-align : center;
 }
 
 .inspect-img-frame .character-question-icon {
-  padding-top: 6px;
-  font-size  : 1rem;
+  padding-top: calc(var(--card-scale) * 3px);
+  font-size  : calc(var(--card-scale) * 0.5rem);
 }
 
-.inactive .character-img-frame {
+.inactive :is(.character-img-frame, .flower-stay) {
   filter: brightness(var(--inactive-brightness)) saturate(var(--inactive-saturate));
 }
 
-.inactive.goner .character-img-frame {
+.inactive.goner :is(.character-img-frame, .flower-stay) {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift));
 }
 
-.active.flipping .character-img-frame {
+.flipping {
+  --flip-scale: 1;
+}
+
+.flipping .flower-stay {
+  --flip-scale: var(--card-scale);
+}
+
+.active.flipping :is(.character-img-frame, .flower-stay) {
   animation: flip var(--flip-time) linear 1, flip-off var(--flip-time) steps(2, jump-none) 1;
 }
 
-.inactive.flipping .character-img-frame {
+.inactive.flipping :is(.character-img-frame, .flower-stay) {
   animation: flip var(--flip-time) linear 1, flip-on var(--flip-time) steps(2, jump-none) 1;
 }
 
 @keyframes flip {
   0% {
-    scale: 1 1;
+    scale: var(--flip-scale) var(--flip-scale);
   }
 
   50% {
-    scale: 0 1;
+    scale: 0 var(--flip-scale);
   }
 
   100% {
-    scale: 1 1;
+    scale: var(--flip-scale) var(--flip-scale);
   }
 }
 
@@ -1221,14 +1243,14 @@ textarea {
   }
 }
 
-.character-card:hover .character-img-frame,
+.character-card:hover :is(.character-img-frame, .flower-stay),
 .character-card .character-img-frame:focus-visible,
 .character-card .character-name-popup {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--hover-brightness-shift));
   --inactive-saturate  : 1;
 }
 
-.character-card.goner:hover .character-img-frame,
+.character-card.goner:hover :is(.character-img-frame, .flower-stay),
 .character-card.goner .character-img-frame:focus-visible,
 .character-card.goner .character-name-popup {
   --inactive-brightness: calc(var(--inactive-brightness-base) + var(--goner-brightness-shift) + var(--hover-brightness-shift));
@@ -1250,6 +1272,31 @@ textarea {
   scale    : calc(100% * var(--card-scale));
 
   background-image: url('img/realistic-explosion-spritesheet.png');
+}
+
+.anim-spritesheet.flower-grow,
+.static-spritesheet.flower-stay {
+  --sprite-width  : 11px;
+  --sprite-height : 12px;
+  z-index         : 2;
+  background-image: url('img/flower-grow-spritesheet.png');
+
+  transform: translate(0, calc(-0.5 * var(--card-base-img-height) - 0.5 * var(--sprite-height)));
+  scale    : calc(100% * var(--card-scale));
+}
+
+.anim-spritesheet.flower-grow {
+  --anim-frames    : 6;
+  --anim-frame-time: 0.1s;
+  --anim-iters     : 1;
+
+  background-position: calc(-1 * var(--sprite-width) * var(--anim-frames));
+}
+
+.static-spritesheet.flower-stay {
+  position      : absolute;
+  pointer-events: none;
+  --sprite-frame: 5;
 }
 
 #card-panel-buttons {
@@ -1395,6 +1442,10 @@ input.focusable:hover {
   width        : 5rem;
   height       : 5rem;
   border-radius: 1rem;
+}
+
+.credits-item.no-clip img {
+  border-radius: 0;
 }
 
 .credits-text {
