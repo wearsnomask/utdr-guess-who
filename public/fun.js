@@ -20,6 +20,9 @@ const SETTINGS_NO_FUN_BOX = document.getElementById("no-fun-box");
 const TROMBONE_GIF_TEMPLATE = document.getElementById("trombone-template");
 const EXPLOSION_GIF_TEMPLATE = document.getElementById("explosion-template");
 const FLOWER_GROW_GIF_TEMPLATE = document.getElementById("flower-grow-template");
+const WOLF_CREDIT_TEMPLATE = document.getElementById("wolf-credit-template");
+const CREDITS_SCENE = document.getElementById("credits-scene");
+const TOBY_CREDIT = document.getElementById("toby-credit");
 
 // The current FUN value. -1 indicates all FUN events will be inactive, 1-100 are valid values and may activate events
 let funValue = -1;
@@ -1043,6 +1046,32 @@ class FloweryVoiceEvent extends FunEvent {
 }
 
 manager.registerEvent(new FloweryVoiceEvent());
+
+class WolfEvent extends FunEvent {
+
+  #wolfCredit;
+
+  constructor() {
+    super();
+    // Menu only
+    this.weight = 4;
+  }
+
+  isActiveForFun(i) {
+    return (i % 6 == 0);
+  }
+
+  onActivate() {
+    this.#wolfCredit = document.importNode(WOLF_CREDIT_TEMPLATE.content, true).getElementById("wolf-credit");
+    CREDITS_SCENE.insertBefore(this.#wolfCredit, TOBY_CREDIT.nextSibling);
+  }
+
+  onDeactivate() {
+    this.#wolfCredit.remove();
+  }
+}
+
+manager.registerEvent(new WolfEvent());
 
 // General FUN event management
 // ----------------------------

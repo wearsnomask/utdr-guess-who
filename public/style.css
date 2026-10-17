@@ -1438,6 +1438,10 @@ input.focusable:hover {
   border-radius: 1rem;
 }
 
+.credits-item.no-clip img {
+  border-radius: 0;
+}
+
 .credits-text {
   max-width: calc(95vw - 5rem);
 }
