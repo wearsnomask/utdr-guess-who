@@ -1281,6 +1281,7 @@ textarea {
   z-index         : 2;
   background-image: url('img/flower-grow-spritesheet.png');
 
+  /* This works, but not for the right reason. Will have to be readjusted if the card row gap or card border width is changed */
   top  : calc(-1 * var(--sprite-height) + 1.5 * var(--card-base-row-gap) - 0.5 * var(--card-row-gap));
   scale: calc(100% * var(--card-scale));
 }
