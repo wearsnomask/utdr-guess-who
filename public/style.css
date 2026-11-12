@@ -632,17 +632,19 @@ textarea {
   --card-scale     : 2;
   --your-char-scale: 2;
 
-  --card-base-img-width   : 40px;
-  --card-base-img-height  : 64px;
-  --card-base-border-width: 2px;
-  --card-base-column-gap  : 8px;
-  --card-base-row-gap     : 4px;
+  --card-base-img-width    : 40px;
+  --card-base-img-height   : 64px;
+  --card-base-border-width : 2px;
+  --card-base-column-gap   : 8px;
+  --card-base-row-gap      : 4px;
+  --card-base-select-offset: 2px;
 
-  --card-img-width   : calc(var(--card-scale) * var(--card-base-img-width));
-  --card-border-width: calc(var(--card-scale) * var(--card-base-border-width));
-  --card-column-gap  : calc(var(--card-scale) * var(--card-base-column-gap));
-  --card-frame-width : calc(var(--card-img-width) + 2 * var(--card-border-width));
-  --card-column-width: calc(var(--card-frame-width) + var(--card-column-gap));
+  --card-img-width    : calc(var(--card-scale) * var(--card-base-img-width));
+  --card-border-width : calc(var(--card-scale) * var(--card-base-border-width));
+  --card-column-gap   : calc(var(--card-scale) * var(--card-base-column-gap));
+  --card-frame-width  : calc(var(--card-img-width) + 2 * var(--card-border-width));
+  --card-column-width : calc(var(--card-frame-width) + var(--card-column-gap));
+  --card-select-offset: calc(var(--card-scale) * var(--card-base-select-offset));
 
   --card-img-height  : calc(var(--card-scale) * var(--card-base-img-height));
   --card-row-gap     : calc(var(--card-scale) * var(--card-base-row-gap));
@@ -1119,6 +1121,11 @@ textarea {
   align-items    : center;
 
   cursor: url('img/sCursorHand.png'), pointer;
+}
+
+.character-card:hover,
+.character-card:has(.character-img-frame:focus-visible) {
+  top: calc(-1 * var(--card-select-offset));
 }
 
 #example-character-card .character-img-frame {

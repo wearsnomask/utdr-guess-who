@@ -12,6 +12,10 @@
   - Undertale (Seek's ver.)
   - Truck Freak
 
+### Styling/UX Changes
+
+- Added minor "lift" motion to cards when hovered-over/selected
+
 ## v1.3.0
 
 ### New Features
